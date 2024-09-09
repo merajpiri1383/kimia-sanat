@@ -18,6 +18,8 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
 
+    path('config/',include('config.urls')),
+
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
 
     re_path('^media/(?P<path>.*)$',serve,{'document_root' : settings.MEDIA_ROOT}),
