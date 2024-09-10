@@ -9,6 +9,8 @@ class Settings(models.Model) :
 
     description = models.TextField(null=True,blank=True,verbose_name="توضیحات قسمت فوتر")
 
+    address = models.TextField(null=True,blank=True,verbose_name="آدرس")
+
     class Meta : 
         verbose_name = "تنظیمات"
         verbose_name_plural = "تنظیمات"
@@ -78,3 +80,38 @@ class Feq(Item) :
     class Meta : 
         verbose_name = "سوال "
         verbose_name_plural = "سوالات متداول"
+
+# راه های ارتباطی
+class ContactItem(Item) : 
+
+    settings = models.ForeignKey(
+        Settings,
+        on_delete=models.CASCADE,
+        related_name="contact_items",
+        default=1)
+    
+    class Meta : 
+        verbose_name = "راه ارتباطی"
+        verbose_name_plural = "راه های ارتباطی"
+
+
+# شبکه های اجتماعی
+class SocialContact(models.Model) : 
+
+    settings = models.ForeignKey(
+        Settings,
+        on_delete=models.CASCADE,
+        related_name="socials",
+        default=1
+    )
+
+    icon = models.ImageField(upload_to="config/socials/",verbose_name="آیکون")
+
+    url = models.URLField(verbose_name="آدرس")
+
+    def __str__(self) : 
+        return "social contact"
+    
+    class Meta : 
+        verbose_name = "شبکه اجتماعی"
+        verbose_name_plural = "شبکه های اجتماعی"
