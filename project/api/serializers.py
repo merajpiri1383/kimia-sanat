@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from project.models import Category,Project,ProjectImage
+from project.models import Category,Project,ProjectImage,Comment
 
 
 # کلاس دسته بندی
@@ -17,6 +17,35 @@ class ProjectImageSerializer(serializers.ModelSerializer) :
         model = ProjectImage
         fields = ["id","image"]
 
+# کلاس پاسخ به کامنت
+class ReplyCommentSerializer(serializers.ModelSerializer) :
+
+    class Meta :
+        model = Comment
+        fields = ["id","project","reply_to","name","text"]
+        extra_kwargs = {
+            "reply_to" : {"required" : True}
+        }
+
+# کلاس کامنت
+class CommentSendSerializer(serializers.ModelSerializer) :
+
+    class Meta :
+        model = Comment
+        fields = ["id","project","name","phone","email","text","created"]
+        extra_kwargs = {
+            "phone" : {'required' : True},
+            "email" : {"required" : True}
+        }
+
+    def to_representation(self,instance,**kwargs):
+        context = super().to_representation(instance,**kwargs)
+        context["replys"] = ReplyCommentSerializer(
+            instance.relpys.all(),
+            many=True
+        ).data
+        return context
+
 
 # کلاس پروژه
 class ProjectSerializer(serializers.ModelSerializer) :
@@ -32,4 +61,15 @@ class ProjectSerializer(serializers.ModelSerializer) :
             many=True,
             context=self.context
         ).data
+
+        context["comments"] = CommentSendSerializer(
+            instance.comments.filter(reply_to=None),
+            many=True
+        ).data
         return context
+
+
+
+
+
+

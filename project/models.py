@@ -77,3 +77,42 @@ class ProjectImage(models.Model) :
     class Meta :
         verbose_name = 'تصویر پروژه'
         verbose_name_plural = "تصاویر پروژه"
+
+
+# مدل کامنت
+class Comment(models.Model) :
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    project = models.ForeignKey(
+        to = Project,
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="پروژه"
+    )
+
+    reply_to = models.ForeignKey(
+        to ="Comment",
+        on_delete=models.CASCADE,
+        related_name="relpys",
+        verbose_name="پاسخ به کامنت",
+        null=True,
+        blank=True
+    )
+
+    name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی")
+
+    text = models.TextField(verbose_name="توضیحات")
+
+    phone = models.PositiveBigIntegerField(verbose_name="تلفن",null=True,blank=True)
+
+    email = models.EmailField(verbose_name="ایمیل",null=True,blank=True)
+
+    created = jDateField(auto_now_add=True,verbose_name="تاریخ ایجاد")
+
+    def __str__(self):
+        return f"{self.name} - {self.project.name}"
+
+    class Meta :
+        verbose_name = "کامنت"
+        verbose_name_plural = "کامنت ها"

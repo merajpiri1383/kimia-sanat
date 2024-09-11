@@ -1,5 +1,5 @@
 from django.contrib import admin
-from project.models import Category,Project,ProjectImage
+from project.models import Category,Project,ProjectImage,Comment
 
 # تصاویر پروژه
 class ProjectImageInline(admin.TabularInline) :
@@ -17,3 +17,9 @@ class CategoryAdminModel(admin.ModelAdmin) :
 class ProjectAdminModel(admin.ModelAdmin) :
     exclude = ["id"]
     inlines = [ProjectImageInline]
+
+
+# کامنت
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    exclude = ["id"]

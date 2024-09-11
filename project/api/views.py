@@ -1,11 +1,13 @@
-from project.api.serializers import CategorySerializer,ProjectSerializer
+from project.api.serializers import (CategorySerializer,ProjectSerializer,CommentSendSerializer,
+                                     ReplyCommentSerializer)
 from rest_framework.generics import ListAPIView
-from project.models import Category,Project
+from project.models import Category,Project,Comment
 from project.paginations import ProjectPagination
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from drf_yasg import openapi
 
 
 # صفحه دسته بندی ها
@@ -60,3 +62,78 @@ class CategoryProjectsAPIView(APIView) :
             return Response({'detail': 'category not found .'},status.HTTP_404_NOT_FOUND)
         serializer = ProjectSerializer(object.projects.all(),many=True,context={'request' : request})
         return Response(serializer.data,status.HTTP_200_OK)
+
+
+# ارسال کامنت برای پروژه
+class SendCommentProjectAPIView(APIView) :
+
+    @swagger_auto_schema(
+        tags=["project / comment "],
+        operation_summary="send comment",
+        operation_description="send comment for a project",
+        request_body=openapi.Schema(
+            type = openapi.TYPE_OBJECT,
+            properties={
+                "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام و نام خانوادگی"),
+                "phone": openapi.Schema(type=openapi.TYPE_NUMBER, description="تلفن"),
+                "email": openapi.Schema(type=openapi.TYPE_STRING, description="ایمیل"),
+                "text": openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+            },
+            required=["name","phone","email","text"],
+        ),
+        responses={
+            201 : "created",
+            404 : "project not found ",
+            400 : "bad data"
+        }
+    )
+    def post(self,request,project_id):
+        try :
+            project = Project.objects.get(id=project_id)
+        except :
+            return Response({'detail' : 'project not found .'},status.HTTP_404_NOT_FOUND)
+        data = request.data.copy()
+        data["project"] = project_id
+        serializer = CommentSendSerializer(data=data)
+        if serializer.is_valid() :
+            serializer.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        else :
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+
+
+# پاسخ به کامنت
+class ReplyCommentAPIView(APIView ) :
+
+    @swagger_auto_schema(
+        tags=["project / comment "],
+        operation_summary="send reply comment",
+        operation_description="send reply comment for a project",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "name": openapi.Schema(type=openapi.TYPE_STRING, description="نام و نام خانوادگی"),
+                "text": openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+            },
+            required=["name", "text"],
+        ),
+        responses={
+            201: "created",
+            404: "project not found ",
+            400: "bad data"
+        }
+    )
+    def post(self,request,comment_id):
+        try :
+            comment = Comment.objects.get(id=comment_id)
+        except :
+            return Response({'detail' : 'comment not found .'},status.HTTP_404_NOT_FOUND)
+        data = request.data.copy()
+        data["project"] = comment.project.id
+        data["reply_to"] = comment_id
+        serializer = ReplyCommentSerializer(data=data)
+        if serializer.is_valid() :
+            serializer.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        else :
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
