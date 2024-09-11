@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # internal apps 
     'config.apps.ConfigConfig',
+    'project.apps.ProjectConfig',
     # external apps 
     'corsheaders',
     'rest_framework',
@@ -112,6 +113,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+import locale
+locale.setlocale(locale.LC_ALL)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
