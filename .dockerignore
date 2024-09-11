@@ -1,0 +1,20 @@
+# media files in django
+*/media
+
+# env for packages
+*/env
+
+# for caching data
+**/__pycache__/
+
+*/ .idea
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+*.py[cod]
+
+.gitignore

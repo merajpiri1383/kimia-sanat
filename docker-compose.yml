@@ -1,0 +1,34 @@
+services : 
+
+  db : 
+    image : postgres
+    restart : always
+    ports : 
+      - "5432:5432"
+    environment : 
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    
+  pgadmin : 
+    image : dpage/pgadmin4
+    restart : always
+    ports : 
+      - "8888:80"
+    environment : 
+      PGADMIN_DEFAULT_EMAIL : example@gmail.com
+      PGADMIN_DEFAULT_PASSWORD : password
+  
+  django : 
+    build : 
+      context : ./
+      dockerfile : ./Dockerfile
+    ports : 
+      - "8000:8000"
+    environment : 
+      - DEBUG=True
+      - DATABASE_NAME=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_HOST=db
+    depends_on : 
+      - db
+    command : ["sh","start.sh"]
