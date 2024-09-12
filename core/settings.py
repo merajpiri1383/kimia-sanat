@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'config.apps.ConfigConfig',
     'project.apps.ProjectConfig',
     'blog.apps.BlogConfig',
+    'product.apps.ProductConfig',
     # external apps 
     'corsheaders',
     'rest_framework',
