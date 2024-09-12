@@ -30,7 +30,7 @@ services :
       - DATABASE_PASSWORD=postgres
       - DATABASE_HOST=db
       - ALLOWED_HOSTS=localhost,ksparseh.com,www.kspareseh.com,cms.ksparseh.com,www.cms.ksparseh.com
-      - ALLOWED_ORIGINS=http://localhost,https://ksparseh.com,https://www.kspareseh.com,https://cms.ksparseh.com,https//www.cms.ksparseh.com
+      - ALLOWED_ORIGINS=http://localhost,https://ksparseh.com,https://www.kspareseh.com,https://cms.ksparseh.com,https://www.cms.ksparseh.com
     depends_on : 
       - db
     command : ["sh","start.sh"]
