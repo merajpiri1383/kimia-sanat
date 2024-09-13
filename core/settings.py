@@ -1,25 +1,15 @@
-import os 
-from dotenv import load_dotenv
+import os
 from pathlib import Path
-load_dotenv()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-*^60c)fy-fd=$@38z4*5t=wnfl_(^1kfn_ja6n^+m7y&a=6qd5')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*^60c)fy-fd=$@38z4*5t=wnfl_(^1kfn_ja6n^+m7y&a=6qd5'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG",False)
-
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
-CSRF_TRUSTED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
-CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
-
-# Application definition
+ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "").split(",")]
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.getenv("ALLOWED_ORIGINS", "").split(",")]
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in os.getenv("ALLOWED_ORIGINS", "").split(",")]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -28,13 +18,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # internal apps 
     'config.apps.ConfigConfig',
     'project.apps.ProjectConfig',
     'blog.apps.BlogConfig',
     'product.apps.ProductConfig',
     'user.apps.UserConfig',
-    # external apps 
     'corsheaders',
     'rest_framework',
     'drf_yasg',
@@ -71,66 +59,33 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
 AUTH_USER_MODEL = "user.User"
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv("DATABASE_NAME"),
-        'USER' : os.getenv("DATABASE_USER"),
-        'PASSWORD' : os.getenv('DATABASE_PASSWORD'),
-        'PORT' : os.getenv('DATABASE_PORT',5432),
-        'HOST' : os.getenv('DATABASE_HOST'),
+        'USER': os.getenv("DATABASE_USER"),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST'),
+        'PORT': int(os.getenv('DATABASE_PORT', 5432)),
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'fa-ir'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-import locale
-locale.setlocale(locale.LC_ALL)
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / "media"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
