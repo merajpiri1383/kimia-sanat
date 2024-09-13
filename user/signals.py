@@ -5,6 +5,11 @@ from django.contrib.auth import get_user_model
 
 @receiver(post_migrate)
 def create_admin_user(sender,**kwargs) :
-    user,created = get_user_model().objects.get_or_create(phone="09123456789")
+    user,created = get_user_model().objects.get_or_create(
+        phone="09123456789",
+        is_active = True,
+        is_staff = True,
+        is_superuser = True
+    )
     user.set_password("admin")
     user.save()
