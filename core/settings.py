@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'project.apps.ProjectConfig',
     'blog.apps.BlogConfig',
     'product.apps.ProductConfig',
+    'user.apps.UserConfig',
     # external apps 
     'corsheaders',
     'rest_framework',
@@ -70,6 +71,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+
+AUTH_USER_MODEL = "user.User"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
