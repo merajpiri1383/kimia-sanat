@@ -60,8 +60,6 @@ regex_telephone = re.compile("^[0-9]{5,12}$")
 
 class ProfileBase (models.Model) :
 
-    id = models.UUIDField(default=uuid4, primary_key=True, unique=True)
-
     address = models.TextField(verbose_name="آدرس پستی")
 
     postal_code = models.PositiveBigIntegerField(verbose_name="کد پستی")
