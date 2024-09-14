@@ -72,9 +72,6 @@ class ProfileBase (models.Model) :
 
     email = models.EmailField(verbose_name="ایمیل")
 
-    national_card = models.ImageField(upload_to="user/real-profile/national-card/",
-                                      verbose_name="آپلود کارت ملی")
-
     class Meta :
         abstract = True
 
