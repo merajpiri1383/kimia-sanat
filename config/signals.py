@@ -4,4 +4,4 @@ from config.models import Settings
 
 @receiver(post_migrate)
 def create_settings_instance(sender,**kwargs) : 
-    Settings.objects.get_or_create(id=1)
+    setting = Settings.objects.get_or_create(pk=1)
