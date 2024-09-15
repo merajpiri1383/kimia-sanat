@@ -2,6 +2,8 @@ from django.db import models
 from uuid import uuid4
 from django.utils.text import slugify
 from utils.models import Item
+from user.models import Ip
+from django_jalali.db.models import jDateField
 
 # مدل استاندارد
 class Standard (models.Model) :
@@ -43,6 +45,31 @@ class Category (models.Model) :
         return super().save(*args,**kwargs)
 
 
+class Tag (models.Model) :
+
+    id = models.UUIDField(default=uuid4, primary_key=True, unique=True)
+
+    name = models.CharField(max_length=256,verbose_name="نام برچسب")
+
+    slug = models.SlugField(null=True,blank=True,allow_unicode=True)
+
+    def __str__(self):
+        return str(self.name)
+
+    def save(self,**kwargs):
+        self.slug = slugify(self.name,allow_unicode=True)
+        return super().save(**kwargs)
+
+    class Meta :
+        verbose_name = "برچسب"
+        verbose_name_plural = 'برچسب ها'
+
+
+types_of_product = [
+    ('pasty','خمیری'),
+    ('fluid','مایع'),
+    ('powdery','پودری')
+]
 
 # مدل محصول
 class Product (models.Model) :
@@ -62,7 +89,15 @@ class Product (models.Model) :
 
     title = models.CharField(max_length=256,verbose_name="عنوان محصول",unique=True)
 
+    slug = models.SlugField(null=True,blank=True,allow_unicode=True)
+
+    type = models.CharField(max_length=10,choices=types_of_product,default="fluid",verbose_name="نوع محصول")
+
     description = models.TextField(verbose_name="توضیحات محصول")
+
+    views = models.ManyToManyField(Ip)
+
+    tags = models.ManyToManyField(Tag,verbose_name="برچسب ها")
 
     maintain_description = models.TextField(verbose_name="روش نگهداری محصول",null=True,blank=True)
 
@@ -77,12 +112,18 @@ class Product (models.Model) :
         verbose_name = "استاندارد ها"
     )
 
+    created = jDateField(auto_now_add=True)
+
     class Meta :
         verbose_name = "محصول"
         verbose_name_plural = "محصولات"
 
     def __str__(self):
         return f"{self.category} - {self.title}"
+
+    def save(self,**kwargs):
+        self.slug = slugify(self.title)
+        return super().save(**kwargs)
 
 
 # مدل ویژگی محصول
@@ -100,8 +141,8 @@ class FeatureProduct(Item):
     value = models.CharField(max_length=256,verbose_name="مقدار")
 
     class Meta :
-        verbose_name = "مشخصات محصول"
-        verbose_name_plural = "مشخصات محصول"
+        verbose_name = "مشخصات فیزیکی و شیمیای محصول"
+        verbose_name_plural = "مشخصات فیزیکی و شیمیای محصول"
 
 
 
@@ -126,3 +167,26 @@ class UsageProduct (models.Model) :
     class Meta :
         verbose_name = "کاربرد محصول"
         verbose_name_plural = "کاربرد های محصول"
+
+
+# مدل تصویر محصول
+
+class ImageProduct (models.Model) :
+
+    id = models.UUIDField(default=uuid4, primary_key=True, unique=True)
+
+    product = models.ForeignKey(
+        to = Product,
+        on_delete = models.CASCADE,
+        related_name="images",
+        verbose_name="محصول"
+    )
+
+    image = models.ImageField(upload_to="product/images/",verbose_name="تصویر")
+
+    def __str__(self):
+        return str(self.product.title)
+
+    class Meta :
+        verbose_name = "تصویر محصول"
+        verbose_name_plural = 'تصاویر محصول'

@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.core.validators import MaxValueValidator,MinValueValidator
 from django.core.exceptions import ValidationError
 import re
+from random import randint
 
 # مدل شبکه اجتماعی بازار یاب
 class SocialMedia (models.Model) :
@@ -20,14 +21,14 @@ class SocialMedia (models.Model) :
 
 
 time_working = [
-    ('تمام وقت',"full-time"),
-    ('پاره وقت',"part-time"),
+    ("full-time",'تمام وقت'),
+    ("part-time",'پاره وقت'),
 ]
 
 marketer_type = [
-    ('تلفنی',"phone"),
-    ('اینترنتی',"internet"),
-    ('حضوری',"presence")
+    ("phone",'تلفنی'),
+    ("internet",'اینترنتی'),
+    ("presence",'حضوری')
 ]
 
 regex_phone = re.compile("^0[0-9]{10}$")
@@ -46,6 +47,8 @@ class Marketer (models.Model) :
     social_media = models.ManyToManyField(SocialMedia,verbose_name="شبکه اجتماعی")
 
     social_phone = models.SlugField(unique=True,max_length=11,verbose_name="شماره شبکه اجتماعی")
+
+    authenticated_code = models.SlugField(null=True,blank=True,verbose_name="کد معرف")
 
     time_work = models.CharField(max_length=10,
                                  choices=time_working,
@@ -85,3 +88,11 @@ class Marketer (models.Model) :
 
     def __str__(self):
         return str(self.name)
+
+    def save(self,**kwargs):
+        if not self.authenticated_code :
+            try :
+                self.authenticated_code = randint(10000,99999)
+            except :
+                self.authenticated_code = randint(10000,99999)
+        return super().save(**kwargs)

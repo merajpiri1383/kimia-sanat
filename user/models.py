@@ -7,6 +7,13 @@ import re
 from django.core.exceptions import ValidationError
 
 
+class Ip (models.Model) :
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    ip = models.SlugField(max_length=30)
+
+    
 
 regex_phone = re.compile("^0[0-9]{10}$")
 

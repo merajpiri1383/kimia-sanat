@@ -1,2 +1,53 @@
 from rest_framework import serializers
-from product.models import Product,Category,Standard,FeatureProduct,UsageProduct
+from product.models import Product,Category,Standard,FeatureProduct,UsageProduct,ImageProduct
+
+
+# مدل تصویر
+
+class ProductImageSerializer (serializers.ModelSerializer) :
+    class Meta :
+        model = ImageProduct
+        fields = ["image"]
+
+# مدل دسته بندی های محصول
+class CategorySerializer (serializers.ModelSerializer) :
+
+    class Meta :
+        model = Category
+        fields = ["name","slug"]
+
+
+#  مدل محصول به همراه جزییات
+
+class ProductSerializer (serializers.ModelSerializer) :
+    class Meta :
+        model = Product
+        exclude = ["id","tags","views"]
+
+    def to_representation(self,instance,**kwargs):
+        context = super().to_representation(instance,**kwargs)
+        context["views"] = instance.views.count()
+        context["images"] = ProductImageSerializer(
+            instance.images.all(),
+            many=True,
+            context=self.context
+        ).data
+        context["category"] = CategorySerializer(instance.category).data
+        return context
+
+# مدل ساده محصول
+class ProductSimpleSerializer (serializers.ModelSerializer) :
+
+    class Meta :
+        model = Product
+        fields = ["id","slug","title","type","description"]
+
+    def to_representation(self, instance,**kwargs):
+        context = super().to_representation(instance,**kwargs)
+        context["image"] = ProductImageSerializer(
+            instance.images.first(),
+            context=self.context
+        ).data
+        context["views"] = instance.views.count()
+        context["category"] = CategorySerializer(instance.category).data
+        return context
