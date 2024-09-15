@@ -3,7 +3,7 @@ from uuid import uuid4
 from django.utils.text import slugify
 from utils.models import Item
 from user.models import Ip
-from django_jalali.db.models import jDateField
+from django_jalali.db.models import jDateField,jDateTimeField
 
 # مدل استاندارد
 class Standard (models.Model) :
@@ -97,7 +97,7 @@ class Product (models.Model) :
 
     views = models.ManyToManyField(Ip)
 
-    tags = models.ManyToManyField(Tag,verbose_name="برچسب ها")
+    tags = models.ManyToManyField(Tag,verbose_name="برچسب ها",blank=True)
 
     maintain_description = models.TextField(verbose_name="روش نگهداری محصول",null=True,blank=True)
 
@@ -109,7 +109,8 @@ class Product (models.Model) :
 
     standard = models.ManyToManyField(
         to = Standard ,
-        verbose_name = "استاندارد ها"
+        verbose_name = "استاندارد ها",
+        blank=True
     )
 
     created = jDateField(auto_now_add=True)
@@ -190,3 +191,40 @@ class ImageProduct (models.Model) :
     class Meta :
         verbose_name = "تصویر محصول"
         verbose_name_plural = 'تصاویر محصول'
+
+
+# مدل کامنت
+class Comment (models.Model) :
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    product = models.ForeignKey(
+        to = Product,
+        on_delete = models.CASCADE,
+        related_name = "comments",
+        verbose_name = "محصول"
+    )
+
+    reply_to = models.ForeignKey(
+        to = "Comment",
+        on_delete = models.CASCADE,
+        related_name = "replys",
+        verbose_name = "پاسخ به",
+        null=True,
+        blank=True
+    )
+
+    name = models.CharField(max_length=256,verbose_name='نام و نام خانوادگی')
+
+    email = models.EmailField(null=True,blank=True,verbose_name="ایمیل")
+
+    description = models.TextField(verbose_name="توضیحات")
+
+    created = jDateTimeField(auto_now_add=True,verbose_name="تاریخ کامنت")
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta :
+        verbose_name = "کامنت"
+        verbose_name_plural = "کامنت های محصولات"

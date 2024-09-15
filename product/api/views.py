@@ -1,13 +1,15 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from product.models import Product,Category,types_of_product
-from product.api.serializers import ProductSimpleSerializer,ProductSerializer,CategorySerializer
+from product.models import Product,Category,types_of_product,Comment
+from product.api.serializers import (ProductSimpleSerializer,ProductSerializer,CategorySerializer,
+            CommentSerializer,CommentReplySerializer)
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from utils.views import get_ip
 from user.models import Ip
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework.reverse import reverse
 
 
 # لسیت محصولات
@@ -55,7 +57,7 @@ class ProductListAPIView(APIView) :
                 Category.objects.all(),
                 many=True,
             ).data,
-            'types_of_product' : types_of_product
+            'types_of_product' : types_of_product,
         }
         if products.has_next() :
             print()
@@ -72,6 +74,10 @@ class ProductListAPIView(APIView) :
 
 class ProductPageAPIView (APIView) :
 
+    @swagger_auto_schema(
+        operation_summary="product page",
+        operation_description="details of product"
+    )
     def get(self,request,slug):
         try :
             product = Product.objects.get(slug=slug)
@@ -82,6 +88,85 @@ class ProductPageAPIView (APIView) :
             ip,created = Ip.objects.get_or_create(ip=ip)
             product.views.add(ip)
         data = {
-            'product' : ProductSerializer(product,context={'request':request}).data
+            'product' : ProductSerializer(product,context={'request':request}).data,
+            'catalog': reverse("product-catalog", args=[product.slug],request=request),
+            'comments' : CommentSerializer(
+                product.comments.filter(reply_to=None),
+                many=True
+            ).data
         }
         return Response(data,status.HTTP_200_OK)
+
+
+# ارسال کامنت برای محصول
+class SendCommentProductAPIView(APIView) :
+
+    @swagger_auto_schema(
+        tags=["product / comment"],
+        operation_summary="send comment",
+        operation_description="send comment for product . (product page)",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name' : openapi.Schema(type=openapi.TYPE_STRING,description="نام و نام خانوادگی"),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description="ایمیل"),
+                'description': openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+            },
+            required=["name","email","description"]
+        )
+    )
+    def post(self,request,slug):
+        try :
+            product = Product.objects.get(slug=slug)
+        except :
+            return Response({'detail' : 'product not found .'},status.HTTP_404_NOT_FOUND)
+
+        data = request.data.copy()
+        data["product"] = product.id
+        serializer = CommentSerializer(data=data)
+        if serializer.is_valid() :
+            serializer.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        else :
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+
+
+# پاسخ به کامنت
+class ReplyCommentAPIView(APIView) :
+
+    @swagger_auto_schema(
+        tags=["product / comment"],
+        operation_summary="reply comment",
+        operation_description="reply comment for product . (product page)",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name': openapi.Schema(type=openapi.TYPE_STRING, description="نام و نام خانوادگی"),
+                'description': openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+            },
+            required=["name", "description"]
+        )
+    )
+    def post(self,request,comment_id):
+
+        try :
+            comment = Comment.objects.get(id= comment_id)
+        except :
+            return Response({'detail':"comment not found"},status.HTTP_404_NOT_FOUND)
+        data= request.data.copy()
+        data["product"] = comment.product.id
+        data["reply_to"] = comment_id
+        serializer  = CommentReplySerializer(data=data)
+        if serializer.is_valid() :
+            serializer.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        else :
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+
+
+# لینک کاتالوگ محصول
+
+class CatalogProductAPIView(APIView) :
+
+    def get(self,request,slug):
+        return Response({})

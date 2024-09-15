@@ -1,5 +1,6 @@
 from django.contrib import admin
-from product.models import Product,Category,UsageProduct,FeatureProduct,Standard,ImageProduct,Tag
+from product.models import (Product,Category,UsageProduct,FeatureProduct,Standard
+            ,ImageProduct,Tag,Comment)
 
 # مدل کاربرد محصول
 class UsageProductStackInline (admin.TabularInline) :
@@ -40,3 +41,9 @@ class CategoryAdmin ( admin.ModelAdmin ) :
 @admin.register(Tag)
 class TagAdmin (admin.ModelAdmin) :
     exclude = ['id','slug']
+
+
+# مدل کامنت
+@admin.register(Comment)
+class CommentAdmin (admin.ModelAdmin) :
+    exclude = ["id"]
