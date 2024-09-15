@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 # models
-from blog.models import Category,Blog
+from blog.models import Category,Blog,Comment
 # serializers
-from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,ModuleSerializer,CategorySerializer)
+from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,
+                CategorySerializer,CommentReplySerializer,CommentSerializer)
 # swagger
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -29,7 +30,7 @@ class BlogListAPIView(APIView) :
         data = {
             "blogs" : BlogSimpleSerializer(blogs,many=True,context={"request":request}).data,
             "count" : paginator.count,
-            "not_published" : BlogSerializer(
+            "not_published" : BlogSimpleSerializer(
                 Blog.objects.filter(is_published=False).order_by("-created_date")[:3],
                 many=True,
                 context={'request' : request}
@@ -45,3 +46,103 @@ class BlogListAPIView(APIView) :
         if blogs.has_previous() :
             data["previous_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={blogs.previous_page_number()}"
         return Response(data,status.HTTP_200_OK)
+    
+
+# صفحه داخلی بلاگ
+class BlogPageAPIView(APIView) : 
+
+    def get(self,request,blog_slug) : 
+        try : 
+            blog = Blog.objects.get(slug=blog_slug)
+        except :
+            return Response({'detail' : "blog not found ."},status.HTTP_404_NOT_FOUND)
+        data = {
+            'blog' : BlogSerializer(blog,context={'request':request}).data,
+            "not_published" : BlogSimpleSerializer(
+                Blog.objects.filter(is_published=False).order_by("-created_date")[:3],
+                many=True,
+                context={'request' : request}
+            ).data,
+            "categories" : CategorySerializer(
+                Category.objects.all(),
+                many=True
+            ).data,
+            'newest' : BlogSimpleSerializer(
+                Blog.objects.all().order_by("-created_date")[:4],
+                many=True,
+                context={'request':request}
+            ).data,
+            'comments' : CommentSerializer(
+                blog.comments.filter(reply_to=None),
+                many=True,
+            ).data
+        }
+        return Response(data,status.HTTP_200_OK) 
+    
+
+# ارسال کامنت برای محصول
+class SendCommentBlogAPIView(APIView) :
+
+    @swagger_auto_schema(
+        tags=["blog / comment"],
+        operation_summary="send comment",
+        operation_description="send comment for blog . (blog page)",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name' : openapi.Schema(type=openapi.TYPE_STRING,description="نام و نام خانوادگی"),
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description="ایمیل"),
+                'description': openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+            },
+            required=["name","email","description"]
+        )
+    )
+    def post(self,request,blog_slug):
+
+        print(blog_slug)
+        try :
+            blog = Blog.objects.get(slug=blog_slug)
+        except :
+            return Response({'detail' : 'blog not found .'},status.HTTP_404_NOT_FOUND)
+
+        data = request.data.copy()
+        data["blog"] = blog.id
+        serializer = CommentSerializer(data=data)
+        if serializer.is_valid() :
+            serializer.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        else :
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+
+
+# پاسخ به کامنت
+class ReplyCommentAPIView(APIView) :
+
+    @swagger_auto_schema(
+        tags=["blog / comment"],
+        operation_summary="reply comment",
+        operation_description="reply comment for blog . (blog page)",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name': openapi.Schema(type=openapi.TYPE_STRING, description="نام و نام خانوادگی"),
+                'description': openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+            },
+            required=["name", "description"]
+        )
+    )
+    def post(self,request,comment_id):
+
+        try :
+            comment = Comment.objects.get(id= comment_id)
+        except :
+            return Response({'detail':"comment not found"},status.HTTP_404_NOT_FOUND)
+        data= request.data.copy()
+        data["blog"] = comment.blog.id
+        data["reply_to"] = comment_id
+        serializer  = CommentReplySerializer(data=data)
+        if serializer.is_valid() :
+            serializer.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        else :
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)

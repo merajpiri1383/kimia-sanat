@@ -1,9 +1,10 @@
 from django.db import models
 from uuid import uuid4
 from django.utils.text import slugify
-from utils.models import Item
+from utils.models import Item,CommentBase
 from user.models import Ip
 from django_jalali.db.models import jDateField,jDateTimeField
+
 
 # مدل استاندارد
 class Standard (models.Model) :
@@ -96,6 +97,8 @@ class Product (models.Model) :
     description = models.TextField(verbose_name="توضیحات محصول")
 
     views = models.ManyToManyField(Ip)
+
+    catalog_url = models.URLField(verbose_name='آدرس کاتالوگ',null=True,blank=True)
 
     tags = models.ManyToManyField(Tag,verbose_name="برچسب ها",blank=True)
 
@@ -194,9 +197,7 @@ class ImageProduct (models.Model) :
 
 
 # مدل کامنت
-class Comment (models.Model) :
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+class Comment (CommentBase) :
 
     product = models.ForeignKey(
         to = Product,
@@ -204,27 +205,7 @@ class Comment (models.Model) :
         related_name = "comments",
         verbose_name = "محصول"
     )
-
-    reply_to = models.ForeignKey(
-        to = "Comment",
-        on_delete = models.CASCADE,
-        related_name = "replys",
-        verbose_name = "پاسخ به",
-        null=True,
-        blank=True
-    )
-
-    name = models.CharField(max_length=256,verbose_name='نام و نام خانوادگی')
-
-    email = models.EmailField(null=True,blank=True,verbose_name="ایمیل")
-
-    description = models.TextField(verbose_name="توضیحات")
-
-    created = jDateTimeField(auto_now_add=True,verbose_name="تاریخ کامنت")
-
-    def __str__(self):
-        return str(self.name)
-
+    
     class Meta :
         verbose_name = "کامنت"
         verbose_name_plural = "کامنت های محصولات"

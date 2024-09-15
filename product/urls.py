@@ -11,6 +11,4 @@ urlpatterns = [
 
     path('comment/<comment_id>/reply/',views.ReplyCommentAPIView.as_view(),name="reply-comment-product"),
 
-    path('<slug:slug>/catalog/',views.CatalogProductAPIView.as_view(),name="product-catalog")
-
 ]

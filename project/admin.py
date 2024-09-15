@@ -19,7 +19,9 @@ class ProjectAdminModel(admin.ModelAdmin) :
     inlines = [ProjectImageInline]
 
 
-# کامنت
+# مدل کامنت
 @admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin (admin.ModelAdmin) :
     exclude = ["id"]
+    search_fields = ["project","email","name",'description']
+    list_filter = ["project","is_valid","created","reply_to"]

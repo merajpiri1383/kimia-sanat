@@ -9,7 +9,6 @@ from utils.views import get_ip
 from user.models import Ip
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from rest_framework.reverse import reverse
 
 
 # لسیت محصولات
@@ -61,11 +60,9 @@ class ProductListAPIView(APIView) :
         }
         if products.has_next() :
             print()
-            data["next_page"] = (f"{request.build_absolute_uri().split("?")[0]}"
-                                 f"?page={products.next_page_number()}")
+            data["next_page"] = (f"{request.build_absolute_uri().split("?")[0]}?page={products.next_page_number()}")
         if products.has_previous() :
-            data["previous_page"] = (f"{request.build_absolute_uri().split("?")[0]}"
-                                     f"?page={products.previous_page_number()}")
+            data["previous_page"] = (f"{request.build_absolute_uri().split("?")[0]}?page={products.previous_page_number()}")
         return Response(data,status.HTTP_200_OK)
 
 
@@ -89,7 +86,6 @@ class ProductPageAPIView (APIView) :
             product.views.add(ip)
         data = {
             'product' : ProductSerializer(product,context={'request':request}).data,
-            'catalog': reverse("product-catalog", args=[product.slug],request=request),
             'comments' : CommentSerializer(
                 product.comments.filter(reply_to=None),
                 many=True
@@ -162,11 +158,3 @@ class ReplyCommentAPIView(APIView) :
             return Response(serializer.data,status.HTTP_201_CREATED)
         else :
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
-
-
-# لینک کاتالوگ محصول
-
-class CatalogProductAPIView(APIView) :
-
-    def get(self,request,slug):
-        return Response({})

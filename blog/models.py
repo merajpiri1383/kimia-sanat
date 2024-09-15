@@ -1,9 +1,10 @@
 from django.db import models
 from uuid import uuid4
 from django.utils.text import slugify
-from django_jalali.db.models import jDateTimeField
+from django_jalali.db.models import jDateField
 from django.core.exceptions import ValidationError
-
+from utils.models import CommentBase
+from product.models import Tag
 
 # مدل دسته بدی
 class Category (models.Model) :
@@ -40,11 +41,15 @@ class Blog (models.Model) :
 
     title = models.CharField(max_length=256,unique=True,verbose_name="عنوان مقاله")
 
+    author = models.CharField(max_length=256,verbose_name="نویسنده")
+
     slug = models.SlugField(unique=True,null=True,blank=True,allow_unicode=True)
 
     description = models.TextField(verbose_name="توضیحات مقاله")
 
-    created_date = jDateTimeField(null=True,verbose_name="تاریخ انتشار",blank=True)
+    created_date = jDateField(null=True,verbose_name="تاریخ انتشار",blank=True)
+
+    tags = models.ManyToManyField(Tag,verbose_name="برچسب ها",blank=True)
 
     cover = models.ImageField(upload_to="blog/cover",verbose_name="کاور بلاگ")
 
@@ -92,3 +97,18 @@ class Module (models.Model) :
     def clean(self) :
         if not self.text  and not self.file and not self.image :
             raise ValidationError("text,file,image one of them is required .")
+
+
+# مدل کامنت
+class Comment (CommentBase) :
+
+    blog = models.ForeignKey(
+        to = Blog,
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="بلاگ"
+    )
+
+    class Meta : 
+        verbose_name = "کامنت "
+        verbose_name_plural = "کامنت های بلاگ"

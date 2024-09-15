@@ -47,3 +47,5 @@ class TagAdmin (admin.ModelAdmin) :
 @admin.register(Comment)
 class CommentAdmin (admin.ModelAdmin) :
     exclude = ["id"]
+    search_fields = ["product","email","name",'description']
+    list_filter = ["product","is_valid","created","reply_to"]
