@@ -6,8 +6,10 @@ from config.api.serializers import (AchievementSerializer,StorySerializer,FeqSer
                                     SocialContactSerializer,ContactItemSerializer)
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from project.models import Project
+from project.api.serializers import ProjectSimpleSerializer
 
-
+ 
 # صفحه درباره ما 
 class AbouteusAPIView(APIView) : 
     
@@ -24,6 +26,7 @@ class AbouteusAPIView(APIView) :
         except : data["achievements"] = {}
         data["feqs"] = FeqSerializer(setting.feqs.all(),many=True).data
         data["order_guides"] = OrderingGuideSerializer(setting.ordering_guide.all(),many=True).data
+        data["projects"] = ProjectSimpleSerializer(Project.objects.filter(is_completed=True)[:3],many=True,context={'request':request}).data
         return Response(data,status.HTTP_200_OK)
 
 

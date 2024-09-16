@@ -6,7 +6,7 @@ import re
 
 regex_phone = re.compile("^0[0-9]{10}$")
 
-class Company (models.Model) : 
+class Slider (models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
@@ -16,21 +16,23 @@ class Company (models.Model) :
 
     short_description = models.TextField(null=True,blank=True,verbose_name="توضیحات مختصر و مفید")
 
+    link_slider = models.URLField(null=True,blank=True,verbose_name='لینک دکمه اطلاعات بیشتر')
+
     def __str__(self) : 
-        return "شرکت"
+        return "اسلایدر"
     
     class Meta : 
-        verbose_name = "شرکت"
+        verbose_name = "اسلایدر صفحه هوم"
         verbose_name_plural = "تنظمات صفحه هوم"
 
 
 
-class ImageCompany (models.Model ) : 
+class ImageSlider (models.Model ) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    company = models.ForeignKey(
-        to = Company,
+    slider = models.ForeignKey(
+        to = Slider,
         on_delete = models.CASCADE,
         related_name = "images"
     )

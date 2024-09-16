@@ -1,24 +1,26 @@
 from rest_framework import serializers
-from home.models import Company,Consult,ImageCompany,License
+from home.models import Slider,ImageSlider,License
 
 
 # مدل تصاویر اسلایر ها
-class ImageCompanySerializer (serializers.ModelSerializer) : 
+class ImageSliderSerializer (serializers.ModelSerializer) : 
     
     class Meta : 
-        model = ImageCompany
+        model = ImageSlider
         exclude = ["id","company"]
 
-# مدل شرکت
-class CompanySerializer (serializers.ModelSerializer) : 
+
+
+
+class SliderSerializer (serializers.ModelSerializer) : 
 
     class Meta : 
-        model = Company
+        model = Slider 
         exclude = ["id"]
     
     def to_representation(self,instance,**kwargs) : 
         context = super().to_representation(instance,**kwargs)
-        context["sliders"] = ImageCompanySerializer(
+        context["sliders"] = ImageSliderSerializer(
             instance.images.all(),
             many=True,
             context=self.context

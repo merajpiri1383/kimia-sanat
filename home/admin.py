@@ -1,5 +1,5 @@
 from django.contrib import admin
-from home.models import Company,Consult,ImageCompany,License
+from home.models import Slider,Consult,ImageSlider,License
 
 
 # مدل مشاوره 
@@ -8,16 +8,16 @@ class ConsultAdmin (admin.ModelAdmin) :
     exclude = ["id"]
 
 # تصاویر سالایدر صفحه هوم
-class  ImageCompanyTabular (admin.TabularInline) : 
-    model = ImageCompany
+class  ImageSliderTabular (admin.TabularInline) : 
+    model = ImageSlider
     extra = 1 
     exclude = ["id"]
 
 # مدل شرکت
-@admin.register(Company)
-class ComapnyAdmin (admin.ModelAdmin) : 
+@admin.register(Slider)
+class SliderAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-    inlines = [ImageCompanyTabular]
+    inlines = [ImageSliderTabular]
 
 
 # مدل گواهی نامه ها

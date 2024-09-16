@@ -5,12 +5,6 @@ from utils.models import Item
 # مدل کلی تنظیمات
 class Settings(models.Model) : 
 
-    logo = models.ImageField(upload_to="settings/logo",verbose_name="لوگو",null=True,blank=True)
-
-    description = models.TextField(null=True,blank=True,verbose_name="توضیحات قسمت فوتر")
-
-    address = models.TextField(null=True,blank=True,verbose_name="آدرس")
-
     class Meta : 
         verbose_name = "تنظیمات"
         verbose_name_plural = "تنظیمات"

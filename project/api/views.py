@@ -21,7 +21,7 @@ class CategoriePageAPIView(ListAPIView) :
         operation_description="list of categories"
     )
     def get(self,request):
-        return super().get(request)
+        return super().get(request) 
 
 
 # صفحه پروژه

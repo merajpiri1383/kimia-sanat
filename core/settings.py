@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'marketing.apps.MarketingConfig',
     'home.apps.HomeConfig',
+    'template.apps.TemplateConfig',
     # external apps 
     'corsheaders',
     'rest_framework',

@@ -63,7 +63,7 @@ class ProjectSerializer(serializers.ModelSerializer) :
         ).data
 
         context["comments"] = CommentSendSerializer(
-            instance.comments.filter(reply_to=None),
+            instance.comments.filter(reply_to=None,is_valid=True),
             many=True
         ).data
         return context
@@ -74,9 +74,9 @@ class ProjectSerializer(serializers.ModelSerializer) :
 # مدل ساده پروژه ها 
 class ProjectSimpleSerializer (serializers.ModelSerializer) : 
 
-    class Meta : 
+    class Meta :  
         model = Project
-        fields = ["id","name"]
+        fields = ["id","name","description","contractor","launch_date","start_date"]
 
     def to_representation(self, instance):
         context = super().to_representation(instance)

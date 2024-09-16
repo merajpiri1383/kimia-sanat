@@ -4,7 +4,9 @@ from user.manager import UserManager
 from uuid import uuid4
 from random import randint
 import re
+from marketing.models import SocialMedia
 from django.core.exceptions import ValidationError
+from django_jalali.db.models import jDateField
 
 
 class Ip (models.Model) :
@@ -75,7 +77,12 @@ class ProfileBase (models.Model) :
 
     social_phone = models.SlugField(verbose_name="شماره موبایل شبکه اجتماعی")
 
-    national_code = models.PositiveBigIntegerField(verbose_name="کد ملی")
+    social_media = models.ManyToManyField(
+        to = SocialMedia,
+        verbose_name="شبکه اجتماعی"
+    )
+
+    national_id = models.PositiveBigIntegerField(verbose_name="کد ملی")
 
     email = models.EmailField(verbose_name="ایمیل")
 
@@ -119,6 +126,12 @@ class LegalProfile ( ProfileBase ) :
     name = models.CharField(max_length=256,verbose_name="نام شرکت")
 
     economic_code = models.SlugField(verbose_name="کد اقتصادی")
+
+    foundation_date = jDateField(null=True,blank=True,verbose_name="سال تاسیس شرکت")
+
+    company_registration_number = models.PositiveBigIntegerField(verbose_name="شماره ثبت شرکت",null=True,blank=True)
+
+    founder_company = models.CharField(max_length=256,verbose_name="نام صاحب شرکت",null=True,blank=True)
 
     class Meta :
         verbose_name = "پروفایل حقوقی"
