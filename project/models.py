@@ -50,6 +50,8 @@ class Project(models.Model) :
 
     capacity = models.CharField(max_length=256,verbose_name="ظرفیت نامی")
 
+    is_completed = models.BooleanField(default=False,verbose_name="تکمیل شده")
+
     def __str__(self):
         return f"{self.category.name} - {self.name}"
 

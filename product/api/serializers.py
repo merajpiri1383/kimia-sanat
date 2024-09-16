@@ -15,7 +15,7 @@ class CategorySerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Category
-        fields = ["name","slug"]
+        fields = ["name","slug","icon","description"]
 
 # مدل پاسخ کامنت
 class CommentReplySerializer (serializers.ModelSerializer) :

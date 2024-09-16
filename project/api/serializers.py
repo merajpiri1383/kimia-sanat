@@ -7,7 +7,7 @@ class CategorySerializer(serializers.ModelSerializer) :
 
     class Meta :
         model = Category
-        fields = ["id","name","cover"]
+        fields = ["id","name","cover"] 
 
 
 # کلاس تصاویر پروژه
@@ -71,5 +71,14 @@ class ProjectSerializer(serializers.ModelSerializer) :
 
 
 
+# مدل ساده پروژه ها 
+class ProjectSimpleSerializer (serializers.ModelSerializer) : 
 
+    class Meta : 
+        model = Project
+        fields = ["id","name"]
 
+    def to_representation(self, instance):
+        context = super().to_representation(instance)
+        context["image"] = ProjectImageSerializer(instance.images.first(),context=self.context).data
+        return context

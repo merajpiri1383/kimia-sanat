@@ -46,3 +46,20 @@ class ContactItemSerializer(serializers.ModelSerializer) :
     class Meta : 
         model = ContactItem
         exclude = ["id","settings"]
+
+
+# تنظیمات ساده برای صفحه هوم
+class SimpleSettingSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = Settings
+        fields = ["logo"]
+
+    def to_representation(self, instance):
+        context = super().to_representation(instance)
+        try :
+            context["acheivments"] = AchievementSerializer(instance.achievements).data
+        except : 
+            context["acheivments"] = []
+        context["contacts"] = ContactItemSerializer(instance.contact_items.all(),many=True).data
+        return context

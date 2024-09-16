@@ -34,6 +34,12 @@ class Category (models.Model) :
 
     slug = models.SlugField(null=True,blank=True,allow_unicode=True)
 
+    icon = models.ImageField(upload_to="product/category/icon/",verbose_name="آیکون")
+    
+    description = models.TextField(verbose_name="توضیحات دسته بندی")
+
+    show_in_home = models.BooleanField(default=False,verbose_name="نمایش در صفحه هوم")
+
     def __str__(self):
         return str(self.name)
 

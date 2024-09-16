@@ -28,6 +28,8 @@ urlpatterns = [
 
     path('marketing/',include('marketing.urls')),
 
+    path('home/',include('home.urls')),
+
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
 
     re_path('^media/(?P<path>.*)$',serve,{'document_root' : settings.MEDIA_ROOT}),
