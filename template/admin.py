@@ -1,6 +1,25 @@
 from django.contrib import admin
-from template.models import ( AchievementTitle,AnswerQuestionTitle,BlogTitle,CommingSoon,
-        CommnetTemplate,ProductTitle,ProjectTitle,Menu,SubMenu,Template)
+from template.models import ( AchievementTitle,Comment,BlogTitle,CommingSoon
+                            ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,
+                            Header,Slider,ImageSlider,FirstPageContent,License)
+
+
+# عنوان پروژه 
+
+class CommentInline (admin.StackedInline) : 
+    model = Comment
+    exclude = ["id"]
+    extra = 1
+
+@admin.register(ProjectTitle)
+class ProjectTitleAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+    inlines = [CommentInline]
+
+# مدل بلاگ
+@admin.register(BlogTitle)
+class BlogTitleAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
 
 
 # مدل منو
@@ -16,47 +35,54 @@ class MenuAdmin (admin.ModelAdmin) :
     inlines = [SubMenuTabular]
 
 
+# مدیرت محتوای صفحه اول
+class LicenseInline (admin.StackedInline) : 
+    exclude = ["id"]
+    model = License
+    extra = 1
+
+@admin.register(FirstPageContent) 
+class FirstPageContentAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+    inlines = [LicenseInline]
+
+# اسلایدر
+
+class SliderTabular (admin.TabularInline) : 
+    model = ImageSlider
+    exclude = ["id"]
+    extra = 1
+
+@admin.register(Slider)
+class SliderAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+    inlines = [SliderTabular]
 
 
-# مدل قالب 
-
-class ProjectTitleTabular (admin.TabularInline) : 
-    model = ProjectTitle
-    extra = 0
+# مدل هدر 
+@admin.register(Header)
+class HeaderAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
 
-class BlogTitleTabular (admin.TabularInline) : 
-    model = BlogTitle
-    extra = 0
+# مدیرت Comming Soon
+@admin.register(CommingSoon) 
+class CommingSoonAdminModel (admin.ModelAdmin) : 
     exclude = ["id"]
 
-class CommingSoonTabular (admin.StackedInline) : 
-    model = CommingSoon
-    extra = 0
+
+# عنوان محصولات و زیر عنوان 
+@admin.register(ProductTitle)
+class ProductTitleAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+
+
+# مدیرت سوالات شما 
+
+@admin.register(AnswerQuestionTitle)
+class AnswerQuestionTitleAdmin (admin.ModelAdmin) : 
     exclude = ['id']
 
-class ProductTitleTabular (admin.TabularInline) : 
-    model = ProductTitle
-    extra = 0 
-    exclude = ["id"]
-
-class AchievementTitleTabular (admin.TabularInline) : 
-    model = AchievementTitle
-    extra = 0
-    exclude = ["id"]
-
-class AnswerQuestionTitleTabular (admin.TabularInline) : 
-    model = AnswerQuestionTitle 
-    extra = 0
-    exclude = ["id"]
-
-@admin.register(Template)
-class TemplateAdmin (admin.ModelAdmin) : 
-    exclude = ["id"]
-    inlines = [ProjectTitleTabular,BlogTitleTabular,CommingSoonTabular,ProductTitleTabular,AchievementTitleTabular]
-
-
-# مدل کامنت 
-@admin.register(CommnetTemplate)
-class CommentAdmin(admin.ModelAdmin) : 
+# مدیرت عنوان دستاورد ها
+@admin.register(AchievementTitle)
+class AchievementTitleAdmin (admin.ModelAdmin) : 
     exclude = ["id"]

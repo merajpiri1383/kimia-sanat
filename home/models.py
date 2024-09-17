@@ -6,46 +6,6 @@ import re
 
 regex_phone = re.compile("^0[0-9]{10}$")
 
-class Slider (models.Model) : 
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    title_slider = models.CharField(max_length=256,verbose_name="عنوان اسلایدر",null=True,blank=True)
-
-    text_slider = models.TextField(null=True,blank=True,verbose_name="متن اسلایدر")
-
-    short_description = models.TextField(null=True,blank=True,verbose_name="توضیحات مختصر و مفید")
-
-    link_slider = models.URLField(null=True,blank=True,verbose_name='لینک دکمه اطلاعات بیشتر')
-
-    def __str__(self) : 
-        return "اسلایدر"
-    
-    class Meta : 
-        verbose_name = "اسلایدر صفحه هوم"
-        verbose_name_plural = "تنظمات صفحه هوم"
-
-
-
-class ImageSlider (models.Model ) : 
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    slider = models.ForeignKey(
-        to = Slider,
-        on_delete = models.CASCADE,
-        related_name = "images"
-    )
-
-    image = models.ImageField(upload_to="company/images/",verbose_name="تصویر")
-
-    def __str__ (self) : 
-        return "image"
-    
-    class Meta : 
-        verbose_name = "تصویر صفحه هوم"
-        verbose_name_plural = "تصاویر صفحه هوم"
-
 
 class Consult (models.Model ) : 
     
@@ -73,21 +33,3 @@ class Consult (models.Model ) :
     def clean(self) : 
         if not regex_phone.findall(self.phone) : 
             raise ValidationError("phone must be integer and 11 character .")
-
-# گواهینامه ها
-class License (models.Model) : 
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    title = models.CharField(max_length=256,verbose_name="عنوان")
-
-    icon = models.ImageField(upload_to="home/license/icon/",verbose_name="آیکون گواهینامه")
-
-    description = models.TextField(verbose_name="توضیحات گواهینامه")
-
-    def __str__(self) : 
-        return str(self.title)
-    
-    class Meta : 
-        verbose_name = "گواهی نامه"
-        verbose_name_plural = "گواهی نامه ها"
