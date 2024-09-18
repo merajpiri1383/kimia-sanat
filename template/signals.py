@@ -37,7 +37,7 @@ def create_instances (sender,**kwargs) :
         ProjectTitle.objects.create()
     
     product = ProductTitle.objects.first()
-
+ 
     if not product : 
         ProductTitle.objects.create()
     

@@ -21,7 +21,7 @@ class Header (models.Model) :
         verbose_name ="هدر"
         verbose_name_plural = "مدیرت هدر"
 
-# مدل منو
+# مدل منو 
 class Menu (models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
@@ -285,3 +285,91 @@ class License (models.Model) :
     class Meta : 
         verbose_name = "گواهی نامه"
         verbose_name_plural = "گواهی نامه ها"
+
+
+# فوتر 
+
+class Footer (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    logo = models.ImageField(upload_to="template/footer/logo/",verbose_name="لوگو ",null=True,blank=True)
+
+    text = models.TextField(null=True,blank=True,verbose_name="متن فوتر")
+
+
+    def __str__ (self) : 
+        return "فوتر"
+    
+    class Meta : 
+        verbose_name = "فوتر"
+        verbose_name_plural = "فوتر"
+
+
+class PhoneFooter (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_phones")
+
+    icon = models.ImageField(upload_to="footer/phone/icon/",null=True,blank=True,verbose_name="آیکون")
+
+    phone = models.CharField(max_length=256,verbose_name="شماره")
+
+    def __str__ (self) : 
+        return str(self.phone)
+    
+    class Meta : 
+        verbose_name = "شماره تلفن فوتر"
+        verbose_name_plural = "شماره های فوتر"
+
+class SocialFooter (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_socials")
+
+    icon = models.ImageField(upload_to="footer/social/icon/",null=True,blank=True,verbose_name="آیکون")
+
+    url = models.URLField(verbose_name="آدرس")
+
+    def __str__ (self) : 
+        return "شبکه اجتماعی فوتر"
+    
+    class Meta : 
+        verbose_name = "شبکه اجتماعی فوتر"
+        verbose_name_plural = "شبکه های اجتماعی فوتر"
+    
+class FooterLink (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_links")
+
+    name = models.CharField(max_length=256,verbose_name="نام لینک")
+
+    url = models.URLField(verbose_name="آدرس")
+
+    def __str__ (self) : 
+        return str(self.name)
+    
+    class Meta : 
+        verbose_name = "لینک فوتر"
+        verbose_name_plural = "لینک های فوتر"
+
+class CategoryFooter (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_category")
+
+    name = models.CharField(max_length=256,verbose_name="نام دسته بندی")
+
+    url = models.URLField(verbose_name="آدرس دسته بندی")
+
+    def __str__(self) : 
+        return str (self.name)
+    
+    class Meta : 
+        verbose_name = "دسته بندی فوتر"
+        verbose_name_plural = "دسته بندی های فوتر "

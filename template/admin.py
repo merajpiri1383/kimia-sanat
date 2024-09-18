@@ -1,8 +1,9 @@
 from django.contrib import admin
 from template.models import ( AchievementTitle,Comment,BlogTitle,CommingSoon
-                            ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,
-                            Header,Slider,ImageSlider,FirstPageContent,License)
+                            ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
+                            Header,Slider,ImageSlider,FirstPageContent,License,Footer,FooterLink,PhoneFooter,SocialFooter)
 
+from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
 
 # عنوان پروژه 
 
@@ -20,19 +21,6 @@ class ProjectTitleAdmin (admin.ModelAdmin) :
 @admin.register(BlogTitle)
 class BlogTitleAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-
-
-# مدل منو
-
-class SubMenuTabular (admin.TabularInline) : 
-    model = SubMenu
-    extra = 1 
-    exclude = ["id"]
-
-@admin.register(Menu)
-class MenuAdmin (admin.ModelAdmin) : 
-    exclude = ["id"]
-    inlines = [SubMenuTabular]
 
 
 # مدیرت محتوای صفحه اول
@@ -61,14 +49,21 @@ class SliderAdmin (admin.ModelAdmin) :
 
 # مدل هدر 
 
-class MenuInline (admin.StackedInline) : 
+class SubMenuTabular (NestedTabularInline) : 
+    model = SubMenu
+    extra = 0
+    exclude = ["id"]
+    fk_name = "menu"
+
+class MenuInline (NestedStackedInline) : 
     exclude = ["id"]
     model = Menu
     extra = 0
-    show_change_link = True
+    fk_name = 'header'
+    inlines = [SubMenuTabular]
 
-@admin.register(Header)
-class HeaderAdmin (admin.ModelAdmin) : 
+@admin.register(Header) 
+class HeaderAdmin (NestedModelAdmin) : 
     exclude = ["id"]
     inlines = [MenuInline]
 
@@ -94,3 +89,30 @@ class AnswerQuestionTitleAdmin (admin.ModelAdmin) :
 @admin.register(AchievementTitle)
 class AchievementTitleAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
+
+# فوتر 
+
+class FooterLinkInline (admin.TabularInline) : 
+    model = FooterLink
+    extra = 0 
+    exclude = ["id"]
+
+class SocialFooterInline (admin.TabularInline) : 
+    model = SocialFooter
+    extra = 0
+    exclude = ["id"]
+
+class PhoneFooterInline (admin.TabularInline) : 
+    model = PhoneFooter
+    exclude = ["id"]
+    extra = 0
+
+class CategoryFooterInline (admin.TabularInline) : 
+    model = CategoryFooter
+    exclude = ["id"]
+    extra = 0
+
+@admin.register(Footer)
+class FooterAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+    inlines= [FooterLinkInline,SocialFooterInline,PhoneFooterInline,CategoryFooterInline]

@@ -38,8 +38,6 @@ class Category (models.Model) :
     
     description = models.TextField(verbose_name="توضیحات دسته بندی")
 
-    show_in_home = models.BooleanField(default=False,verbose_name="نمایش در صفحه هوم")
-
     def __str__(self):
         return str(self.name)
 

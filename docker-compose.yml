@@ -7,6 +7,9 @@ services :
         - "5432:5432"
     environment : 
       - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=kimia_db
+      - POSTGRES_USER=kimia_user
+      - POSTGRES_PASSWORD=kimia_password
     # volumes : 
     #   - pgdata:/var/lib/postgresql/data
     
@@ -16,7 +19,7 @@ services :
     ports : 
       - "8888:80"
     environment : 
-      PGADMIN_DEFAULT_EMAIL : example@gmail.com
+      PGADMIN_DEFAULT_EMAIL : kimia@gmail.com
       PGADMIN_DEFAULT_PASSWORD : password
     # volumes : 
     #   - pgadmin-data:/var/lib/pgadmin
@@ -29,9 +32,9 @@ services :
       - "8000:8000"
     environment : 
       - DEBUG=True
-      - DATABASE_NAME=postgres
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=kimia_db
+      - DATABASE_USER=kimia_user
+      - DATABASE_PASSWORD=kimia_password
       - DATABASE_HOST=db
       - ALLOWED_HOSTS=localhost,ksparseh.com,www.kspareseh.com,cms.ksparseh.com,www.cms.ksparseh.com,127.0.0.1
       - ALLOWED_ORIGINS=http://localhost,https://ksparseh.com,https://www.kspareseh.com,https://cms.ksparseh.com,https://www.cms.ksparseh.com
