@@ -8,7 +8,7 @@ class Item(models.Model) :
 
     key = models.CharField(max_length=256,verbose_name="کلید")
 
-    value = models.TextField(verbose_name="مقدار")
+    value = models.CharField(max_length=256,verbose_name="مقدار")
 
     class Meta : 
         abstract = True

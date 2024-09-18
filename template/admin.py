@@ -60,9 +60,17 @@ class SliderAdmin (admin.ModelAdmin) :
 
 
 # مدل هدر 
+
+class MenuInline (admin.StackedInline) : 
+    exclude = ["id"]
+    model = Menu
+    extra = 0
+    show_change_link = True
+
 @admin.register(Header)
 class HeaderAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
+    inlines = [MenuInline]
 
 # مدیرت Comming Soon
 @admin.register(CommingSoon) 

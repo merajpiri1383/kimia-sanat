@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'product.apps.ProductConfig',
     'user.apps.UserConfig',
-    'marketing.apps.MarketingConfig',
     'home.apps.HomeConfig',
     'template.apps.TemplateConfig',
     # external apps 

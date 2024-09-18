@@ -1,58 +1,67 @@
 from django.contrib import admin
-from config.models import Settings,OrderingGuide,Achievements,Feq,Story,ContactItem,SocialContact
+from config.models import (OrderingGuide,Achievements,Feq,Story,ContactItem,SocialContact,AboutUs,ContactUs
+                        ,ContactTitle,FeqTitle,OrderGuideTitle,SocialTitle)
+# مدل درباره ما 
 
-class StoryInline(admin.StackedInline) :
+class StoryInline (admin.StackedInline) : 
     model = Story
+    exclude = ["id"]
+    extra = 0
+
+class AchievementsInline (admin.StackedInline) : 
+    model = Achievements
+    exclude = ["id"]
+    extra = 0
+
+class OrderGuideTitleInline (admin.StackedInline) : 
+    model = OrderGuideTitle
+    exclude = ["id"]
+    extra = 0
+
+class OrderingGuideInline (admin.TabularInline) : 
+    model = OrderingGuide
+    exclude = ["id"]
+    extra = 0
+
+class FeqTitleInline (admin.StackedInline) : 
+    model = FeqTitle 
+    exclude = ["id"]
+    extra = 0
+
+class FeqInline (admin.TabularInline) : 
+    model = Feq
+    exclude = ["id"]
+    extra = 0
+
+@admin.register(AboutUs)
+class AboutUsAdmin (admin.ModelAdmin) :
+    exclude = ["id"]
+    inlines = [StoryInline,AchievementsInline,OrderGuideTitleInline,OrderingGuideInline,FeqTitleInline,FeqInline]
+
+
+# مدل ارتباط با ما
+
+class ContactTitleInline (admin.StackedInline) : 
+    model = ContactTitle
     extra = 0
     exclude = ["id"]
 
-class OrderingGuideInline(admin.StackedInline) : 
-    model = OrderingGuide
-    extra = 1
-    exclude = ["id"]
-
-class AchievementInline(admin.StackedInline) : 
-    model = Achievements
-    extra = 1
-    exclude = ["id"]
-
-class FeqInline(admin.StackedInline) : 
-    model = Feq
-    extra = 1
-    exclude = ["id"]
-
-class SocialInline(admin.StackedInline) : 
-    model = SocialContact
-    extra = 1
-    exclude = ["id"]
-
-class ContactItemInline(admin.StackedInline) : 
+class ContactItemInline (admin.TabularInline) : 
     model = ContactItem
-    extra = 1
+    extra = 0
     exclude = ["id"]
 
+class SocialTitleInline (admin.StackedInline) : 
+    model = SocialTitle
+    extra = 0
+    exclude = ["id"]
 
-@admin.register(Settings)
-class SettingsModelAdmin(admin.ModelAdmin) :
-    
-    inlines = [StoryInline,FeqInline,OrderingGuideInline,AchievementInline,SocialInline,ContactItemInline]
+class SocialItemInline (admin.TabularInline) : 
+    model = SocialContact
+    extra = 0
+    exclude = ["id"]
 
-# راهنمای سفارش
-@admin.register(OrderingGuide)
-class OrderingGuideModelAdmin(admin.ModelAdmin) : 
-    exclude = ["id","settings"]
-
-# سوالات متداول
-@admin.register(Feq)
-class FeqModelAdmin(admin.ModelAdmin) : 
-    exclude = ["id","settings"]
-
-# راه های ارتباطی
-@admin.register(ContactItem)
-class ContactAdminModel(admin.ModelAdmin) : 
-    exclude = ["id","settings"]
-
-# شبکه های اجتماعی
-@admin.register(SocialContact) 
-class SocialAdminModel(admin.ModelAdmin) : 
-    exclude = ["id","settings"]
+@admin.register(ContactUs)
+class ContactUsAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+    inlines = [ContactTitleInline,ContactItemInline,SocialTitleInline,SocialItemInline]

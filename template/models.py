@@ -26,6 +26,8 @@ class Menu (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
+    header = models.ForeignKey(Header,on_delete=models.CASCADE,related_name="menus")
+
     name = models.CharField(max_length=256,verbose_name="نام منو")
 
     def __str__(self) : 
@@ -75,7 +77,7 @@ class CommingSoon (models.Model) :
     
     class Meta : 
         verbose_name = "Comming Soon"
-        verbose_name_plural = "مدیرت Comming Soon"
+        verbose_name_plural = "مدیرت Comming Soon" 
 
 
 # مدل عنوان محصولات
