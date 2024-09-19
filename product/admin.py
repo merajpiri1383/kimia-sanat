@@ -1,5 +1,5 @@
 from django.contrib import admin
-from product.models import (Product,Category,UsageProduct,FeatureProduct,Standard
+from product.models import (Product,Category,UsageProduct,FeatureProduct,Standard,Count
             ,ImageProduct,Tag,Comment)
 
 # مدل کاربرد محصول
@@ -20,11 +20,16 @@ class ImageProductInline (admin.TabularInline) :
     extra = 1
     exclude = ["id"]
 
+class CountInline (admin.TabularInline) : 
+    model = Count
+    extra = 1 
+    exclude = ["id"]
+
 # مدل محصول
 @admin.register(Product)
 class ProductAdmin (admin.ModelAdmin) :
     exclude = ["id","slug","views"]
-    inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline]
+    inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline,CountInline]
 
 # مدل استاندارد
 @admin.register(Standard)
