@@ -30,7 +30,7 @@ urlpatterns = [
 
     path('template/',include("template.urls")),
 
-    path('profile/',include('profuser.urls')),
+    path('driver/',include('driver.urls')),
 
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
 

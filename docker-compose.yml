@@ -36,8 +36,6 @@ services :
       - DATABASE_USER=kimia_user
       - DATABASE_PASSWORD=kimia_password
       - DATABASE_HOST=db
-      - ALLOWED_HOSTS=localhost,ksparseh.com,www.kspareseh.com,cms.ksparseh.com,www.cms.ksparseh.com,127.0.0.1
-      - ALLOWED_ORIGINS=http://localhost,https://ksparseh.com,https://www.kspareseh.com,https://cms.ksparseh.com,https://www.cms.ksparseh.com
     depends_on : 
       - db
     volumes :

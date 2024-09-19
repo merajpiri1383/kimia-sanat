@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'home.apps.HomeConfig',
     'template.apps.TemplateConfig',
-    'profuser.apps.ProfuserConfig',
+    'driver.apps.DriverConfig',
     # external apps 
     'corsheaders',
     'rest_framework',

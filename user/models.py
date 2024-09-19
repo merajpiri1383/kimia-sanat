@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
-from profuser.models import Driver
+from driver.models import Driver
 from user.manager import UserManager
 from uuid import uuid4
 from random import randint
