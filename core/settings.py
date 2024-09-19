@@ -27,7 +27,7 @@ CSRF_TRUSTED_ORIGINS = [
    'http://127.0.0.1:3000',
    'https://ksparseh.com',
    'https://www.kspareseh.com',
-   'https://cms.kspazrseh.com',
+   'https://cms.kspareseh.com',
    'https://www.cms.ksparseh.com',
    'https://cms.ksparseh.com'
 ]
@@ -36,7 +36,7 @@ CORS_ALLOWED_ORIGINS = [
    'http://127.0.0.1:3000',
    'https://ksparseh.com',
    'https://www.kspareseh.com',
-   'https://cms.kspazrseh.com',
+   'https://cms.kspareseh.com',
    'https://www.cms.ksparseh.com',
    'https://cms.ksparseh.com'
 ]
@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'template.apps.TemplateConfig',
     'driver.apps.DriverConfig',
+    'order.apps.OrderConfig',
     # external apps 
     'corsheaders',
     'rest_framework',

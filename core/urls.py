@@ -32,6 +32,8 @@ urlpatterns = [
 
     path('driver/',include('driver.urls')),
 
+    path('order/',include('order.urls')),
+
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
 
     re_path('^media/(?P<path>.*)$',serve,{'document_root' : settings.MEDIA_ROOT}),
