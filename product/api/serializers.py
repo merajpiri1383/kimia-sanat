@@ -68,7 +68,7 @@ class CountSerializer (serializers.ModelSerializer) :
 class ProductSerializer (serializers.ModelSerializer) :
     class Meta :
         model = Product
-        exclude = ["id","tags","views"]
+        exclude = ["id","views"]
 
     def to_representation(self,instance,**kwargs):
         context = super().to_representation(instance,**kwargs)

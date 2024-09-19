@@ -2,6 +2,7 @@ from django.db import models
 from uuid import uuid4
 from django_jalali.db.models import jDateField
 from utils.models import CommentBase
+from django.utils.text import slugify
 
 
 # مدل دسته بندی
@@ -10,6 +11,8 @@ class Category(models.Model)  :
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
     name = models.CharField(max_length=256,unique=True,verbose_name="نام دسته بندی")
+
+    slug = models.SlugField(null=True,blank=True,unique=True)
 
     cover = models.ImageField(upload_to="category/cover/",verbose_name="کاور دسته بندی")
 
@@ -20,6 +23,10 @@ class Category(models.Model)  :
 
     def __str__(self):
         return str(self.name)
+    
+    def save(self,**args) : 
+        self.slug = slugify(self.name,allow_unicode=True)
+        return super().save(**args)
 
 
 # مدل پروژه
@@ -37,6 +44,8 @@ class Project(models.Model) :
     video = models.FileField(upload_to="project/video/",verbose_name='ویدیو پروژه')
 
     name = models.CharField(max_length=256,verbose_name="نام پروژه",unique=True)
+
+    slug = models.SlugField(null=True,unique=True,blank=True)
 
     description = models.TextField(verbose_name="توضیحات پروژه ")
 
@@ -59,6 +68,9 @@ class Project(models.Model) :
         verbose_name = "پروژه"
         verbose_name_plural = "پروژه ها"
 
+    def save(self,**kwargs) : 
+        self.slug = slugify(self.name,allow_unicode=True)
+        return super().save(**kwargs)
 
 
 # مدل تصویر پژوژه

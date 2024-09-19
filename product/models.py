@@ -50,25 +50,6 @@ class Category (models.Model) :
         return super().save(*args,**kwargs)
 
 
-class Tag (models.Model) :
-
-    id = models.UUIDField(default=uuid4, primary_key=True, unique=True)
-
-    name = models.CharField(max_length=256,verbose_name="نام برچسب")
-
-    slug = models.SlugField(null=True,blank=True,allow_unicode=True)
-
-    def __str__(self):
-        return str(self.name)
-
-    def save(self,**kwargs):
-        self.slug = slugify(self.name,allow_unicode=True)
-        return super().save(**kwargs)
-
-    class Meta :
-        verbose_name = "برچسب"
-        verbose_name_plural = 'برچسب ها'
-
 
 types_of_product = [
     ('pasty','خمیری'),
@@ -104,8 +85,6 @@ class Product (models.Model) :
 
     catalog_url = models.URLField(verbose_name='آدرس کاتالوگ',null=True,blank=True)
 
-    tags = models.ManyToManyField(Tag,verbose_name="برچسب ها",blank=True)
-
     maintain_description = models.TextField(verbose_name="روش نگهداری محصول",null=True,blank=True)
 
     consumtion_order = models.TextField(verbose_name="روش مصرف",blank=True,null=True)
@@ -130,7 +109,7 @@ class Product (models.Model) :
         return f"{self.category} - {self.title}"
 
     def save(self,**kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify(self.title,allow_unicode=True)
         return super().save(**kwargs)
 
 # مدل مقدار 

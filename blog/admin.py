@@ -18,7 +18,7 @@ class CategoryAdmin(admin.ModelAdmin) :
 class BlogAdmin(admin.ModelAdmin) :
     inlines = [ModuleStackInline]
     exclude = ["id","slug"]
-    list_filter = ["is_published","created_date","tags","author"]
+    list_filter = ["is_published","created_date","author"]
     search_fields = ["title","author","description"]
 
 

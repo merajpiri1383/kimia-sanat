@@ -11,7 +11,7 @@ from drf_yasg import openapi
 
 
 # صفحه دسته بندی ها
-class CategoriePageAPIView(ListAPIView) :
+class CategoriePageAPIView(ListAPIView) : 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = ProjectPagination
@@ -35,9 +35,9 @@ class ProjectPageAPIView(APIView) :
             404 : "project not found with this id ."
         }
     )
-    def get(self,request,project_id):
+    def get(self,request,project_slug):
         try :
-            object = Project.objects.get(id=project_id)
+            object = Project.objects.get(slug=project_slug)
         except :
             return Response({'detail' : 'project not found .'},status.HTTP_404_NOT_FOUND)
 
@@ -55,9 +55,9 @@ class CategoryProjectsAPIView(APIView) :
             404 : "category not found ."
         }
     )
-    def get(self,request,category_id):
+    def get(self,request,category_slug):
         try :
-            object = Category.objects.get(id=category_id)
+            object = Category.objects.get(slug=category_slug)
         except :
             return Response({'detail': 'category not found .'},status.HTTP_404_NOT_FOUND)
         serializer = ProjectSerializer(object.projects.all(),many=True,context={'request' : request})
@@ -87,13 +87,13 @@ class SendCommentProjectAPIView(APIView) :
             400 : "bad data"
         }
     )
-    def post(self,request,project_id):
+    def post(self,request,project_slug):
         try :
-            project = Project.objects.get(id=project_id)
+            project = Project.objects.get(slug=project_slug)
         except :
             return Response({'detail' : 'project not found .'},status.HTTP_404_NOT_FOUND)
         data = request.data.copy()
-        data["project"] = project_id
+        data["project"] = project.id
         serializer = CommentSendSerializer(data=data)
         if serializer.is_valid() :
             serializer.save()

@@ -4,7 +4,6 @@ from django.utils.text import slugify
 from django_jalali.db.models import jDateField
 from django.core.exceptions import ValidationError
 from utils.models import CommentBase
-from product.models import Tag
 
 # مدل دسته بدی
 class Category (models.Model) :
@@ -48,8 +47,6 @@ class Blog (models.Model) :
     description = models.TextField(verbose_name="توضیحات مقاله")
 
     created_date = jDateField(null=True,verbose_name="تاریخ انتشار",blank=True)
-
-    tags = models.ManyToManyField(Tag,verbose_name="برچسب ها",blank=True)
 
     cover = models.ImageField(upload_to="blog/cover",verbose_name="کاور بلاگ")
 
