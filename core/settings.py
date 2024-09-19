@@ -29,6 +29,7 @@ CSRF_TRUSTED_ORIGINS = [
    'https://www.kspareseh.com',
    'https://cms.kspazrseh.com',
    'https://www.cms.ksparseh.com',
+   'https://cms.ksparseh.com'
 ]
 CORS_ALLOWED_ORIGINS = [
    'http://localhost:3000',
@@ -37,6 +38,7 @@ CORS_ALLOWED_ORIGINS = [
    'https://www.kspareseh.com',
    'https://cms.kspazrseh.com',
    'https://www.cms.ksparseh.com',
+   'https://cms.ksparseh.com'
 ]
 # Application definition
 
