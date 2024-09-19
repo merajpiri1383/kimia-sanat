@@ -147,7 +147,7 @@ class Count (models.Model) :
     count = models.CharField(max_length=256,verbose_name="مقدار")
 
     def __str__(self) : 
-        return str(self.count)
+        return f"{self.product.title} -- {self.count}"
     
     class Meta : 
         verbose_name = "مقدار محصول"

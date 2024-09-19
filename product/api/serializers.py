@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from product.models import (Product,Category,Standard,FeatureProduct,UsageProduct
-            ,ImageProduct,Comment)
+            ,ImageProduct,Comment,Count)
 
 
 # مدل تصویر
@@ -47,6 +47,20 @@ class CommentSerializer (serializers.ModelSerializer) :
         context["created_date"] = instance.created.strftime("%Y-%m-%d")
         context["created_time"] = instance.created.strftime("%H:%M:%S")
         return context
+    
+# مدل مقدار محصول
+class CountSerializer (serializers.ModelSerializer) : 
+    class Meta : 
+        model = Count
+        exclude = ["product"]
+    
+    def to_representation(self, instance):
+        context = super().to_representation(instance)
+        context["product"] = {
+            'id' : instance.product.id,
+            'name' : instance.product.title
+        }
+        return context
 
 
 #  مدل محصول به همراه جزییات
@@ -63,6 +77,10 @@ class ProductSerializer (serializers.ModelSerializer) :
             instance.images.all(),
             many=True,
             context=self.context
+        ).data
+        context["counts"] = CountSerializer(
+            instance.counts.all(),
+            many=True
         ).data
         context["category"] = CategorySerializer(instance.category).data
         return context

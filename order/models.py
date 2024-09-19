@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from product.models import Product
+from product.models import Count
 from django_jalali.db.models import jDateTimeField
 from uuid import uuid4
 
@@ -26,6 +26,12 @@ class Order (models.Model) :
         to = get_user_model(),
         on_delete = models.CASCADE,
         related_name = "orders"
+    )
+
+    products = models.ManyToManyField(
+        to = Count,
+        blank=True,
+        verbose_name="محصولات"
     )
 
     is_paid =models.BooleanField(default=False,verbose_name="پرداخت شده")
