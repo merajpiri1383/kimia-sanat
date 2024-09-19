@@ -30,6 +30,8 @@ urlpatterns = [
 
     path('template/',include("template.urls")),
 
+    path('profile/',include('profuser.urls')),
+
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
 
     re_path('^media/(?P<path>.*)$',serve,{'document_root' : settings.MEDIA_ROOT}),

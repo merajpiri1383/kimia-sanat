@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
+from profuser.models import Driver
 from user.manager import UserManager
 from uuid import uuid4
 from random import randint
@@ -52,6 +53,8 @@ class User (AbstractBaseUser,PermissionsMixin) :
     is_legal = models.BooleanField(default=False,verbose_name="حقوقی")
 
     otp_code = models.SlugField(max_length=5,verbose_name="کد تایید",null=True,blank=True)
+
+    drivers = models.ManyToManyField(to=Driver,blank=True,verbose_name="راننده های کاربر")
 
     USERNAME_FIELD = "phone"
     REQUIRED_FIELDS = []

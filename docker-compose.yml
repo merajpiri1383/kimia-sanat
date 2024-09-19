@@ -7,7 +7,7 @@ services :
         - "5432:5432"
     environment : 
       - POSTGRES_HOST_AUTH_METHOD=trust
-      - POSTGRES_DB=kimia_db
+      - POSTGRES_DB=kimia_db 
       - POSTGRES_USER=kimia_user
       - POSTGRES_PASSWORD=kimia_password
     # volumes : 

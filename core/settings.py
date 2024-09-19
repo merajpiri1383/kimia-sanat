@@ -15,10 +15,29 @@ SECRET_KEY = 'django-insecure-*^60c)fy-fd=$@38z4*5t=wnfl_(^1kfn_ja6n^+m7y&a=6qd5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG",False)
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
-CSRF_TRUSTED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
-CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
-
+ALLOWED_HOSTS = [
+    "localhost",
+    "www.kspareseh.com",
+    "cms.ksparseh.com",
+    "www.cms.ksparseh.com",
+    "127.0.0.1",
+]
+CSRF_TRUSTED_ORIGINS = [
+   'http://localhost:3000',
+   'http://127.0.0.1:3000',
+   'https://ksparseh.com',
+   'https://www.kspareseh.com',
+   'https://cms.kspazrseh.com',
+   'https://www.cms.ksparseh.com',
+]
+CORS_ALLOWED_ORIGINS = [
+   'http://localhost:3000',
+   'http://127.0.0.1:3000',
+   'https://ksparseh.com',
+   'https://www.kspareseh.com',
+   'https://cms.kspazrseh.com',
+   'https://www.cms.ksparseh.com',
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -36,6 +55,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'home.apps.HomeConfig',
     'template.apps.TemplateConfig',
+    'profuser.apps.ProfuserConfig',
     # external apps 
     'corsheaders',
     'rest_framework',
