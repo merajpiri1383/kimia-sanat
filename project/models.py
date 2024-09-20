@@ -108,3 +108,38 @@ class Comment (CommentBase) :
     class Meta :
         verbose_name = "کامنت"
         verbose_name_plural = "کامنت های پروژه"
+
+class ProjectsPage (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    background_title = models.CharField(max_length=256,verbose_name="عنوان بک گراند",null=True,blank=True)
+
+    background_image = models.ImageField(upload_to="project/background/",verbose_name="بک گراند",null=True,blank=True)
+
+    project_card_title = models.CharField(
+        max_length=256,
+        verbose_name="عنوان کادر پروژه ها",
+        null=True,
+        blank=True,
+    )
+
+    project_card_sub_title = models.CharField(
+        max_length=256,
+        null=True,
+        blank=True,
+        verbose_name="عنوان زیر کادر پروژه ها"
+    )
+
+    project_card_icon = models.ImageField(
+        max_length=256,
+        null=True,
+        blank=True
+    )
+
+    class Meta : 
+        verbose_name = "صفحه پروژه ها"
+        verbose_name_plural = "مدیرت صفحه پروژه ها"
+    
+    def __str__(self) : 
+        return "صفحه پروژه ها"

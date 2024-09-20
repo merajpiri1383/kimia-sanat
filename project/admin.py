@@ -1,5 +1,5 @@
 from django.contrib import admin
-from project.models import Category,Project,ProjectImage,Comment
+from project.models import Category,Project,ProjectImage,Comment,ProjectsPage
 
 # تصاویر پروژه
 class ProjectImageInline(admin.TabularInline) :
@@ -10,7 +10,7 @@ class ProjectImageInline(admin.TabularInline) :
 # مدل دسته بندی
 @admin.register(Category)
 class CategoryAdminModel(admin.ModelAdmin) :
-    exclude = ["id"]
+    exclude = ["id","slug"]
 
 # مدل پروژه
 @admin.register(Project)
@@ -25,3 +25,9 @@ class CommentAdmin (admin.ModelAdmin) :
     exclude = ["id"]
     search_fields = ["project","email","name",'description']
     list_filter = ["project","is_valid","created","reply_to"]
+
+
+# صفحه پروژه ها 
+@admin.register(ProjectsPage)
+class ProjectsPageAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
