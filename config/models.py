@@ -45,6 +45,26 @@ class Story(models.Model) :
     
     def __str__(self) : 
         return str(self.text)
+    
+class StoryItem (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    story = models.ForeignKey(
+        to = Story,
+        on_delete = models.CASCADE,
+        related_name = "items",
+    )
+
+    value = models.CharField(max_length=256,verbose_name="مقدار")
+
+    def __str__ (self) : 
+        return str (self.value)
+    
+    class Meta : 
+        verbose_name = "آیتم داستان"
+        verbose_name_plural = "آیتم های داستان"
+
 
 # مدل دستاورد ها 
 class Achievements(models.Model) : 

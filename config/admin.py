@@ -1,12 +1,21 @@
 from django.contrib import admin
 from config.models import (OrderingGuide,Achievements,Feq,Story,ContactItem,SocialContact,AboutUs,ContactUs
-                        ,ContactTitle,FeqTitle,OrderGuideTitle,SocialTitle)
+                        ,ContactTitle,FeqTitle,OrderGuideTitle,SocialTitle,StoryItem)
+
+from nested_inline.admin import NestedTabularInline,NestedModelAdmin,NestedStackedInline
+
 # مدل درباره ما 
 
-class StoryInline (admin.StackedInline) : 
+class StoryItemInline (NestedTabularInline) : 
+    model = StoryItem
+    exclude = ["id"]
+    extra = 0
+
+class StoryInline (NestedStackedInline) : 
     model = Story
     exclude = ["id"]
     extra = 0
+    inlines = [StoryItemInline]
 
 class AchievementsInline (admin.StackedInline) : 
     model = Achievements
@@ -33,8 +42,9 @@ class FeqInline (admin.TabularInline) :
     exclude = ["id"]
     extra = 0
 
+
 @admin.register(AboutUs)
-class AboutUsAdmin (admin.ModelAdmin) :
+class AboutUsAdmin (NestedModelAdmin) :
     exclude = ["id"]
     inlines = [StoryInline,AchievementsInline,OrderGuideTitleInline,OrderingGuideInline,FeqTitleInline,FeqInline]
 

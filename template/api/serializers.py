@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,Menu,SubMenu,CategoryFooter)
+from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,
+                    Menu,SubMenu,CategoryFooter,CommingSoon)
 
 # مدل فوتر 
 
@@ -66,3 +67,11 @@ class HeaderSerializer (serializers.ModelSerializer) :
         context = super().to_representation(instance)
         context["menus"] = MenuSerializer(instance.menus.all(),many=True).data
         return context
+    
+# comming soon
+
+class CommingSoonSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = CommingSoon
+        fields = ["title","background_image","is_active","time"]

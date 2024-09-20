@@ -1,15 +1,25 @@
 from rest_framework import serializers
 from config.models import (ContactItem,ContactTitle,ContactUs,SocialContact,SocialTitle,AboutUs,Achievements
-                           ,Feq,FeqTitle,OrderGuideTitle,OrderingGuide,Story)
+                           ,Feq,FeqTitle,OrderGuideTitle,OrderingGuide,Story,StoryItem)
 from project.api.serializers import ProjectSimpleSerializer
 
 
 # مدل درباره ما 
 
+class StoryItemSerializer (serializers.ModelSerializer) : 
+    class Meta : 
+        model = StoryItem
+        exclude = ["id","story"]
+
 class StorySerializer (serializers.ModelSerializer) : 
     class Meta : 
         model = Story
         exclude = ["id","about"]
+
+    def to_representation(self,instance) : 
+        context = super().to_representation(instance)
+        context["items"] = StoryItemSerializer(instance.items.all(),many=True).data
+        return context
 
 class AchievementsSerializer (serializers.ModelSerializer) : 
     class Meta : 
