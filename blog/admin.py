@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blog.models import Blog,Category,Module,Comment
+from blog.models import Blog,Category,Module,Comment,BlogsPage
 
 class ModuleStackInline (admin.StackedInline) :
 
@@ -28,3 +28,9 @@ class CommentAdmin (admin.ModelAdmin) :
     exclude = ["id"]
     search_fields = ["blog","email","name",'description']
     list_filter = ["blog","is_valid","created","reply_to"]
+
+
+# مدل صفحه بلاگ
+@admin.register(BlogsPage)
+class BlogsPageAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]

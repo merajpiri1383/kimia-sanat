@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 # models
-from blog.models import Category,Blog,Comment
+from blog.models import Category,Blog,Comment,BlogsPage
 # serializers
-from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,
-                CategorySerializer,CommentReplySerializer,CommentSerializer)
+from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,BlogsPageSerializer,
+                CategorySerializer,CommentReplySerializer,CommentSerializer) 
 # swagger
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -28,6 +28,10 @@ class BlogListAPIView(APIView) :
         except PageNotAnInteger :
             blogs = paginator.page(1)
         data = {
+            "page_titles" : BlogsPageSerializer(
+                BlogsPage.objects.first(),
+                context={'request' : request}
+            ).data,
             "blogs" : BlogSimpleSerializer(blogs,many=True,context={"request":request}).data,
             "count" : paginator.count,
             "not_published" : BlogSimpleSerializer(
@@ -146,3 +150,40 @@ class ReplyCommentAPIView(APIView) :
             return Response(serializer.data,status.HTTP_201_CREATED)
         else :
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+# صفحه داخلی دسته بندی
+
+class CategoryAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_description="صفحه داخلی دسته بندی",
+        operation_summary="صفحه دسته بندی"
+    )
+    def get(self,request,category_slug) : 
+        try :
+            category = Category.objects.get(slug=category_slug)
+        except :
+            return Response({'detail':'category not found .'},status.HTTP_404_NOT_FOUND)
+        paginator = Paginator(category.blogs.filter(is_published=True).order_by("-created_date"),per_page=10)
+        try :
+            blogs = paginator.page(request.GET.get("page",1))
+        except EmptyPage : 
+            blogs = paginator.page(1)
+        except PageNotAnInteger : 
+            blogs = paginator.page(1)
+        data = {
+            'page_titles' : BlogsPageSerializer(BlogsPage.objects.first(),context={'request':request}).data,
+            'categories' : CategorySerializer(Category.objects.all()[:6],many=True).data,
+            'blogs' : BlogSimpleSerializer(
+                blogs,
+                many=True,
+                context={'request' : request}
+            ).data,
+            'pages' : paginator.num_pages
+        }
+        if blogs.has_next() : 
+            data["next_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={blogs.next_page_number()}"
+        if blogs.has_previous() : 
+            data["previous_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={blogs.previous_page_number()}"
+        return Response(data,status.HTTP_200_OK)

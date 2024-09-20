@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from blog.models import Blog,Module,Category,Comment
+from blog.models import Blog,Module,Category,Comment,BlogsPage
 
 # مدل ماژول
-class ModuleSerializer (serializers.ModelSerializer) :
+class ModuleSerializer (serializers.ModelSerializer) : 
 
     class Meta :
         model = Module
@@ -85,3 +85,11 @@ class CommentSerializer (serializers.ModelSerializer) :
         context["created_date"] = instance.created.strftime("%Y-%m-%d")
         context["created_time"] = instance.created.strftime("%H:%M:%S")
         return context
+    
+
+# مدل صفحه بلاگ
+class BlogsPageSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = BlogsPage
+        exclude = ["id"]
