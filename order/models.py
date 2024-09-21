@@ -3,6 +3,11 @@ from django.contrib.auth import get_user_model
 from product.models import Count
 from django_jalali.db.models import jDateTimeField
 from uuid import uuid4
+from django_jalali.db.models import jDateTimeField
+from django.core.exceptions import ValidationError
+import re
+
+number_regex = re.compile("^[0-9]{8,}$")
 
 
 delivery_times = [
@@ -34,7 +39,7 @@ class Order (models.Model) :
         verbose_name="محصولات"
     )
 
-    is_paid =models.BooleanField(default=False,verbose_name="پرداخت شده")
+    is_send =models.BooleanField(default=False,verbose_name="ارسال شده")
 
     is_valid = models.BooleanField(default=False,verbose_name="تایید شده")
 
@@ -62,3 +67,59 @@ class Order (models.Model) :
     class Meta : 
         verbose_name = 'سفارش'
         verbose_name_plural = 'سفارش ها'
+
+
+
+# مدل قوانین 
+class Rule (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    text = models.TextField(verbose_name="متن")
+
+    def __str__ (self) : 
+        return "قانون"
+    
+    class Meta : 
+        verbose_name ="قانون"
+        verbose_name_plural = 'قوانین و مقررات'
+
+
+# مدل فیش واریزی
+
+class PaySlip (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    order = models.ForeignKey(
+        to = Order,
+        on_delete = models.CASCADE,
+        related_name = "pay_slips"
+    )
+
+    name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی واریز کننده")
+
+    credit_card_number = models.SlugField(verbose_name="شماره حساب")
+
+    image = models.ImageField(
+        upload_to="order/slip/",
+        verbose_name="تصویر فیش واریزی"
+    )
+
+    iban = models.SlugField(verbose_name="شماره شبا")
+
+    time = jDateTimeField(verbose_name="تاریخ واریز")
+
+    def __str__ (self) : 
+        return str(self.name)
+    
+    class Meta : 
+        verbose_name = "فیش واریزی"
+        verbose_name_plural = "فیش های واریزی"
+
+    def clean(self) : 
+        if not number_regex.findall(self.iban) : 
+            raise ValidationError("iban must be number and at least 8 character .")
+        
+        if not number_regex.findall(self.credit_card_number) : 
+            raise  ValidationError("creadit card number must be number and at least 8 character .")

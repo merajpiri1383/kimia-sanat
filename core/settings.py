@@ -31,16 +31,18 @@ CSRF_TRUSTED_ORIGINS = [
    'https://www.cms.ksparseh.com',
    'https://cms.ksparseh.com'
 ]
-CORS_ALLOWED_ORIGINS = [
-   'http://localhost:3001',
-   'http://127.0.0.1:3001',
-   'https://ksparseh.com',
-   'https://www.ksparseh.com',
-   'https://cms.ksparseh.com',
-   'https://www.cms.ksparseh.com',
-   'https://cms.ksparseh.com'
-]
+# CORS_ALLOWED_ORIGINS = [
+#    'http://localhost:3001',
+#    'http://127.0.0.1:3001',
+#    'https://ksparseh.com',
+#    'https://www.ksparseh.com',
+#    'https://cms.ksparseh.com',
+#    'https://www.cms.ksparseh.com',
+#    'https://cms.ksparseh.com'
+# ]
 # Application definition
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',

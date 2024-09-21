@@ -7,5 +7,7 @@ urlpatterns = [
 
     path('<order_id>/',views.OrderAPIView.as_view(),name="order-detail"),
 
+    path('<order_id>/send-slip/',views.SendPaySlipAPIView.as_view(),name="send-slip"),
+
     path('product/<product_count_id>/',views.OrderProductAPIView.as_view(),name="order-product"),
 ]
