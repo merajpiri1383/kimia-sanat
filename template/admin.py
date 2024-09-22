@@ -2,7 +2,7 @@ from django.contrib import admin
 from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
                             Header,Slider,ImageSlider,FirstPageContent,License,Footer,FooterLink,PhoneFooter,SocialFooter
-                            ,AchievementCardItem)
+                            ,AchievementCardItem,Consult)
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
 
@@ -123,3 +123,9 @@ class CategoryFooterInline (admin.TabularInline) :
 class FooterAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
     inlines= [FooterLinkInline,SocialFooterInline,PhoneFooterInline,CategoryFooterInline]
+
+
+# درخواست های مشاوره
+@admin.register(Consult)
+class ConsultAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]

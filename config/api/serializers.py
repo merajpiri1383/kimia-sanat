@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from config.models import (ContactItem,ContactTitle,ContactUs,SocialContact,SocialTitle,AboutUs,Achievements
-                           ,Feq,FeqTitle,OrderGuideTitle,OrderingGuide,Story,StoryItem,Location)
+                           ,Feq,FeqTitle,OrderGuideTitle,OrderingGuide,Story,StoryItem,Location,ContactConsult)
 from project.api.serializers import ProjectSimpleSerializer
-
+import re
+from rest_framework.exceptions import ValidationError
 
 # مدل درباره ما 
 
@@ -96,7 +97,7 @@ class SocialTitleSerializer (serializers.ModelSerializer) :
         exclude = ["id","contact"]
 
 class SocialContactSerializer (serializers.ModelSerializer) : 
-    class Meta : 
+    class Meta :  
         model = SocialContact
         exclude = ["id","contact"]
 
@@ -129,3 +130,18 @@ class ContactUsSerializer (serializers.ModelSerializer) :
         except : 
             context["location"] = {}
         return context 
+    
+
+# مدل فرم ارتباط با ما 
+
+phone_regex = re.compile("^0[0-9]{10}$")
+class ConstactConsultSerializer (serializers.ModelSerializer) :
+
+    class Meta : 
+        model = ContactConsult
+        fields = "__all__"
+    
+    def validate(self,attrs) : 
+        if not phone_regex.findall(attrs["phone"]) :
+            raise ValidationError({'phone' : 'invalid phone number .'})
+        return super().validate(attrs)

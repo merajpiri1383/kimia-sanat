@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'nested_inline',
+    'django_summernote',
 ]
 
 MIDDLEWARE = [

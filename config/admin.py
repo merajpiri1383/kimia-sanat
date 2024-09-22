@@ -1,6 +1,6 @@
 from django.contrib import admin
 from config.models import (OrderingGuide,Achievements,Feq,Story,ContactItem,SocialContact,AboutUs,ContactUs
-                        ,ContactTitle,FeqTitle,OrderGuideTitle,SocialTitle,StoryItem,Location)
+                        ,ContactTitle,FeqTitle,OrderGuideTitle,SocialTitle,StoryItem,Location,ContactConsult)
 
 from nested_inline.admin import NestedTabularInline,NestedModelAdmin,NestedStackedInline
 
@@ -80,3 +80,8 @@ class LocationInline (admin.StackedInline) :
 class ContactUsAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
     inlines = [ContactTitleInline,ContactItemInline,SocialTitleInline,SocialItemInline,LocationInline]
+
+
+@admin.register(ContactConsult)
+class ContactConsultAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]

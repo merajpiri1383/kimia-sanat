@@ -2,10 +2,12 @@ from rest_framework import serializers
 from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,
                     Menu,SubMenu,CategoryFooter,CommingSoon,BlogTitle,ProjectTitle,Comment,
                     AchievementCardItem,AchievementCard,AnswerQuestionTitle,ProductTitle,Slider,ImageSlider,
-                    FirstPageContent,License)
+                    FirstPageContent,License,Consult)
 from blog.api.serializers import BlogSimpleSerializer
 from project.api.serializers import CategorySerializer as ProjectCategorySerializer
 from product.api.serializers import CategorySerializer as ProductCategorySerializer 
+import re
+from rest_framework.exceptions import ValidationError
 
 # مدل فوتر 
 
@@ -194,7 +196,7 @@ class LicenseSerializer (serializers.ModelSerializer) :
     class Meta : 
         model = License
         exclude = ["id","content_page"]
-
+ 
 class FirstPageSerilizer (serializers.ModelSerializer) : 
     class Meta : 
         model = FirstPageContent
@@ -208,3 +210,19 @@ class FirstPageSerilizer (serializers.ModelSerializer) :
             context=self.context
         ).data
         return context
+    
+
+# مدل درخواست مشاوره
+regex_phone = re.compile("^0[0-9]{10}$")
+
+class ConsultSerializer (serializers.ModelSerializer) : 
+    
+    class Meta : 
+        model = Consult
+        fields = "__all__"
+    
+    def validate(self,attrs) : 
+
+        if not regex_phone.findall(attrs["phone"]) : 
+            raise ValidationError({'phone' : 'invalid phone number .'})
+        return super().validate(attrs)
