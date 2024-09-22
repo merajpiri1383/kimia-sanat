@@ -26,7 +26,7 @@ class Category (models.Model) :
         return str(self.name)
 
 
-# مدل بلاگ
+# مدل بلاگ 
 class Blog (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
