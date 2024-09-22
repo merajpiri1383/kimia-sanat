@@ -10,7 +10,7 @@ def create_admin_user(sender,**kwargs) :
         user = get_user_model().objects.get(phone="09123456789")
     except : 
         user = get_user_model().objects.create(
-            phone = "09123456789"
+            phone = "09123456789",
             is_active=True,
             is_staff=True,
             is_superuser = True

@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-*^60c)fy-fd=$@38z4*5t=wnfl_(^1kfn_ja6n^+m7y&a=6qd5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG",False)
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS = []
 CSRF_TRUSTED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
 CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
 
@@ -77,14 +77,21 @@ AUTH_USER_MODEL = "user.User"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv("DATABASE_NAME"),
+#         'USER' : os.getenv("DATABASE_USER"),
+#         'PASSWORD' : os.getenv('DATABASE_PASSWORD'),
+#         'PORT' : os.getenv('DATABASE_PORT',5432),
+#         'HOST' : os.getenv('DATABASE_HOST'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DATABASE_NAME"),
-        'USER' : os.getenv("DATABASE_USER"),
-        'PASSWORD' : os.getenv('DATABASE_PASSWORD'),
-        'PORT' : os.getenv('DATABASE_PORT',5432),
-        'HOST' : os.getenv('DATABASE_HOST'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
