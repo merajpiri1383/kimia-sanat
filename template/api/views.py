@@ -3,9 +3,11 @@ from rest_framework import status
 from rest_framework.response import Response 
 from template.api.serializers import (HeaderSerializer,FooterSerializer,CommingSoonSerializer,BlogTtileSerializer,
         ProjectTitleSerializer,AchievementCardSerializer,AnswerQuestionTitleSerializer,ProductTitleSerializer,
-        SliderSerializer,FirstPageSerilizer)
+        SliderSerializer,FirstPageSerilizer,ConsultSerializer)
 from template.models import (Header,Footer,CommingSoon,BlogTitle,ProjectTitle,AchievementCard,
         AnswerQuestionTitle,ProductTitle,Slider,FirstPageContent)
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 # هدر و فوتر 
 class TemplateAPIView (APIView) : 
@@ -24,7 +26,7 @@ class TemplateAPIView (APIView) :
 
 # صفحه اصلی
 class HomePageAPIView (APIView) : 
-
+ 
     def get(self,request) : 
         data = {
             'slider' : SliderSerializer(Slider.objects.first(),context={'request' : request}).data,
@@ -42,3 +44,20 @@ class HomePageAPIView (APIView) :
             'blog_card' : BlogTtileSerializer(BlogTitle.objects.first(),context={"request":request}).data
         }
         return Response(data,status.HTTP_200_OK)
+    
+
+
+# ارسال فرم مشاوره
+class SendConsultAPIView(APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="ارسال درخواست مشاوره",
+        operation_description="ارسال درخواست مشاوره در صفحه هوم"
+    )
+    def post(self,request) : 
+        serializer = ConsultSerializer(data=request.data)
+        if serializer.is_valid() : 
+            serializer.save()
+            return Response(serializer.data,status.HTTP_200_OK)
+        else :
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)

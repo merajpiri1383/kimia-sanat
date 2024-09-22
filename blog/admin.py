@@ -1,11 +1,16 @@
 from django.contrib import admin
 from blog.models import Blog,Category,Module,Comment,BlogsPage
+from django_summernote.widgets import SummernoteWidget
+from django.db import models
 
 class ModuleStackInline (admin.StackedInline) :
 
     model = Module
     extra = 1
     exclude = ["id"]
+    formfield_overrides = {
+        models.TextField : {'widget' : SummernoteWidget}
+    }
 
 # مدل دسته بندی
 @admin.register(Category)

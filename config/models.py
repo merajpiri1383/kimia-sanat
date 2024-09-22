@@ -246,7 +246,7 @@ class Location (models.Model) :
 
     id = models.UUIDField(unique=True,primary_key=True,default=uuid4)
 
-    contact = models.OneToOneField(ContactUs,on_delete=models.CASCADE,related_name="location")
+    contact = models.OneToOneField(ContactUs,on_delete=models.CASCADE,related_name="location") 
 
     title = models.CharField(max_length=256,verbose_name="عنوان کادر نقشه",null=True,blank=True)
 
@@ -274,3 +274,28 @@ class Location (models.Model) :
     class Meta : 
         verbose_name = "نقشه"
         verbose_name_plural = "مدیرت موقیعت مکانی"
+
+
+
+# فرم ارتباط با ما در صفحه ارتباط با ما 
+
+class ContactConsult (models.Model) : 
+
+    id = models.UUIDField(unique=True,primary_key=True,default=uuid4)
+
+    name = models.CharField(verbose_name="نام")
+    
+    department = models.CharField(max_length=256,verbose_name="دپارتمان")
+
+    phone = models.SlugField(verbose_name="شماره تلفن")
+
+    email = models.EmailField(verbose_name="ایمیل")
+
+    text = models.TextField(verbose_name="توضیحات")
+
+    def __str__(self) : 
+        return str (self.name)
+    
+    class Meta : 
+        verbose_name = "درخواست مشاوره "
+        verbose_name_plural = "درخواست های مشاوره صفحه ارتباط با ما"
