@@ -37,7 +37,8 @@ class BlogSimpleSerializer (serializers.ModelSerializer) :
         context = super().to_representation(instance,**kwargs)
         context["category"] = {
             "id" : instance.category.id,
-            "name" : instance.category.name
+            "name" : instance.category.name,
+            "slug" : instance.category.slug
         }
         return context
 

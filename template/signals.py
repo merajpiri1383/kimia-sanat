@@ -1,6 +1,6 @@
 from django.dispatch import receiver
 from django.db.models import signals
-from template.models import (AchievementTitle,AnswerQuestionTitle,BlogTitle,CommingSoon,Header,
+from template.models import (AchievementCard,AnswerQuestionTitle,BlogTitle,CommingSoon,Header,
                             FirstPageContent,ProductTitle,ProjectTitle,Slider)
 
 
@@ -21,10 +21,10 @@ def create_instances (sender,**kwargs) :
     if not header : 
         Header.objects.create()
     
-    achievements = AchievementTitle.objects.first()
+    achievements = AchievementCard.objects.first()
 
     if not achievements : 
-        AchievementTitle.objects.create()
+        AchievementCard.objects.create()
     
     answer = AnswerQuestionTitle.objects.first()
 

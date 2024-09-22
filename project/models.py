@@ -12,7 +12,7 @@ class Category(models.Model)  :
 
     name = models.CharField(max_length=256,unique=True,verbose_name="نام دسته بندی")
 
-    slug = models.SlugField(null=True,blank=True,unique=True)
+    slug = models.SlugField(null=True,blank=True,unique=True,allow_unicode=True)
 
     cover = models.ImageField(upload_to="category/cover/",verbose_name="کاور دسته بندی")
 
@@ -45,7 +45,7 @@ class Project(models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="نام پروژه",unique=True)
 
-    slug = models.SlugField(null=True,unique=True,blank=True)
+    slug = models.SlugField(null=True,unique=True,blank=True,allow_unicode=True)
 
     description = models.TextField(verbose_name="توضیحات پروژه ")
 

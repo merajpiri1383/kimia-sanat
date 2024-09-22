@@ -1,7 +1,8 @@
 from django.contrib import admin
-from template.models import ( AchievementTitle,Comment,BlogTitle,CommingSoon
+from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
-                            Header,Slider,ImageSlider,FirstPageContent,License,Footer,FooterLink,PhoneFooter,SocialFooter)
+                            Header,Slider,ImageSlider,FirstPageContent,License,Footer,FooterLink,PhoneFooter,SocialFooter
+                            ,AchievementCardItem)
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
 
@@ -86,9 +87,15 @@ class AnswerQuestionTitleAdmin (admin.ModelAdmin) :
     exclude = ['id']
 
 # مدیرت عنوان دستاورد ها
-@admin.register(AchievementTitle)
+class AchievementCardItemInline (admin.TabularInline) : 
+    model = AchievementCardItem
+    extra = 0
+    exclude = ["id"]
+
+@admin.register(AchievementCard)
 class AchievementTitleAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
+    inlines = [AchievementCardItemInline]
 
 # فوتر 
 

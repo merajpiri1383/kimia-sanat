@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from config.models import (ContactItem,ContactTitle,ContactUs,SocialContact,SocialTitle,AboutUs,Achievements
-                           ,Feq,FeqTitle,OrderGuideTitle,OrderingGuide,Story,StoryItem)
+                           ,Feq,FeqTitle,OrderGuideTitle,OrderingGuide,Story,StoryItem,Location)
 from project.api.serializers import ProjectSimpleSerializer
 
 
@@ -74,6 +74,8 @@ class AboutUsSerializer (serializers.ModelSerializer) :
         except :
             context["feq_card"] = {}
         context["feq_items"] = FeqSerializer(instance.feqs,many=True).data
+        # try : 
+        #     print(instance.)
         return context
 
 
@@ -98,6 +100,10 @@ class SocialContactSerializer (serializers.ModelSerializer) :
         model = SocialContact
         exclude = ["id","contact"]
 
+class LocationSerializer (serializers.ModelSerializer) : 
+    class Meta : 
+        model = Location
+        exclude = ["id","contact"]
 
 class ContactUsSerializer (serializers.ModelSerializer) : 
     
@@ -117,4 +123,9 @@ class ContactUsSerializer (serializers.ModelSerializer) :
         except : 
             context["social_card"] = {}
         context["socials"] = SocialContactSerializer(instance.contact_social.all(),many=True,context=self.context).data
-        return context
+
+        try : 
+            context["location"] = LocationSerializer(instance.location,context=self.context).data
+        except : 
+            context["location"] = {}
+        return context 

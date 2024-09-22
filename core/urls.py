@@ -26,8 +26,6 @@ urlpatterns = [
 
     path('product/',include('product.urls')),
 
-    path('home/',include('home.urls')),
-
     path('template/',include("template.urls")),
 
     path('driver/',include('driver.urls')),

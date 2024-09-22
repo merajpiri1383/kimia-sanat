@@ -11,7 +11,7 @@ from config.models import ContactUs,AboutUs
 class AbouteusAPIView(APIView) : 
     
     @swagger_auto_schema(
-        operation_summary="about page",
+        operation_summary="about page", 
         operation_description="get info of aboute page"
     )
     def get(self,request) : 

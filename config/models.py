@@ -239,3 +239,38 @@ class SocialContact(models.Model) :
     class Meta : 
         verbose_name = "شبکه اجتماعی"
         verbose_name_plural = "شبکه های اجتماعی"
+
+
+# مدل نقشه 
+class Location (models.Model) : 
+
+    id = models.UUIDField(unique=True,primary_key=True,default=uuid4)
+
+    contact = models.OneToOneField(ContactUs,on_delete=models.CASCADE,related_name="location")
+
+    title = models.CharField(max_length=256,verbose_name="عنوان کادر نقشه",null=True,blank=True)
+
+    sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان کادر نقشه",null=True,blank=True)
+
+    icon = models.ImageField(upload_to="config/location/icon/",verbose_name="آیکون کادر نقشه",null=True,blank=True)
+
+    location_latitude = models.DecimalField(null=True,
+                                            blank=True,
+                                            max_digits=12,
+                                            decimal_places=4,
+                                            verbose_name="عرض جغرافیایی")
+
+    location_longitude = models.DecimalField(
+                                            null=True,
+                                            blank=True, 
+                                            verbose_name="طول جغرافیایی",
+                                            max_digits=12,
+                                            decimal_places=4
+                                            )
+
+    def __str__ (self) : 
+        return "نقشه"
+    
+    class Meta : 
+        verbose_name = "نقشه"
+        verbose_name_plural = "مدیرت موقیعت مکانی"

@@ -1,6 +1,10 @@
 from django.db import models
 from uuid import uuid4
 from django_jalali.db.models import jDateTimeField
+from blog.models import Blog
+from project.models import Category as CategoryProject
+from utils.models import Item
+from product.models import Category as CategoryProduct
 
 class Header (models.Model) : 
 
@@ -30,6 +34,10 @@ class Menu (models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="نام منو")
 
+    internal_url = models.URLField(null=True,blank=True,verbose_name="لینک داخلی")
+
+    external_url = models.URLField(null=True,blank=True,verbose_name="لینک خارجی")
+
     def __str__(self) : 
         return str(self.name)
     
@@ -50,6 +58,10 @@ class SubMenu (models.Model) :
     )
 
     name = models.CharField(max_length=256,verbose_name="زیر منو")
+
+    interal_url = models.URLField(null=True,blank=True,verbose_name="لینک داخلی ")
+
+    external_url = models.URLField(null=True,blank=True,verbose_name="لینک خارجی")
 
     def __str__(self) : 
         return str(self.name)
@@ -89,12 +101,16 @@ class ProductTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,null=True,blank=True,verbose_name="عنوان زیر محصولات")
 
+    icon = models.ImageField(upload_to="template/product-title/",null=True,blank=True,verbose_name="ایکون کادر")
+
+    categories = models.ManyToManyField(CategoryProduct,blank=True,verbose_name="دسته بندی های محصول")
+
     def __str__(self) : 
         return str(self.title)
     
     class Meta : 
-        verbose_name = "عنوان صفحه محصولات"
-        verbose_name_plural = "مدیرت عنوان صفحه محصولات"
+        verbose_name = "کادر محصولات"
+        verbose_name_plural = "مدیرت کادر محصولات"
 
 
 
@@ -107,6 +123,8 @@ class AnswerQuestionTitle (models.Model) :
     title = models.CharField(max_length=256,verbose_name="عنوان فرم تماس",null=True,blank=True)
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان پایینی فرم تماس",null=True,blank=True)
+
+    icon = models.ImageField(upload_to="template/answer/icon/",null=True,blank=True,verbose_name="ایکون کادر ")
 
     image = models.ImageField(verbose_name="تصویر کادر زرد",upload_to="answer/image/",null=True,blank=True)
 
@@ -129,7 +147,7 @@ class AnswerQuestionTitle (models.Model) :
 
 
 # مدل عنوان دستاورد های ما 
-class AchievementTitle (models.Model) : 
+class AchievementCard (models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
@@ -137,13 +155,22 @@ class AchievementTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان زیر ",null=True,blank=True)
 
+    icon = models.ImageField(upload_to="template/achievement/icon/",verbose_name="ایکون",null=True,blank=True)
+
     def __str__(self) : 
         return str(self.title)
     
     class Meta : 
-        verbose_name = "عنوان دستاورد"
-        verbose_name_plural = "مدیریت عنوان دستاورد ها"
+        verbose_name = "کادر دستاورد"
+        verbose_name_plural = "مدیریت کادر دستاورد ها"
 
+class AchievementCardItem (Item) :
+
+    achievement = models.ForeignKey(AchievementCard,on_delete=models.CASCADE,related_name="items")
+
+    class Meta : 
+        verbose_name = "دستاورد"
+        verbose_name_plural = 'دستاورد ها'
 
 # مدل عنوان مقاله 
 class BlogTitle (models.Model) :
@@ -154,12 +181,16 @@ class BlogTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان مقاله",null=True,blank=True)
 
+    icon = models.ImageField(upload_to="template/blog-title/icon/",verbose_name="ایکون کادر مقاله",null=True,blank=True)
+
+    blogs = models.ManyToManyField(Blog,blank=True,verbose_name=    "مقاله ها")
+
     def __str__(self) :
         return str(self.title)
     
     class Meta : 
-        verbose_name = "عنوان بلاگ"
-        verbose_name_plural = "مدیرت عنوان بلاگ"
+        verbose_name = "کادر بلاگ"
+        verbose_name_plural = "مدیرت کادر بلاگ"
 
 
 # مدل عنوان پروژه ها
@@ -173,12 +204,18 @@ class ProjectTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان کامنت مشتری ",null=True,blank=True)
 
+    comment_title = models.CharField(max_length=256,null=True,blank=True,verbose_name="عنوان کادر کامنت")
+
+    icon = models.ImageField(upload_to="template/project/icon/",verbose_name="ایکون کادر پروژه ها",null=True,blank=True)
+
+    category_projects = models.ManyToManyField(CategoryProject,blank=True,verbose_name="دسته بندی های پروژه")
+
     def __str__(self) : 
         return str(self.title)
     
     class Meta : 
-        verbose_name = " عنوان پروژه و زیر عنوان"
-        verbose_name_plural = "مدیرت عنوان پروژه ها"
+        verbose_name = " کادر پروژه"
+        verbose_name_plural = "مدیرت کادر پروژه ها"
 
 class Comment (models.Model) : 
 
@@ -218,8 +255,8 @@ class Slider (models.Model) :
         return "اسلایدر"
     
     class Meta : 
-        verbose_name = "اسلایدر صفحه هوم"
-        verbose_name_plural = "مدیرت اسلایدر صفحه هوم"
+        verbose_name = "اسلایدر"
+        verbose_name_plural = "مدیرت اسلایدر"
 
 
 
@@ -297,6 +334,7 @@ class Footer (models.Model) :
 
     text = models.TextField(null=True,blank=True,verbose_name="متن فوتر")
 
+    link_footer_title = models.CharField(max_length=256,verbose_name="نام عنوان لینک ها",null=True,blank=True)
 
     def __str__ (self) : 
         return "فوتر"
@@ -348,7 +386,9 @@ class FooterLink (models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="نام لینک")
 
-    url = models.URLField(verbose_name="آدرس")
+    internal_url = models.URLField(verbose_name="ادرس داخلی",null=True,blank=True)
+
+    external_url = models.URLField(verbose_name="ادرس خارجی",null=True,blank=True)
 
     def __str__ (self) : 
         return str(self.name)
