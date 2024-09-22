@@ -15,11 +15,28 @@ SECRET_KEY = 'django-insecure-*^60c)fy-fd=$@38z4*5t=wnfl_(^1kfn_ja6n^+m7y&a=6qd5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG",False)
 
-ALLOWED_HOSTS = []
-CSRF_TRUSTED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
-CORS_ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
+ALLOWED_HOSTS = [
+    "localhost",
+    "www.ksparseh.com",
+    "cms.ksparseh.com",
+    "www.cms.ksparseh.com",
+    "127.0.0.1",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+   'http://localhost:3001',
+   'http://127.0.0.1:3001',
+   'https://ksparseh.com',
+   'https://www.ksparseh.com',
+   'https://cms.ksparseh.com',
+   'https://www.cms.ksparseh.com',
+   'https://cms.ksparseh.com'
+]
+
 
 # Application definition
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,10 +51,14 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'product.apps.ProductConfig',
     'user.apps.UserConfig',
+    'template.apps.TemplateConfig',
+    'driver.apps.DriverConfig',
+    'order.apps.OrderConfig',
     # external apps 
     'corsheaders',
     'rest_framework',
     'drf_yasg',
+    'nested_inline',
 ]
 
 MIDDLEWARE = [
@@ -120,7 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'fa-ir'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 

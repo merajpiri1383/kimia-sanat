@@ -1,7 +1,10 @@
 from django.db import models
 from uuid import uuid4
 from django.utils.text import slugify
-from utils.models import Item
+from utils.models import Item,CommentBase
+from user.models import Ip
+from django_jalali.db.models import jDateField,jDateTimeField
+
 
 # مدل استاندارد
 class Standard (models.Model) :
@@ -31,6 +34,10 @@ class Category (models.Model) :
 
     slug = models.SlugField(null=True,blank=True,allow_unicode=True)
 
+    icon = models.ImageField(upload_to="product/category/icon/",verbose_name="آیکون")
+    
+    description = models.TextField(verbose_name="توضیحات دسته بندی")
+
     def __str__(self):
         return str(self.name)
 
@@ -43,6 +50,12 @@ class Category (models.Model) :
         return super().save(*args,**kwargs)
 
 
+
+types_of_product = [
+    ('pasty','خمیری'),
+    ('fluid','مایع'),
+    ('powdery','پودری')
+]
 
 # مدل محصول
 class Product (models.Model) :
@@ -62,7 +75,15 @@ class Product (models.Model) :
 
     title = models.CharField(max_length=256,verbose_name="عنوان محصول",unique=True)
 
+    slug = models.SlugField(null=True,blank=True,allow_unicode=True)
+
+    type = models.CharField(max_length=10,choices=types_of_product,default="fluid",verbose_name="نوع محصول")
+
     description = models.TextField(verbose_name="توضیحات محصول")
+
+    views = models.ManyToManyField(Ip)
+
+    catalog_url = models.URLField(verbose_name='آدرس کاتالوگ',null=True,blank=True)
 
     maintain_description = models.TextField(verbose_name="روش نگهداری محصول",null=True,blank=True)
 
@@ -74,8 +95,11 @@ class Product (models.Model) :
 
     standard = models.ManyToManyField(
         to = Standard ,
-        verbose_name = "استاندارد ها"
+        verbose_name = "استاندارد ها",
+        blank=True
     )
+
+    created = jDateField(auto_now_add=True)
 
     class Meta :
         verbose_name = "محصول"
@@ -83,6 +107,30 @@ class Product (models.Model) :
 
     def __str__(self):
         return f"{self.category} - {self.title}"
+
+    def save(self,**kwargs):
+        self.slug = slugify(self.title,allow_unicode=True)
+        return super().save(**kwargs)
+
+# مدل مقدار 
+class Count (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    product = models.ForeignKey(
+        to = Product,
+        on_delete = models.CASCADE,
+        related_name = "counts",
+    )
+
+    count = models.CharField(max_length=256,verbose_name="مقدار")
+
+    def __str__(self) : 
+        return f"{self.product.title} -- {self.count}"
+    
+    class Meta : 
+        verbose_name = "مقدار محصول"
+        verbose_name_plural = "مقادیر محصول"
 
 
 # مدل ویژگی محصول
@@ -100,8 +148,8 @@ class FeatureProduct(Item):
     value = models.CharField(max_length=256,verbose_name="مقدار")
 
     class Meta :
-        verbose_name = "مشخصات محصول"
-        verbose_name_plural = "مشخصات محصول"
+        verbose_name = "مشخصات فیزیکی و شیمیای محصول"
+        verbose_name_plural = "مشخصات فیزیکی و شیمیای محصول"
 
 
 
@@ -126,3 +174,41 @@ class UsageProduct (models.Model) :
     class Meta :
         verbose_name = "کاربرد محصول"
         verbose_name_plural = "کاربرد های محصول"
+
+
+# مدل تصویر محصول
+
+class ImageProduct (models.Model) :
+
+    id = models.UUIDField(default=uuid4, primary_key=True, unique=True)
+
+    product = models.ForeignKey(
+        to = Product,
+        on_delete = models.CASCADE,
+        related_name="images",
+        verbose_name="محصول"
+    )
+
+    image = models.ImageField(upload_to="product/images/",verbose_name="تصویر")
+
+    def __str__(self):
+        return str(self.product.title)
+
+    class Meta :
+        verbose_name = "تصویر محصول"
+        verbose_name_plural = 'تصاویر محصول'
+
+
+# مدل کامنت
+class Comment (CommentBase) :
+
+    product = models.ForeignKey(
+        to = Product,
+        on_delete = models.CASCADE,
+        related_name = "comments",
+        verbose_name = "محصول"
+    )
+    
+    class Meta :
+        verbose_name = "کامنت"
+        verbose_name_plural = "کامنت های محصولات"

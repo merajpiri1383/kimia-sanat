@@ -1,27 +1,44 @@
 from project.api.serializers import (CategorySerializer,ProjectSerializer,CommentSendSerializer,
-                                     ReplyCommentSerializer)
-from rest_framework.generics import ListAPIView
-from project.models import Category,Project,Comment
-from project.paginations import ProjectPagination
+            ReplyCommentSerializer,ProjectsPageSerializer)
+from project.models import Category,Project,Comment,ProjectsPage
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg import openapi
+from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 
 
 # صفحه دسته بندی ها
-class CategoriePageAPIView(ListAPIView) :
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    pagination_class = ProjectPagination
+class CategoriePageAPIView(APIView) : 
 
     @swagger_auto_schema(
         operation_summary="categories page",
         operation_description="list of categories"
     )
     def get(self,request):
-        return super().get(request)
+        paginator = Paginator(Category.objects.all().order_by("-name"),per_page=10)
+        try :
+            categories = paginator.page(request.GET.get("page",1))
+        except EmptyPage : 
+            categories = paginator.page(1)
+        except PageNotAnInteger : 
+            categories = paginator.page(1)
+        data = {
+            'page_titles' : ProjectsPageSerializer(ProjectsPage.objects.first(),context={'request':request}).data,
+            'categories' : CategorySerializer(
+                categories,
+                many=True,
+                context={'request' : request}
+            ).data,
+            'pages' : paginator.num_pages
+        }
+        if categories.has_next() : 
+            data["next_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={categories.next_page_number()}"
+        
+        if categories.has_previous() :
+            data["previous_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={categories.previous_page_number()}"
+        return Response(data,status.HTTP_200_OK)
 
 
 # صفحه پروژه
@@ -35,9 +52,9 @@ class ProjectPageAPIView(APIView) :
             404 : "project not found with this id ."
         }
     )
-    def get(self,request,project_id):
+    def get(self,request,project_slug):
         try :
-            object = Project.objects.get(id=project_id)
+            object = Project.objects.get(slug=project_slug)
         except :
             return Response({'detail' : 'project not found .'},status.HTTP_404_NOT_FOUND)
 
@@ -55,9 +72,9 @@ class CategoryProjectsAPIView(APIView) :
             404 : "category not found ."
         }
     )
-    def get(self,request,category_id):
+    def get(self,request,category_slug):
         try :
-            object = Category.objects.get(id=category_id)
+            object = Category.objects.get(slug=category_slug)
         except :
             return Response({'detail': 'category not found .'},status.HTTP_404_NOT_FOUND)
         serializer = ProjectSerializer(object.projects.all(),many=True,context={'request' : request})
@@ -87,13 +104,13 @@ class SendCommentProjectAPIView(APIView) :
             400 : "bad data"
         }
     )
-    def post(self,request,project_id):
+    def post(self,request,project_slug):
         try :
-            project = Project.objects.get(id=project_id)
+            project = Project.objects.get(slug=project_slug)
         except :
             return Response({'detail' : 'project not found .'},status.HTTP_404_NOT_FOUND)
         data = request.data.copy()
-        data["project"] = project_id
+        data["project"] = project.id
         serializer = CommentSendSerializer(data=data)
         if serializer.is_valid() :
             serializer.save()

@@ -1,5 +1,8 @@
 from django.contrib import admin
-from user.models import User,LegalProfile,RealProfile
+from user.models import User,LegalProfile,RealProfile,Marketer,SocialMedia
+from django.contrib.auth.models import Group
+
+admin.site.unregister(Group)
 
 
 # مدل پروفایل حقیقی
@@ -20,3 +23,13 @@ class LegalProfileStackInline (admin.StackedInline) :
 class UserAdmin (admin.ModelAdmin) :
     exclude = ["id","password"]
     inlines = [RealProfileStackInline,LegalProfileStackInline]
+
+@admin.register(SocialMedia)
+class SocialMediaAdmin(admin.ModelAdmin):
+    exclude = ["id"]
+
+
+# مدل بازار یاب
+@admin.register(Marketer)
+class MarketerAdmin(admin.ModelAdmin):
+    exclude = ["id"]

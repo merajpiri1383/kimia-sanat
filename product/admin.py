@@ -1,5 +1,6 @@
 from django.contrib import admin
-from product.models import Product,Category,UsageProduct,FeatureProduct,Standard
+from product.models import (Product,Category,UsageProduct,FeatureProduct,Standard,Count
+            ,ImageProduct,Comment)
 
 # مدل کاربرد محصول
 class UsageProductStackInline (admin.TabularInline) :
@@ -13,11 +14,22 @@ class FeatureProductStackInline (admin.TabularInline) :
     extra = 1
     exclude = ["id"]
 
+# مدل تصویر محصول
+class ImageProductInline (admin.TabularInline) :
+    model = ImageProduct
+    extra = 1
+    exclude = ["id"]
+
+class CountInline (admin.TabularInline) : 
+    model = Count
+    extra = 1 
+    exclude = ["id"]
+
 # مدل محصول
 @admin.register(Product)
 class ProductAdmin (admin.ModelAdmin) :
-    exclude = ["id"]
-    inlines = [UsageProductStackInline,FeatureProductStackInline]
+    exclude = ["id","slug","views"]
+    inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline,CountInline]
 
 # مدل استاندارد
 @admin.register(Standard)
@@ -29,3 +41,10 @@ class StandardAdmin (admin.ModelAdmin) :
 @admin.register(Category)
 class CategoryAdmin ( admin.ModelAdmin ) :
     exclude = ["id","slug"]
+
+# مدل کامنت
+@admin.register(Comment)
+class CommentAdmin (admin.ModelAdmin) :
+    exclude = ["id"]
+    search_fields = ["product","email","name",'description']
+    list_filter = ["product","is_valid","created","reply_to"]

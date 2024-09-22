@@ -1,6 +1,8 @@
 from django.db import models
 from uuid import uuid4
 from django_jalali.db.models import jDateField
+from utils.models import CommentBase
+from django.utils.text import slugify
 
 
 # مدل دسته بندی
@@ -9,6 +11,8 @@ class Category(models.Model)  :
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
     name = models.CharField(max_length=256,unique=True,verbose_name="نام دسته بندی")
+
+    slug = models.SlugField(null=True,blank=True,unique=True,allow_unicode=True)
 
     cover = models.ImageField(upload_to="category/cover/",verbose_name="کاور دسته بندی")
 
@@ -19,6 +23,10 @@ class Category(models.Model)  :
 
     def __str__(self):
         return str(self.name)
+    
+    def save(self,**args) : 
+        self.slug = slugify(self.name,allow_unicode=True)
+        return super().save(**args)
 
 
 # مدل پروژه
@@ -37,6 +45,8 @@ class Project(models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="نام پروژه",unique=True)
 
+    slug = models.SlugField(null=True,unique=True,blank=True,allow_unicode=True)
+
     description = models.TextField(verbose_name="توضیحات پروژه ")
 
     contractor = models.CharField(max_length=256,verbose_name="نام پیمانکار")
@@ -49,6 +59,8 @@ class Project(models.Model) :
 
     capacity = models.CharField(max_length=256,verbose_name="ظرفیت نامی")
 
+    is_completed = models.BooleanField(default=False,verbose_name="تکمیل شده")
+
     def __str__(self):
         return f"{self.category.name} - {self.name}"
 
@@ -56,6 +68,9 @@ class Project(models.Model) :
         verbose_name = "پروژه"
         verbose_name_plural = "پروژه ها"
 
+    def save(self,**kwargs) : 
+        self.slug = slugify(self.name,allow_unicode=True)
+        return super().save(**kwargs)
 
 
 # مدل تصویر پژوژه
@@ -80,9 +95,8 @@ class ProjectImage(models.Model) :
 
 
 # مدل کامنت
-class Comment(models.Model) :
+class Comment (CommentBase) :
 
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
     project = models.ForeignKey(
         to = Project,
@@ -91,28 +105,41 @@ class Comment(models.Model) :
         verbose_name="پروژه"
     )
 
-    reply_to = models.ForeignKey(
-        to ="Comment",
-        on_delete=models.CASCADE,
-        related_name="relpys",
-        verbose_name="پاسخ به کامنت",
+    class Meta :
+        verbose_name = "کامنت"
+        verbose_name_plural = "کامنت های پروژه"
+
+class ProjectsPage (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    background_title = models.CharField(max_length=256,verbose_name="عنوان بک گراند",null=True,blank=True)
+
+    background_image = models.ImageField(upload_to="project/background/",verbose_name="بک گراند",null=True,blank=True)
+
+    project_card_title = models.CharField(
+        max_length=256,
+        verbose_name="عنوان کادر پروژه ها",
+        null=True,
+        blank=True,
+    )
+
+    project_card_sub_title = models.CharField(
+        max_length=256,
+        null=True,
+        blank=True,
+        verbose_name="عنوان زیر کادر پروژه ها"
+    )
+
+    project_card_icon = models.ImageField(
+        max_length=256,
         null=True,
         blank=True
     )
 
-    name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی")
-
-    text = models.TextField(verbose_name="توضیحات")
-
-    phone = models.PositiveBigIntegerField(verbose_name="تلفن",null=True,blank=True)
-
-    email = models.EmailField(verbose_name="ایمیل",null=True,blank=True)
-
-    created = jDateField(auto_now_add=True,verbose_name="تاریخ ایجاد")
-
-    def __str__(self):
-        return f"{self.name} - {self.project.name}"
-
-    class Meta :
-        verbose_name = "کامنت"
-        verbose_name_plural = "کامنت ها"
+    class Meta : 
+        verbose_name = "صفحه پروژه ها"
+        verbose_name_plural = "مدیرت صفحه پروژه ها"
+    
+    def __str__(self) : 
+        return "صفحه پروژه ها"

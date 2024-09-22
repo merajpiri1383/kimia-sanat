@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from project.models import Category,Project,ProjectImage,Comment
+from project.models import Category,Project,ProjectImage,Comment,ProjectsPage
 
 
 # کلاس دسته بندی
@@ -7,7 +7,7 @@ class CategorySerializer(serializers.ModelSerializer) :
 
     class Meta :
         model = Category
-        fields = ["id","name","cover"]
+        fields = ["id","name","slug","cover"] 
 
 
 # کلاس تصاویر پروژه
@@ -63,7 +63,7 @@ class ProjectSerializer(serializers.ModelSerializer) :
         ).data
 
         context["comments"] = CommentSendSerializer(
-            instance.comments.filter(reply_to=None),
+            instance.comments.filter(reply_to=None,is_valid=True),
             many=True
         ).data
         return context
@@ -71,5 +71,21 @@ class ProjectSerializer(serializers.ModelSerializer) :
 
 
 
+# مدل ساده پروژه ها 
+class ProjectSimpleSerializer (serializers.ModelSerializer) : 
 
+    class Meta :  
+        model = Project
+        fields = ["id","name","description","contractor","launch_date","start_date"]
 
+    def to_representation(self, instance):
+        context = super().to_representation(instance)
+        context["image"] = ProjectImageSerializer(instance.images.first(),context=self.context).data
+        return context
+    
+# مدل صفحه پروژه ها
+class ProjectsPageSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = ProjectsPage
+        exclude = ["id"]
