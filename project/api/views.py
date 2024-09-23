@@ -1,5 +1,5 @@
 from project.api.serializers import (CategorySerializer,ProjectSerializer,CommentSendSerializer,
-            ReplyCommentSerializer,ProjectsPageSerializer)
+            ReplyCommentSerializer,ProjectsPageSerializer,ProjectSimpleSerializer)
 from project.models import Category,Project,Comment,ProjectsPage
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
@@ -68,7 +68,7 @@ class CategoryProjectsAPIView(APIView) :
         operation_summary="category page",
         operation_description="list of all project for this category",
         responses={
-            200 : ProjectSerializer(many=True),
+            200 : ProjectSimpleSerializer(many=True),
             404 : "category not found ."
         }
     )
@@ -77,7 +77,7 @@ class CategoryProjectsAPIView(APIView) :
             object = Category.objects.get(slug=category_slug)
         except :
             return Response({'detail': 'category not found .'},status.HTTP_404_NOT_FOUND)
-        serializer = ProjectSerializer(object.projects.all(),many=True,context={'request' : request})
+        serializer = ProjectSimpleSerializer(object.projects.all(),many=True,context={'request' : request})
         return Response(serializer.data,status.HTTP_200_OK)
 
 
