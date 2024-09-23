@@ -2,7 +2,7 @@ from rest_framework import serializers
 from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,
                     Menu,SubMenu,CategoryFooter,CommingSoon,BlogTitle,ProjectTitle,Comment,
                     AchievementCardItem,AchievementCard,AnswerQuestionTitle,ProductTitle,Slider,ImageSlider,
-                    FirstPageContent,License,Consult)
+                    FirstPageContent,License,Consult,ElectroLicense)
 from blog.api.serializers import BlogSimpleSerializer
 from project.api.serializers import CategorySerializer as ProjectCategorySerializer
 from product.api.serializers import CategorySerializer as ProductCategorySerializer 
@@ -31,6 +31,11 @@ class FooterLinkSerializer (serializers.ModelSerializer) :
         model = FooterLink
         exclude = ["id","footer"]
 
+class ElectroLicenseSerializer (serializers.ModelSerializer) : 
+    class Meta : 
+        model = ElectroLicense
+        exclude = ["id","footer"]
+
 class FooterSerializer (serializers.ModelSerializer) : 
 
 
@@ -44,6 +49,7 @@ class FooterSerializer (serializers.ModelSerializer) :
         context["links"] = FooterLinkSerializer(instance.footer_links.all(),many=True,context=self.context).data
         context["socials"] = SocialFooterSerializer(instance.footer_socials.all(),many=True,context=self.context).data
         context["categories"] = CategoryFooter(instance.footer_category.all(),many=True,context=self.context).data
+        context["licenses"] = ElectroLicenseSerializer(instance.licenses.all(),many=True,context=self.context).data
         return context
 
 
@@ -81,7 +87,7 @@ class CommingSoonSerializer (serializers.ModelSerializer) :
 
     class Meta : 
         model = CommingSoon
-        fields = ["title","background_image","is_active","time"]
+        exclude = ["id"]
 
 
 
@@ -225,4 +231,4 @@ class ConsultSerializer (serializers.ModelSerializer) :
 
         if not regex_phone.findall(attrs["phone"]) : 
             raise ValidationError({'phone' : 'invalid phone number .'})
-        return super().validate(attrs)
+        return super().validate(attrs) 

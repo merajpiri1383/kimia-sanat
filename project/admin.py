@@ -15,7 +15,7 @@ class CategoryAdminModel(admin.ModelAdmin) :
 # مدل پروژه
 @admin.register(Project)
 class ProjectAdminModel(admin.ModelAdmin) :
-    exclude = ["id"]
+    exclude = ["id","slug"]
     inlines = [ProjectImageInline]
 
 

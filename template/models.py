@@ -18,7 +18,8 @@ class Header (models.Model) :
 
     email = models.EmailField(verbose_name="ایمیل داخل هدر",null=True,blank=True)
 
-    icon = models.ImageField(upload_to="header/icon/",verbose_name="آیکون کنار شماره و ایمیل در هدر",null=True,blank=True)
+    icon = models.CharField(max_length=256,verbose_name="آیکون کنار شماره و ایمیل در هدر",null=True,blank=True)
+
 
     def __str__(self) : 
         return "هدر"
@@ -78,11 +79,17 @@ class CommingSoon (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
+    logo = models.ImageField(upload_to="template/commingsoon/logo/",verbose_name="لوگو",null=True,blank=True)
+
     title = models.CharField(max_length=256,verbose_name="عنوان صفحه",null=True,blank=True)
+
+    sub_title = models.CharField(max_length=256,blank=True,null=True,verbose_name="زیر عنوان")
 
     background_image = models.ImageField(upload_to="template/commingsoon/",verbose_name="بک گراند صفحه",null=True,blank=True)
 
     time = jDateTimeField(null=True,blank=True,verbose_name="زمان")
+
+    copy_right_text = models.TextField(null=True,blank=True,verbose_name="متن کپی رایت")
 
     is_active = models.BooleanField(default=False,verbose_name="فعال است")
 
@@ -103,7 +110,7 @@ class ProductTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,null=True,blank=True,verbose_name="عنوان زیر محصولات")
 
-    icon = models.ImageField(upload_to="template/product-title/",null=True,blank=True,verbose_name="ایکون کادر")
+    icon = models.CharField(max_length=256,null=True,blank=True,verbose_name="ایکون کادر")
 
     categories = models.ManyToManyField(CategoryProduct,blank=True,verbose_name="دسته بندی های محصول")
 
@@ -126,7 +133,7 @@ class AnswerQuestionTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان پایینی فرم تماس",null=True,blank=True)
 
-    icon = models.ImageField(upload_to="template/answer/icon/",null=True,blank=True,verbose_name="ایکون کادر ")
+    icon = models.CharField(max_length=256,null=True,blank=True,verbose_name="ایکون کادر ")
 
     image = models.ImageField(verbose_name="تصویر کادر زرد",upload_to="answer/image/",null=True,blank=True)
 
@@ -157,7 +164,7 @@ class AchievementCard (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان زیر ",null=True,blank=True)
 
-    icon = models.ImageField(upload_to="template/achievement/icon/",verbose_name="ایکون",null=True,blank=True)
+    icon = models.CharField(max_length=256,verbose_name="ایکون",null=True,blank=True)
 
     def __str__(self) : 
         return str(self.title)
@@ -183,7 +190,7 @@ class BlogTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان مقاله",null=True,blank=True)
 
-    icon = models.ImageField(upload_to="template/blog-title/icon/",verbose_name="ایکون کادر مقاله",null=True,blank=True)
+    icon = models.CharField(max_length=256,verbose_name="ایکون کادر مقاله",null=True,blank=True)
 
     blogs = models.ManyToManyField(Blog,blank=True,verbose_name=    "مقاله ها")
 
@@ -208,7 +215,7 @@ class ProjectTitle (models.Model) :
 
     comment_title = models.CharField(max_length=256,null=True,blank=True,verbose_name="عنوان کادر کامنت")
 
-    icon = models.ImageField(upload_to="template/project/icon/",verbose_name="ایکون کادر پروژه ها",null=True,blank=True)
+    icon = models.CharField(max_length=256,verbose_name="ایکون کادر پروژه ها",null=True,blank=True)
 
     category_projects = models.ManyToManyField(CategoryProject,blank=True,verbose_name="دسته بندی های پروژه")
 
@@ -338,6 +345,8 @@ class Footer (models.Model) :
 
     link_footer_title = models.CharField(max_length=256,verbose_name="نام عنوان لینک ها",null=True,blank=True)
 
+    copyright_text = models.TextField(verbose_name="متن کپی رایت",null=True,blank=True)
+
     def __str__ (self) : 
         return "فوتر"
     
@@ -352,7 +361,7 @@ class PhoneFooter (models.Model) :
 
     footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_phones")
 
-    icon = models.ImageField(upload_to="footer/phone/icon/",null=True,blank=True,verbose_name="آیکون")
+    icon = models.CharField(max_length=256,null=True,blank=True,verbose_name="آیکون")
 
     phone = models.CharField(max_length=256,verbose_name="شماره")
 
@@ -363,13 +372,34 @@ class PhoneFooter (models.Model) :
         verbose_name = "شماره تلفن فوتر"
         verbose_name_plural = "شماره های فوتر"
 
+class ElectroLicense (models.Model) : 
+
+    id = models.UUIDField(unique=True,primary_key=True,default=uuid4)
+
+    footer = models.ForeignKey(
+        to = Footer,
+        on_delete=models.CASCADE,
+        related_name="licenses"
+    )
+
+    image = models.ImageField(upload_to="template/footer/image/",verbose_name="تصویر")
+
+    url = models.URLField(verbose_name="آدرس",null=True,blank=True)
+
+    class Meta : 
+        verbose_name = "مجوز فوتر "
+        verbose_name_plural = "مجوز های فوتر"
+
+    def __str__(self) : 
+        return "مجوز "
+
 class SocialFooter (models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
     footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_socials")
 
-    icon = models.ImageField(upload_to="footer/social/icon/",null=True,blank=True,verbose_name="آیکون")
+    icon = models.CharField(max_length=256,null=True,blank=True,verbose_name="آیکون")
 
     url = models.URLField(verbose_name="آدرس")
 
@@ -446,3 +476,22 @@ class Consult (models.Model ) :
     def clean(self) : 
         if not regex_phone.findall(self.phone) : 
             raise ValidationError("phone must be integer and 11 character .")
+
+# مدل باشگاه مشتریان 
+class CustomerClub (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    phone = models.SlugField(verbose_name="شماره")
+
+    def __str__ (self) : 
+        return str(self.phone)
+    
+    class Meta : 
+        verbose_name = "مشتری"
+        verbose_name_plural = "باشگاه مشتریان"
+    
+    def clean(self) : 
+
+        if not regex_phone.findall(self.phone) : 
+            raise ValidationError("invalid phone number .")

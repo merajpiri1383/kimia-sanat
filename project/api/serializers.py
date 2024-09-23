@@ -76,7 +76,7 @@ class ProjectSimpleSerializer (serializers.ModelSerializer) :
 
     class Meta :  
         model = Project
-        fields = ["id","name","description","contractor","launch_date","start_date"]
+        exclude = ["video","category"]
 
     def to_representation(self, instance):
         context = super().to_representation(instance)
