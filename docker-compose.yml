@@ -1,5 +1,9 @@
 services : 
-
+  redis :
+    image : redis 
+    ports : 
+      - 6379:6379
+    restart : always
   db : 
     image : postgres
     restart : always
@@ -24,6 +28,24 @@ services :
     volumes : 
       - pgadmin-data:/var/lib/pgadmin
   
+  celery : 
+    build :
+      context : ./
+      dockerfile : ./Dockerfile
+    restart : always
+    environment : 
+      - DEBUG=True
+      - DATABASE_NAME=kimia_db
+      - DATABASE_USER=kimia_user
+      - DATABASE_PASSWORD=kimia_password
+      - DATABASE_HOST=db
+      - CELERY_BROKER_URL=redis://redis:6379/
+      - CELERY_RESULT_BACKEND=redis://redis:6379/
+    volumes :
+      - .:/app
+    depends_on : 
+      - db
+      - redis
   django : 
     build : 
       context : ./
@@ -36,6 +58,8 @@ services :
       - DATABASE_USER=kimia_user
       - DATABASE_PASSWORD=kimia_password
       - DATABASE_HOST=db
+      - CELERY_BROKER_URL=redis://redis:6379/
+      - CELERY_RESULT_BACKEND=redis://redis:6379/
     depends_on : 
       - db
     volumes :
