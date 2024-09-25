@@ -6,10 +6,6 @@ from project.models import Project
 # صفحه درباره ما 
 class AboutUs (models.Model) : 
 
-    background_title = models.CharField(max_length=256,verbose_name="عنوان روی بک گراند",null=True,blank=True)
-    
-    background = models.ImageField(upload_to="config/about/background/",verbose_name="بکگراند صفحه درباره ما",null=True,blank=True)
-
     projects = models.ManyToManyField(
         to = Project,
         blank=True,
@@ -159,10 +155,6 @@ class Feq(Item) :
 class ContactUs (models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    background_title = models.CharField(max_length=256,null=True,blank=True,verbose_name="عنوان روی بک گراند")
-
-    background = models.ImageField(upload_to="config/contact-us/background/",null=True,blank=True,verbose_name="بک گراند")
 
     def __str__ (self) : 
         return "صفحه تماس با ما"

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blog.models import Blog,Category,Module,Comment,BlogsPage
+from blog.models import Blog,Category,Module,Comment,BlogsPage,Tag
 from django_summernote.widgets import SummernoteWidget
 from django.db import models
 
@@ -39,3 +39,9 @@ class CommentAdmin (admin.ModelAdmin) :
 @admin.register(BlogsPage)
 class BlogsPageAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
+
+
+# مدل برچسب
+@admin.register(Tag)
+class TagAdmin (admin.ModelAdmin) : 
+    exclude = ["id","slug"]

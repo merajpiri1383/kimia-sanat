@@ -81,6 +81,8 @@ class ProjectSerializer(serializers.ModelSerializer) :
             instance.comments.filter(reply_to=None,is_valid=True),
             many=True
         ).data
+
+        context["category"] = CategorySerializer(instance.category,context=self.context).data
         return context
 
 

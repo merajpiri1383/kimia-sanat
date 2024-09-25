@@ -1,5 +1,13 @@
 from rest_framework import serializers
-from blog.models import Blog,Module,Category,Comment,BlogsPage
+from blog.models import Blog,Module,Category,Comment,Tag
+
+
+# مدل برچسب
+class TagSerializer (serializers.ModelSerializer) : 
+    
+    class Meta : 
+        model = Tag
+        fields = "__all__"
 
 # مدل ماژول
 class ModuleSerializer (serializers.ModelSerializer) : 
@@ -23,6 +31,7 @@ class BlogSerializer (serializers.ModelSerializer) :
             many=True,
             context=self.context
         ).data
+        context["tag"] = TagSerializer(instance.tag.all(),many=True).data
         return context
 
 
@@ -40,6 +49,7 @@ class BlogSimpleSerializer (serializers.ModelSerializer) :
             "name" : instance.category.name,
             "slug" : instance.category.slug
         }
+        context["tag"] = TagSerializer(instance.tag.all(),many=True).data
         return context
 
 # مدل دسته بندی
@@ -86,11 +96,3 @@ class CommentSerializer (serializers.ModelSerializer) :
         context["created_date"] = instance.created.strftime("%Y-%m-%d")
         context["created_time"] = instance.created.strftime("%H:%M:%S")
         return context
-    
-
-# مدل صفحه بلاگ
-class BlogsPageSerializer (serializers.ModelSerializer) : 
-
-    class Meta : 
-        model = BlogsPage
-        exclude = ["id"]

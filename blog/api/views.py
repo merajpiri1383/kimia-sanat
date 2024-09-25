@@ -3,9 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 # models
-from blog.models import Category,Blog,Comment,BlogsPage
+from blog.models import Category,Blog,Comment
 # serializers
-from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,BlogsPageSerializer,
+from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,
                 CategorySerializer,CommentReplySerializer,CommentSerializer) 
 # swagger
 from drf_yasg.utils import swagger_auto_schema
@@ -28,10 +28,6 @@ class BlogListAPIView(APIView) :
         except PageNotAnInteger :
             blogs = paginator.page(1)
         data = {
-            "page_titles" : BlogsPageSerializer(
-                BlogsPage.objects.first(),
-                context={'request' : request}
-            ).data,
             "blogs" : BlogSimpleSerializer(blogs,many=True,context={"request":request}).data,
             "count" : paginator.count,
             "not_published" : BlogSimpleSerializer(
@@ -72,7 +68,7 @@ class BlogPageAPIView(APIView) :
                 many=True
             ).data,
             'newest' : BlogSimpleSerializer(
-                Blog.objects.all().order_by("-created_date")[:4],
+                Blog.objects.filter(is_published=True).exclude(id=blog.id).order_by("-created_date")[:4],
                 many=True,
                 context={'request':request}
             ).data,

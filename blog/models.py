@@ -5,6 +5,27 @@ from django_jalali.db.models import jDateField
 from django.core.exceptions import ValidationError
 from utils.models import CommentBase
 
+class Tag (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    name = models.CharField(max_length=256,verbose_name="نام برچسب")
+
+    slug = models.SlugField(null=True,blank=True,allow_unicode=True)
+
+    url = models.URLField(null=True,blank=True,verbose_name="ادرس")
+
+    def __str__(self) : 
+        return str(self.name)
+    
+    class Meta : 
+        verbose_name = "برچسب"
+        verbose_name_plural = "برچسب ها"
+    
+    def save(self,**kwargs) : 
+        self.slug = slugify(self.name,allow_unicode=True)
+        return super().save(**kwargs)
+
 # مدل دسته بدی
 class Category (models.Model) :
 
@@ -43,6 +64,8 @@ class Blog (models.Model) :
     author = models.CharField(max_length=256,verbose_name="نویسنده")
 
     slug = models.SlugField(unique=True,null=True,blank=True,allow_unicode=True)
+
+    tag = models.ManyToManyField(Tag,blank=True,verbose_name="برچسب")
 
     description = models.TextField(verbose_name="توضیحات مقاله")
 
