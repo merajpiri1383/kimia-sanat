@@ -98,6 +98,25 @@ class VerifyAPIView (APIView) :
 class ResendOtpCodeAPIView (APIView) : 
 
     throttle_classes = [ResendOtpCodeThrottle]
+
+    @swagger_auto_schema(
+        operation_summary= "ارسال دوباره کد تایید",
+        operation_description="""    
+                شماره رو دریافت میکنه درصورتی که شماره از قبل وارد شده باشه کد تایید رو ارسال میکنه
+                در غیر این صورت ارور ۴۰۴ 
+        """,
+        request_body= openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "phone" : openapi.Schema(type=openapi.TYPE_STRING,description="حتما با صفر شروع بشه و ۱۱ رقم باشه")
+            }
+        ),
+        responses={
+            200 : "otp code has been sent .",
+            400 : "phone required / invalid phone ",
+            404 : "user does not exist ."
+        }
+    )
     def post(self,request) : 
         phone = request.data.get("phone")
         if not phone : 

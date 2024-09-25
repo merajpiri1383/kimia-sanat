@@ -32,6 +32,8 @@ urlpatterns = [
 
     path('order/',include('order.urls')),
 
+    path('user/',include('user.urls')),
+
     path('auth/',include("authentication.urls")),
 
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),

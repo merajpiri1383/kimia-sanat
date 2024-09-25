@@ -98,6 +98,7 @@ class ProjectSimpleSerializer (serializers.ModelSerializer) :
     def to_representation(self, instance):
         context = super().to_representation(instance)
         context["image"] = ProjectImageSerializer(instance.images.first(),context=self.context).data
+        context["cateogry"] = CategorySerializer(instance.category,context=self.context).data
         return context
     
 # مدل صفحه پروژه ها
