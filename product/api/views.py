@@ -11,6 +11,15 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
+def get_types_of_product () : 
+    data = []
+    for item in types_of_product : 
+        data.append({
+            "key" : str(item[0]),
+            "value" : str(item[1])
+        })
+    return data
+
 # لسیت محصولات
 class ProductListAPIView(APIView) :
 
@@ -56,7 +65,7 @@ class ProductListAPIView(APIView) :
                 Category.objects.all(),
                 many=True,
             ).data,
-            'types_of_product' : types_of_product,
+            'types_of_product' : get_types_of_product(),
         }
         if products.has_next() :
             print()
