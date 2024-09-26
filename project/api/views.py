@@ -77,8 +77,11 @@ class CategoryProjectsAPIView(APIView) :
             object = Category.objects.get(slug=category_slug)
         except :
             return Response({'detail': 'category not found .'},status.HTTP_404_NOT_FOUND)
-        serializer = ProjectSimpleSerializer(object.projects.all(),many=True,context={'request' : request})
-        return Response(serializer.data,status.HTTP_200_OK)
+        data = {
+            'category' : CategorySerializer(object,context={'request': request}).data,
+            'projects' : ProjectSimpleSerializer(object.projects.all(),many=True,context={'request' : request}).data,
+        }
+        return Response(data,status.HTTP_200_OK)
 
 
 # ارسال کامنت برای پروژه
