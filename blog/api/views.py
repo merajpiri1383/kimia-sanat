@@ -30,6 +30,7 @@ class BlogListAPIView(APIView) :
         data = {
             "blogs" : BlogSimpleSerializer(blogs,many=True,context={"request":request}).data,
             "count" : paginator.count,
+            "pages" : paginator.num_pages,
             "not_published" : BlogSimpleSerializer(
                 Blog.objects.filter(is_published=False).order_by("-created_date")[:3],
                 many=True,
