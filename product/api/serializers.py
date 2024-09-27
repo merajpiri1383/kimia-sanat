@@ -17,6 +17,11 @@ class CategorySerializer (serializers.ModelSerializer) :
         model = Category
         fields = ["name","slug","icon","description"]
 
+    def to_representation(self,instance) : 
+        context = super().to_representation(instance)
+        context["count_products"] = instance.products.count()
+        return context
+
 # مدل پاسخ کامنت
 class CommentReplySerializer (serializers.ModelSerializer) :
 

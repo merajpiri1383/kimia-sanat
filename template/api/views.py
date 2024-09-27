@@ -1,13 +1,16 @@
 from rest_framework.views import APIView
 from rest_framework import status 
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response 
 from template.api.serializers import (HeaderSerializer,FooterSerializer,CommingSoonSerializer,BlogTtileSerializer,
         ProjectTitleSerializer,AchievementCardSerializer,AnswerQuestionTitleSerializer,ProductTitleSerializer,
-        SliderSerializer,FirstPageSerilizer,ConsultSerializer)
+        FirstPageSerilizer,ConsultSerializer,LicenseSerializer,SliderSerializer)
 from template.models import (Header,Footer,CommingSoon,BlogTitle,ProjectTitle,AchievementCard,
-        AnswerQuestionTitle,ProductTitle,Slider,FirstPageContent)
+        AnswerQuestionTitle,ProductTitle,FirstPageContent,License,Slider)
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+from template.pagination import LicensePagination
+
+
 
 # هدر و فوتر 
 class TemplateAPIView (APIView) : 
@@ -29,7 +32,7 @@ class HomePageAPIView (APIView) :
  
     def get(self,request) : 
         data = {
-            'slider' : SliderSerializer(Slider.objects.first(),context={'request' : request}).data,
+            'sliders' : SliderSerializer(Slider.objects.all(),many=True,context={'request' : request}).data,
             'first_page' : FirstPageSerilizer(FirstPageContent.objects.first(),context={'request':request}).data,
             'product_card' : ProductTitleSerializer(ProductTitle.objects.first(),context={'request':request}).data,
             'answer_question_card' : AnswerQuestionTitleSerializer(
@@ -61,3 +64,11 @@ class SendConsultAPIView(APIView) :
             return Response(serializer.data,status.HTTP_200_OK)
         else :
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+
+# لیست گواهی نامه ها 
+class LicenseListAPIView (ListAPIView) : 
+    serializer_class = LicenseSerializer
+    queryset = License.objects.all()
+    pagination_class = LicensePagination

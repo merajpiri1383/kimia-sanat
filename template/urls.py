@@ -8,4 +8,6 @@ urlpatterns = [
     path('home/',views.HomePageAPIView.as_view(),name="home-page"),
 
     path('send-consult/',views.SendConsultAPIView.as_view(),name="send-consult"),
+
+    path('home/license/',views.LicenseListAPIView.as_view(),name="license-list"),
 ] 

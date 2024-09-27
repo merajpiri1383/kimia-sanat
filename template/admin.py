@@ -1,8 +1,9 @@
 from django.contrib import admin
 from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
-                            Header,Slider,ImageSlider,FirstPageContent,License,Footer,FooterLink,PhoneFooter,SocialFooter
-                            ,AchievementCardItem,Consult,ElectroLicense,CustomerClub)
+                            Header,FirstPageContent,License,Footer,FooterLink,PhoneFooter,SocialFooter
+                            ,AchievementCardItem,Consult,ElectroLicense,CustomerClub,Slider,
+                            PhoneAnswerQuestion)
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
 
@@ -24,28 +25,17 @@ class BlogTitleAdmin (admin.ModelAdmin) :
     exclude = ["id"]
 
 
-# مدیرت محتوای صفحه اول
-class LicenseInline (admin.StackedInline) : 
-    exclude = ["id"]
-    model = License
-    extra = 1
 
 @admin.register(FirstPageContent) 
 class FirstPageContentAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-    inlines = [LicenseInline]
 
 # اسلایدر
 
-class SliderTabular (admin.TabularInline) : 
-    model = ImageSlider
-    exclude = ["id"]
-    extra = 1
 
 @admin.register(Slider)
 class SliderAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-    inlines = [SliderTabular]
 
 
 # مدل هدر 
@@ -80,11 +70,17 @@ class ProductTitleAdmin (admin.ModelAdmin) :
     exclude = ["id"]
 
 
-# مدیرت سوالات شما 
+# مدیرت سوالات شما  
+
+class PhoneInline (admin.TabularInline) : 
+    model = PhoneAnswerQuestion
+    extra = 0
+    exclude = ["id"]
 
 @admin.register(AnswerQuestionTitle)
 class AnswerQuestionTitleAdmin (admin.ModelAdmin) : 
     exclude = ['id']
+    inlines = [PhoneInline]
 
 # مدیرت عنوان دستاورد ها
 class AchievementCardItemInline (admin.TabularInline) : 
@@ -139,4 +135,10 @@ class ConsultAdmin (admin.ModelAdmin) :
 # باشگاه مشتریان
 @admin.register(CustomerClub)
 class CustomerClubAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+
+
+# گواهی نامه ها
+@admin.register(License)
+class LicenseAdmin (admin.ModelAdmin) : 
     exclude = ["id"]

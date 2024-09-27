@@ -112,6 +112,10 @@ class ProductTitle (models.Model) :
 
     icon = models.CharField(max_length=256,null=True,blank=True,verbose_name="ایکون کادر")
 
+    button_text = models.CharField(max_length=128,null=True,blank=True,verbose_name="متن button")
+
+    button_url = models.URLField(null=True,blank=True,verbose_name="آدرس button")
+
     categories = models.ManyToManyField(CategoryProduct,blank=True,verbose_name="دسته بندی های محصول")
 
     def __str__(self) : 
@@ -133,26 +137,39 @@ class AnswerQuestionTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان پایینی فرم تماس",null=True,blank=True)
 
-    icon = models.CharField(max_length=256,null=True,blank=True,verbose_name="ایکون کادر ")
+    icon = models.CharField(max_length=256,null=True,blank=True,verbose_name="ایکون ")
+
+    box_title = models.CharField(max_length=256,verbose_name="عنوان باکس",null=True,blank=True)
+
+    box_text = models.TextField(null=True,blank=True,verbose_name="متن باکس")
 
     image = models.ImageField(verbose_name="تصویر کادر زرد",upload_to="answer/image/",null=True,blank=True)
 
     text = models.TextField(null=True,blank=True,verbose_name="متن کادر زرد")
 
-    phone_1 = models.PositiveBigIntegerField(verbose_name="شماره تماس ۱",null=True,blank=True)
-
-    phone_2 = models.PositiveBigIntegerField(verbose_name="شماره تماس ۲",null=True,blank=True)
-
-    phone_3 = models.PositiveBigIntegerField(verbose_name="شماره تماس ۳",null=True,blank=True)
+    icon_phone = models.CharField(max_length=256,verbose_name="آیکون قسمت شماره ها",null=True,blank=True)
 
     def __str__(self) : 
         return "مدیرت سوالات  مشتری"
     
     class Meta : 
         verbose_name = "مدیرت سوالات مشتری"
-        verbose_name_plural = "مدیرت سوالات مشتری"
+        verbose_name_plural = "مدیرت باکس درخواست مشاوره"
 
+class PhoneAnswerQuestion (models.Model) : 
 
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    card = models.ForeignKey(AnswerQuestionTitle,on_delete=models.CASCADE,related_name="phones")
+
+    phone = models.CharField(max_length=11,verbose_name="شماره تلفن")
+
+    def __str__ (self) : 
+        return str(self.phone)
+
+    class Meta : 
+        verbose_name = 'شماره'
+        verbose_name_plural = "شماره ها"
 
 
 # مدل عنوان دستاورد های ما 
@@ -192,7 +209,11 @@ class BlogTitle (models.Model) :
 
     icon = models.CharField(max_length=256,verbose_name="ایکون کادر مقاله",null=True,blank=True)
 
-    blogs = models.ManyToManyField(Blog,blank=True,verbose_name=    "مقاله ها")
+    button_text = models.CharField(max_length=128,null=True,blank=True,verbose_name="متن button")
+
+    button_url = models.CharField(max_length=128,null=True,blank=True,verbose_name="آدرس button")
+
+    blogs = models.ManyToManyField(Blog,blank=True,verbose_name="مقاله ها")
 
     def __str__(self) :
         return str(self.title)
@@ -208,12 +229,13 @@ class ProjectTitle (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-
     title = models.CharField(max_length=256,verbose_name="عنوان پروژه ها ",null=True,blank=True)
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان کامنت مشتری ",null=True,blank=True)
 
-    comment_title = models.CharField(max_length=256,null=True,blank=True,verbose_name="عنوان کادر کامنت")
+    button_text = models.CharField(max_length=128,null=True,blank=True,verbose_name="متن button")
+
+    button_url = models.URLField(null=True,blank=True,verbose_name="آدرس button")
 
     icon = models.CharField(max_length=256,verbose_name="ایکون کادر پروژه ها",null=True,blank=True)
 
@@ -231,6 +253,8 @@ class Comment (models.Model) :
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
     project = models.ForeignKey(ProjectTitle,on_delete=models.CASCADE,related_name="comments")
+
+    title = models.CharField(max_length=256,verbose_name="عنوان کامنت",null=True,blank=True)
 
     profile_user = models.ImageField(upload_to="template/commnet/profile/",verbose_name="پروفایل کاربر")
 
@@ -252,11 +276,15 @@ class Slider (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    title_slider = models.CharField(max_length=256,verbose_name="عنوان اسلایدر",null=True,blank=True)
+    title = models.CharField(max_length=256,verbose_name="عنوان",null=True,blank=True)
 
-    text_slider = models.TextField(null=True,blank=True,verbose_name="متن اسلایدر")
+    sub_title = models.CharField(max_length=256,verbose_name="عنوان پایین",null=True,blank=True)
 
-    short_description = models.TextField(null=True,blank=True,verbose_name="توضیحات مختصر و مفید")
+    text = models.TextField(null=True,blank=True,verbose_name="متن اسلاید")
+
+    image = models.ImageField(upload_to="template/slider/image/",verbose_name="تصویر اسلاید")
+
+    button_text = models.CharField(max_length=128,verbose_name="متن button",null=True,blank=True)
 
     link_slider = models.URLField(null=True,blank=True,verbose_name='لینک دکمه اطلاعات بیشتر')
 
@@ -268,56 +296,10 @@ class Slider (models.Model) :
         verbose_name_plural = "مدیرت اسلایدر"
 
 
-
-class ImageSlider (models.Model ) : 
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    slider = models.ForeignKey(
-        to = Slider,
-        on_delete = models.CASCADE,
-        related_name = "images"
-    )
-
-    image = models.ImageField(upload_to="company/images/",verbose_name="تصویر")
-
-    def __str__ (self) : 
-        return "image"
-    
-    class Meta : 
-        verbose_name = "تصویر اسلایدر "
-        verbose_name_plural = "تصاویر اسلایدر "
-
-
-class FirstPageContent (models.Model) : 
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    title = models.CharField(max_length=256,verbose_name="عنوان گواهینامه",null=True,blank=True)
-
-    sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان گواهینامه",null=True,blank=True)
-
-    side_image = models.ImageField(upload_to="first_page_content/side_image/",verbose_name="عکس کنار گواهینامه ")
-
-    pattern_image = models.ImageField(upload_to="first_page_content/pattern_image/",verbose_name="عکس پترن",null=True,blank=True)
-
-    def __str__ (self) : 
-        return "محتوای صفحه اول"
-    
-    class Meta : 
-        verbose_name = "محتوای صفحه اول"
-        verbose_name_plural = "مدیرت محتوای صفحه اول"
-
 # گواهینامه ها
 class License (models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    content_page = models.ForeignKey(
-        to = FirstPageContent,
-        on_delete = models.CASCADE,
-        related_name="licenses"
-    )
 
     title = models.CharField(max_length=256,verbose_name="عنوان")
 
@@ -332,6 +314,33 @@ class License (models.Model) :
         verbose_name = "گواهی نامه"
         verbose_name_plural = "گواهی نامه ها"
 
+class FirstPageContent (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    title = models.CharField(max_length=256,verbose_name="عنوان گواهینامه",null=True,blank=True)
+
+    sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان گواهینامه",null=True,blank=True)
+
+    side_image = models.ImageField(upload_to="first_page_content/side_image/",verbose_name="عکس کنار گواهینامه ")
+
+    button_text = models.CharField(max_length=128,verbose_name="متن button",null=True,blank=True)
+
+    licenses = models.ManyToManyField(
+        to = License , 
+        blank = True , 
+        verbose_name = "گواهینامه ها"
+    )
+
+    pattern_image = models.ImageField(upload_to="first_page_content/pattern_image/",verbose_name="عکس پترن",null=True,blank=True)
+
+    def __str__ (self) : 
+        return "محتوای صفحه اول"
+    
+    class Meta : 
+        verbose_name = "محتوای صفحه اول"
+        verbose_name_plural = "مدیرت محتوای صفحه اول"
+
 
 # فوتر 
 
@@ -343,7 +352,9 @@ class Footer (models.Model) :
 
     text = models.TextField(null=True,blank=True,verbose_name="متن فوتر")
 
-    link_footer_title = models.CharField(max_length=256,verbose_name="نام عنوان لینک ها",null=True,blank=True)
+    link_footer_title = models.CharField(max_length=256,verbose_name="عنوان ستون لینک ها",null=True,blank=True)
+
+    category_footer_title = models.CharField(max_length=128,null=True,blank=True,verbose_name="عنوان ستون دسته بندی ها")
 
     copyright_text = models.TextField(verbose_name="متن کپی رایت",null=True,blank=True)
 
@@ -449,14 +460,18 @@ class CategoryFooter (models.Model) :
 
 regex_phone = re.compile("^0[0-9]{10}$")
 
+persons = (
+    ('real','حقیقی'),
+    ('legal','حقوقی'),
+)
 
 class Consult (models.Model ) : 
     
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    first_name = models.CharField(max_length=256,verbose_name="نام")
+    name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی")
 
-    last_name = models.CharField(max_length=256,verbose_name="نام خانوادگی")
+    person = models.CharField(max_length=5,choices=persons,default="real")
 
     phone = models.SlugField(max_length=11,verbose_name="شماره همراه")
 
@@ -467,7 +482,7 @@ class Consult (models.Model ) :
     is_valid = models.BooleanField(default=False,verbose_name="تایید شده توسط ادمین")
 
     def __str__(self) : 
-        return  f"{self.first_name} {self.last_name}"
+        return  str(self.name)
     
     class Meta : 
         verbose_name = "درخواست مشاوره "
