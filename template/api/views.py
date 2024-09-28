@@ -5,7 +5,7 @@ from template.api.serializers import (HeaderSerializer,FooterSerializer,CommingS
         ProjectTitleSerializer,AchievementCardSerializer,AnswerQuestionTitleSerializer,ProductTitleSerializer,
         FirstPageSerilizer,ConsultSerializer,SliderSerializer,AchievementTitleSerializer,AchievementSerializer)
 from template.models import (Header,Footer,CommingSoon,BlogTitle,ProjectTitle,AchievementCard,
-        AnswerQuestionTitle,ProductTitle,FirstPageContent,Slider,AchievementTitle)
+        AnswerQuestionTitle,ProductTitle,FirstPageContent,Slider,AchievementTitle,Achievement)
 from drf_yasg.utils import swagger_auto_schema
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
@@ -36,7 +36,7 @@ class HomePageAPIView (APIView) :
             'product_card' : ProductTitleSerializer(ProductTitle.objects.first(),context={'request':request}).data,
             'answer_question_card' : AnswerQuestionTitleSerializer(
                 AnswerQuestionTitle.objects.first(),
-                context={'request' : request}
+                context={'request' : request} 
                 ).data,
             'achievement_card' : AchievementCardSerializer(
                 AchievementCard.objects.first()
@@ -77,7 +77,7 @@ class AcheivementTitleAPIView (APIView) :
 
         object = AchievementTitle.objects.first()
 
-        paginator = Paginator(object.items.all().order_by("id"),per_page=10)
+        paginator = Paginator(Achievement.objects.all().order_by("id"),per_page=10)
 
         try :
             items = paginator.page(request.GET.get("page",1))

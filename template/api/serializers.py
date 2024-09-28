@@ -194,18 +194,6 @@ class SliderSerializer (serializers.ModelSerializer) :
         exclude = ["id"]
 
 
-# مدال صفحه اول
-
- 
-class FirstPageSerilizer (serializers.ModelSerializer) : 
-
-    # licenses = LicenseSerializer(many=True)
-
-    class Meta : 
-        model = FirstPageContent
-        exclude = ["id"]
-    
-
 # دستاورد 
 class AchievementTitleSerializer (serializers.ModelSerializer) : 
 
@@ -217,6 +205,19 @@ class AchievementSerializer (serializers.ModelSerializer) :
     class Meta : 
         model = Achievement
         exclude = ["card","id"]
+
+
+# مدال صفحه اول
+
+ 
+class FirstPageSerilizer (serializers.ModelSerializer) : 
+
+    achievements = AchievementSerializer(many=True)
+
+    class Meta : 
+        model = FirstPageContent
+        exclude = ["id"]
+
     
 
 # مدل درخواست مشاوره
