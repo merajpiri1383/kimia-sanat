@@ -1,14 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework import status 
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response 
 from template.api.serializers import (HeaderSerializer,FooterSerializer,CommingSoonSerializer,BlogTtileSerializer,
         ProjectTitleSerializer,AchievementCardSerializer,AnswerQuestionTitleSerializer,ProductTitleSerializer,
-        FirstPageSerilizer,ConsultSerializer,LicenseSerializer,SliderSerializer)
+        FirstPageSerilizer,ConsultSerializer,SliderSerializer,AchievementTitleSerializer,AchievementSerializer)
 from template.models import (Header,Footer,CommingSoon,BlogTitle,ProjectTitle,AchievementCard,
-        AnswerQuestionTitle,ProductTitle,FirstPageContent,License,Slider)
+        AnswerQuestionTitle,ProductTitle,FirstPageContent,Slider,AchievementTitle)
 from drf_yasg.utils import swagger_auto_schema
-from template.pagination import LicensePagination
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 
 
 
@@ -67,8 +66,38 @@ class SendConsultAPIView(APIView) :
         
 
 
-# لیست گواهی نامه ها 
-class LicenseListAPIView (ListAPIView) : 
-    serializer_class = LicenseSerializer
-    queryset = License.objects.all()
-    pagination_class = LicensePagination
+# دستاورد ها
+
+class AcheivementTitleAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="پاپ آپ دستاورد ها"
+    )
+    def get(self,request) :
+
+        object = AchievementTitle.objects.first()
+
+        paginator = Paginator(object.items.all().order_by("id"),per_page=10)
+
+        try :
+            items = paginator.page(request.GET.get("page",1))
+        except PageNotAnInteger : 
+            items = paginator.page(1)
+        except EmptyPage : 
+            items = paginator.page(1)
+
+        data = {
+            "titles" : AchievementTitleSerializer(object).data,
+            "items" : AchievementSerializer(items,context={'request' : request},many=True).data,
+            "count" : paginator.count,
+            "pages" : paginator.num_pages,
+        }
+        if items.has_next() : 
+            data["next_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={items.next_page_number()}"
+        else :
+            data["next_page"] = None
+        if items.has_previous() :
+            data["previous_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={items.previous_page_number()}"
+        else :
+            data["previous_page"] = None
+        return Response(data,status.HTTP_200_OK)

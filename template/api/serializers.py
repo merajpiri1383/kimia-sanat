@@ -2,7 +2,7 @@ from rest_framework import serializers
 from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,
                     Menu,SubMenu,CategoryFooter,CommingSoon,BlogTitle,ProjectTitle,Comment,
                     AchievementCardItem,AchievementCard,AnswerQuestionTitle,ProductTitle,
-                    FirstPageContent,License,Consult,ElectroLicense,Slider,PhoneAnswerQuestion)
+                    FirstPageContent,Consult,ElectroLicense,Slider,PhoneAnswerQuestion,Achievement,AchievementTitle)
 from blog.api.serializers import BlogSimpleSerializer
 from project.api.serializers import CategorySerializer as ProjectCategorySerializer
 from product.api.serializers import CategorySerializer as ProductCategorySerializer 
@@ -196,20 +196,27 @@ class SliderSerializer (serializers.ModelSerializer) :
 
 # مدال صفحه اول
 
-class LicenseSerializer (serializers.ModelSerializer) : 
-
-    class Meta : 
-        model = License
-        exclude = ["id"]
  
 class FirstPageSerilizer (serializers.ModelSerializer) : 
 
-    licenses = LicenseSerializer(many=True)
+    # licenses = LicenseSerializer(many=True)
 
     class Meta : 
         model = FirstPageContent
         exclude = ["id"]
     
+
+# دستاورد 
+class AchievementTitleSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = AchievementTitle
+        exclude = ["id"]
+
+class AchievementSerializer (serializers.ModelSerializer) :
+    class Meta : 
+        model = Achievement
+        exclude = ["card","id"]
     
 
 # مدل درخواست مشاوره

@@ -9,5 +9,5 @@ urlpatterns = [
 
     path('send-consult/',views.SendConsultAPIView.as_view(),name="send-consult"),
 
-    path('home/license/',views.LicenseListAPIView.as_view(),name="license-list"),
+    path('home/achievements/',views.AcheivementTitleAPIView.as_view(),name="achievement-list"),
 ] 

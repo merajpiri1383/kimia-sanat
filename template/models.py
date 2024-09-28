@@ -296,23 +296,47 @@ class Slider (models.Model) :
         verbose_name_plural = "مدیرت اسلایدر"
 
 
-# گواهینامه ها
-class License (models.Model) : 
+class AchievementTitle (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    title = models.CharField(max_length=256,verbose_name="عنوان",null=True,blank=True)
+
+    icon = models.CharField(max_length=128,unique=True,blank=True,verbose_name="آیکون")
+
+    text = models.TextField(null=True,blank=True,verbose_name="متن")
+
+    def __str__(self) : 
+        return "پاپ آپ دستاورد ها"
+    
+    class Meta : 
+        verbose_name = "پاپ آپ دستاورد ها"
+        verbose_name_plural = "مدیریت پاپ آپ دستاورد ها"
+
+
+# دستاورد ها
+class Achievement (models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
+
+    card = models.ForeignKey(
+        to = AchievementTitle , 
+        on_delete = models.CASCADE,
+        related_name="items"
+    )
 
     title = models.CharField(max_length=256,verbose_name="عنوان")
 
     logo = models.ImageField(upload_to="home/license/logo/",verbose_name="لوگو گواهینامه")
 
-    sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان")
+    text = models.TextField(verbose_name="متن دستاورد")
 
     def __str__(self) : 
         return str(self.title)
     
     class Meta : 
-        verbose_name = "گواهی نامه"
-        verbose_name_plural = "گواهی نامه ها"
+        verbose_name = "دستاورد  "
+        verbose_name_plural = "دستاورد"
 
 class FirstPageContent (models.Model) : 
 
@@ -326,10 +350,10 @@ class FirstPageContent (models.Model) :
 
     button_text = models.CharField(max_length=128,verbose_name="متن button",null=True,blank=True)
 
-    licenses = models.ManyToManyField(
-        to = License , 
-        blank = True , 
-        verbose_name = "گواهینامه ها"
+    achievements = models.ManyToManyField(
+        to = Achievement , 
+        blank=True,
+        verbose_name="دستاورد ها "
     )
 
     pattern_image = models.ImageField(upload_to="first_page_content/pattern_image/",verbose_name="عکس پترن",null=True,blank=True)

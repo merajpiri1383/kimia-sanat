@@ -1,9 +1,9 @@
 from django.contrib import admin
 from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
-                            Header,FirstPageContent,License,Footer,FooterLink,PhoneFooter,SocialFooter
+                            Header,FirstPageContent,Footer,FooterLink,PhoneFooter,SocialFooter
                             ,AchievementCardItem,Consult,ElectroLicense,CustomerClub,Slider,
-                            PhoneAnswerQuestion)
+                            PhoneAnswerQuestion,AchievementTitle,Achievement)
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
 
@@ -138,7 +138,14 @@ class CustomerClubAdmin (admin.ModelAdmin) :
     exclude = ["id"]
 
 
-# گواهی نامه ها
-@admin.register(License)
-class LicenseAdmin (admin.ModelAdmin) : 
+# دستاورد ها
+
+class AchievementInline (admin.StackedInline) : 
+    model = Achievement
     exclude = ["id"]
+    extra = 0
+
+@admin.register(AchievementTitle)
+class AchievementTitleAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+    inlines = [AchievementInline]

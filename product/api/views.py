@@ -65,6 +65,8 @@ class ProductListAPIView(APIView) :
                 Category.objects.all(),
                 many=True,
             ).data,
+            'pages' : paginator.num_pages,
+            'count' : paginator.count,
             'types_of_product' : get_types_of_product(),
         }
         if products.has_next() :
