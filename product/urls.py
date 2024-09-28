@@ -5,7 +5,9 @@ urlpatterns = [
 
     path('list/',views.ProductListAPIView.as_view(),name="product-list"),
 
-    path('<slug:slug>/',views.ProductPageAPIView.as_view(),name="product-detail"),
+    path('<slug>/',views.ProductPageAPIView.as_view(),name="product-detail"),
+
+    path("<product_slug>/like/",views.LikedProductAPIView.as_view(),name="product-like"),
 
     path('<slug:slug>/comment/send/',views.SendCommentProductAPIView.as_view(),name="send-comment-porduct"),
 

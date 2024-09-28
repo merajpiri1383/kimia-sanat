@@ -28,7 +28,7 @@ class CountInline (admin.TabularInline) :
 # مدل محصول
 @admin.register(Product)
 class ProductAdmin (admin.ModelAdmin) :
-    exclude = ["id","slug","views"]
+    exclude = ["id","slug","views","liked"]
     inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline,CountInline]
 
 # مدل استاندارد

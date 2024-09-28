@@ -3,7 +3,8 @@ from uuid import uuid4
 from django.utils.text import slugify
 from utils.models import Item,CommentBase
 from user.models import Ip
-from django_jalali.db.models import jDateField,jDateTimeField
+from django_jalali.db.models import jDateField
+from django.contrib.auth import get_user_model
 
 
 # مدل استاندارد
@@ -78,6 +79,12 @@ class Product (models.Model) :
     slug = models.SlugField(null=True,blank=True,allow_unicode=True)
 
     type = models.CharField(max_length=10,choices=types_of_product,default="fluid",verbose_name="نوع محصول")
+
+    liked = models.ManyToManyField(
+        to = get_user_model(),
+        blank = True , 
+        related_name = "products_liked"
+    )
 
     description = models.TextField(verbose_name="توضیحات محصول")
 

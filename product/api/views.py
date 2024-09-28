@@ -8,7 +8,9 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from utils.views import get_ip
 from user.models import Ip
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticated
 from drf_yasg import openapi
+from django.db.models import Count
 
 
 def get_types_of_product () : 
@@ -27,6 +29,7 @@ class ProductListAPIView(APIView) :
         operation_summary="product list page",
         operation_description="""
         ?most-viewd=True :    پربازید ترین ها 
+        ?most-fan=True :   پرطرفتار ترین
         ?category={category_slug} :     دسته بندی 
         ?type={product_type} :     نوع محصول
         default :  جدیدترین ها
@@ -37,6 +40,12 @@ class ProductListAPIView(APIView) :
         try :
             if request.GET.get("most-viewed",True):
                 products = products.order_by("views")
+        except :
+            products = [] 
+
+        try :
+            if request.GET.get("most-viewed",True):
+                products = products.annotate(fans=Count("liked")).order_by("-fans")
         except :
             products = [] 
 
@@ -175,3 +184,29 @@ class ReplyCommentAPIView(APIView) :
             return Response(serializer.data,status.HTTP_201_CREATED)
         else :
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+class LikedProductAPIView (APIView) : 
+
+    permission_classes = [IsAuthenticated]
+
+    def dispatch(self,request,product_slug) : 
+        try : 
+            self.product = Product.objects.get(slug=product_slug)
+        except : 
+            self.product = None
+        return super().dispatch(request,product_slug)
+
+    @swagger_auto_schema(
+        operation_summary="لایک محصول",
+    )
+    def post(self,request,product_slug) : 
+        self.product.liked.add(request.user)
+        return Response({"message" : "liked successfully"},status.HTTP_200_OK) 
+    
+    @swagger_auto_schema(
+        operation_summary="دیس لایک محصول",
+    )
+    def delete(self,request,product_slug) : 
+        self.product.liked.remove(request.user)
+        return Response({"message" : "unliked successfully"},status.HTTP_200_OK)
