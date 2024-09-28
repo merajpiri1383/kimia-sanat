@@ -34,19 +34,25 @@ class ProductListAPIView(APIView) :
     )
     def get(self,request):
         products = Product.objects.all().order_by("-created")
-
         try :
             if request.GET.get("most-viewed",True):
                 products = products.order_by("views")
+        except :
+            products = [] 
 
+        try :
             if request.GET.get("category"):
                 category = Category.objects.get(slug=request.GET.get("category"))
                 products = products.filter(category=category)
+        except : 
+            products = []
 
+        try : 
             if request.GET.get("type"):
                 products = products.filter(type=request.GET.get("type"))
         except :
-            return Response({'detail' : "incorrect filter ."})
+            products = [] 
+
 
         paginator = Paginator(products, 10)
         try :
@@ -69,7 +75,7 @@ class ProductListAPIView(APIView) :
             'count' : paginator.count,
             'types_of_product' : get_types_of_product(),
         }
-        if products.has_next() :
+        if products.has_next() : 
             print()
             data["next_page"] = (f"{request.build_absolute_uri().split("?")[0]}?page={products.next_page_number()}")
         if products.has_previous() :
