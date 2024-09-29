@@ -9,6 +9,13 @@ from template.models import (Header,Footer,CommingSoon,BlogTitle,ProjectTitle,Ac
 from drf_yasg.utils import swagger_auto_schema
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from drf_yasg import openapi
+from project.models import Project
+from product.models import Product
+from blog.models import Blog
+from blog.api.serializers import BlogSimpleSerializer
+from product.api.serializers import ProductSimpleSerializer
+from project.api.serializers import ProjectSimpleSerializer
+from django.contrib.postgres.search import SearchQuery,SearchVector,SearchRank
 
 
 
@@ -116,4 +123,57 @@ class AcheivementTitleAPIView (APIView) :
             data["previous_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={items.previous_page_number()}"
         else :
             data["previous_page"] = None
+        return Response(data,status.HTTP_200_OK)
+    
+
+
+
+# سرچ 
+class SearchAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="جست و جو",
+        operation_description="""
+            کلمه جست و جو باید با پارامتر query  بیاد
+            type=blog => جست و جوی مقاله
+            type=project => جست و جو پروژه
+            type=product => جست و جوی محصول
+            اگر پارامتر type رو نفرستی همه رو جست و جو میکنه
+        """
+    )
+    def get(self,request) : 
+        data = {}
+
+        query = request.GET.get("query")
+
+        type = request.GET.get("type")
+
+        if query :
+            query = SearchQuery(query)
+            if not type or type == "blog" : 
+                blogs =  Blog.objects.filter(is_published=True).annotate(rank=SearchRank(
+                        vector = SearchVector("title","description"),
+                        query = query
+                        )).filter(rank__gt=0.001).order_by("-rank")
+                data["blogs"] = BlogSimpleSerializer(blogs,context={'request':request},many=True).data
+            
+            if not type or type == "product" : 
+                products = Product.objects.annotate(rank=SearchRank(
+                    vector = SearchVector("title","description"),
+                    query = query
+                )).filter(rank__gt=0.001).order_by("-rank")
+                data["products"] = ProductSimpleSerializer(products,many=True,context={'request':request}).data
+            
+            if not type or type == "project" : 
+                projects = Project.objects.annotate(rank=SearchRank(
+                    vector = SearchVector("name","description"),
+                    query = query
+                )).filter(rank__gt=0.001).order_by("-rank")
+                data["projects"] = ProjectSimpleSerializer(projects,context={'request':request},many=True).data
+        else :
+            data = {
+                "projects" : [] , 
+                "products" : [] , 
+                "blogs" : []
+            }
         return Response(data,status.HTTP_200_OK)

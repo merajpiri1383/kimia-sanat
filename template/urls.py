@@ -10,4 +10,6 @@ urlpatterns = [
     path('send-consult/',views.SendConsultAPIView.as_view(),name="send-consult"),
 
     path('home/achievements/',views.AcheivementTitleAPIView.as_view(),name="achievement-list"),
+
+    path('search/',views.SearchAPIView.as_view(),name="search"),
 ] 

@@ -3,17 +3,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 # models
-from blog.models import Category,Blog,Comment
+from blog.models import Category,Blog,Comment,BlogsPage
 # serializers
 from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,
-                CategorySerializer,CommentReplySerializer,CommentSerializer) 
+                CategorySerializer,CommentReplySerializer,CommentSerializer,BlogsPageSerializer) 
 # swagger
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 # pagination
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-# python tools
-from datetime import datetime
+from django.contrib.postgres.search import SearchQuery,SearchVector,SearchRank
 
 
 # لسیت مقالات
@@ -184,3 +183,26 @@ class CategoryAPIView (APIView) :
         if blogs.has_previous() : 
             data["previous_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={blogs.previous_page_number()}"
         return Response(data,status.HTTP_200_OK)
+    
+
+
+
+# سرچ بلاگ ها 
+class BlogSearchAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="جست و جوی بلاگ",
+        operation_description="کلمه کلیدی با استفاده از پارامتر query مشخص میشه",
+        responses={
+            200 : BlogSimpleSerializer(many=True)
+        }
+    )
+    def get(self,request) : 
+        blogs = []
+        query = request.GET.get("query")
+        if query : 
+            blogs = Blog.objects.annotate(rank=SearchRank(
+                vector = SearchVector("title","description","author"),
+                query = SearchQuery(query)
+            )).filter(rank__gt=0.001).order_by("-rank")
+        return Response(BlogSimpleSerializer(blogs,many=True,context={'request':request}).data,status.HTTP_200_OK)
