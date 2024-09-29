@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from product.models import (Product,Category,ImageProduct,Comment,Count)
+from product.models import (Product,Category,ImageProduct,Comment,Count,Standard)
 
 
 # مدل تصویر
@@ -8,6 +8,14 @@ class ProductImageSerializer (serializers.ModelSerializer) :
     class Meta :
         model = ImageProduct
         fields = ["image"]
+
+# مدل استاندارد
+class StandardSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = Standard
+        fields = "__all__"
+
 
 # مدل دسته بندی های محصول
 class CategorySerializer (serializers.ModelSerializer) :
@@ -70,6 +78,9 @@ class CountSerializer (serializers.ModelSerializer) :
 #  مدل محصول به همراه جزییات
 
 class ProductSerializer (serializers.ModelSerializer) :
+
+    standard = StandardSerializer(many=True)
+
     class Meta :
         model = Product
         exclude = ["id","views","liked"]

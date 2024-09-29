@@ -8,6 +8,7 @@ from template.models import (Header,Footer,CommingSoon,BlogTitle,ProjectTitle,Ac
         AnswerQuestionTitle,ProductTitle,FirstPageContent,Slider,AchievementTitle,Achievement)
 from drf_yasg.utils import swagger_auto_schema
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from drf_yasg import openapi
 
 
 
@@ -54,7 +55,22 @@ class SendConsultAPIView(APIView) :
 
     @swagger_auto_schema(
         operation_summary="ارسال درخواست مشاوره",
-        operation_description="ارسال درخواست مشاوره در صفحه هوم"
+        operation_description="ارسال درخواست مشاوره در صفحه هوم",
+        request_body = openapi.Schema(
+            type = openapi.TYPE_OBJECT,
+            properties = {
+                "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام حداکثر ۲۵۶ کاراکتر"),
+                "person" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع شخص یا real یا legal"),
+                "phone" : openapi.Schema(type=openapi.TYPE_STRING,description="شماره تلفن ۱۱ رقم و با صفر شروع میشه"),
+                "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
+                "text" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات "),
+            },
+            required=["name","person","phone","email","text"]
+        ),
+        responses={
+            201 : ConsultSerializer(),
+            400 : "bad data "
+        }
     )
     def post(self,request) : 
         serializer = ConsultSerializer(data=request.data)
