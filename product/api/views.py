@@ -99,7 +99,7 @@ class ProductPageAPIView (APIView) :
 
     @swagger_auto_schema(
         operation_summary="product page",
-        operation_description="details of product"
+        operation_description="details of product",
     )
     def get(self,request,slug):
         try :
