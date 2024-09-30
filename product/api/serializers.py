@@ -47,30 +47,21 @@ class CommentReplySerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        exclude = ["created"]
+        fields = "__all__"
         extra_kwargs = {
             "reply_to" : {"required" : True}
         }
-
-    def to_representation(self, instance):
-        context = super().to_representation(instance)
-        context["created_date"] = instance.created.strftime("%Y-%m-%d")
-        context["created_time"] = instance.created.strftime("%H:%M:%S")
-        return context
-
 # مدل کامنت
 
 class CommentSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        exclude = ["reply_to","created"]
+        exclude = ["reply_to"]
 
     def to_representation(self, instance):
         context = super().to_representation(instance)
         context["replys"] = CommentReplySerializer(instance.replys.all(),many=True).data
-        context["created_date"] = instance.created.strftime("%Y-%m-%d")
-        context["created_time"] = instance.created.strftime("%H:%M:%S")
         return context
     
 # مدل مقدار محصول
@@ -124,10 +115,15 @@ class ProductSerializer (serializers.ModelSerializer) :
 
     images = ProductImageSerializer(many=True)
 
+    comments = serializers.SerializerMethodField(method_name="get_comments")
+
+    def get_comments (self,instance) : 
+        print(instance.comments.all())
+        return CommentSerializer(instance.comments.filter(reply_to=None),many=True).data
 
     class Meta :
         model = Product
-        exclude = ["id","views","liked"]
+        exclude = ["views","liked"]
 
     def to_representation(self,instance,**kwargs):
         context = super().to_representation(instance,**kwargs)
@@ -136,7 +132,7 @@ class ProductSerializer (serializers.ModelSerializer) :
         context["like_count"] = instance.liked.count()
         context["related_products"] = ProductSimpleSerializer(
             instance.category.products.all().order_by("-created")[:3],
-            many=True,
+            many=True, 
             context=self.context
         ).data
         return context

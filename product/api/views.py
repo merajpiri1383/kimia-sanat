@@ -100,6 +100,10 @@ class ProductPageAPIView (APIView) :
     @swagger_auto_schema(
         operation_summary="product page",
         operation_description="details of product",
+        responses={
+            200 : ProductSerializer(),
+            404 : "invalid slug "
+        }
     )
     def get(self,request,slug):
         try :
@@ -110,14 +114,7 @@ class ProductPageAPIView (APIView) :
         if ip :
             ip,created = Ip.objects.get_or_create(ip=ip)
             product.views.add(ip)
-        data = {
-            'product' : ProductSerializer(product,context={'request':request}).data,
-            'comments' : CommentSerializer(
-                product.comments.filter(reply_to=None),
-                many=True
-            ).data
-        }
-        return Response(data,status.HTTP_200_OK)
+        return Response(ProductSerializer(product,context={'request':request}).data,status.HTTP_200_OK)
 
 
 # ارسال کامنت برای محصول
@@ -137,14 +134,9 @@ class SendCommentProductAPIView(APIView) :
             required=["name","email","description"]
         )
     )
-    def post(self,request,slug):
-        try :
-            product = Product.objects.get(slug=slug)
-        except :
-            return Response({'detail' : 'product not found .'},status.HTTP_404_NOT_FOUND)
-
+    def post(self,request,product_id):
         data = request.data.copy()
-        data["product"] = product.id
+        data["product"] = product_id
         serializer = CommentSerializer(data=data)
         if serializer.is_valid() :
             serializer.save()
