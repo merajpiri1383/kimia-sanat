@@ -275,7 +275,7 @@ class ContactConsult (models.Model) :
 
     id = models.UUIDField(unique=True,primary_key=True,default=uuid4)
 
-    name = models.CharField(verbose_name="نام")
+    name = models.CharField(verbose_name="نام", max_length=100)
     
     department = models.CharField(max_length=256,verbose_name="دپارتمان")
 
