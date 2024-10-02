@@ -113,10 +113,6 @@ class ProjectsPage (models.Model) :
 
     id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
 
-    background_title = models.CharField(max_length=256,verbose_name="عنوان بک گراند",null=True,blank=True)
-
-    background_image = models.ImageField(upload_to="project/background/",verbose_name="بک گراند",null=True,blank=True)
-
     project_card_title = models.CharField(
         max_length=256,
         verbose_name="عنوان کادر پروژه ها",
@@ -131,11 +127,7 @@ class ProjectsPage (models.Model) :
         verbose_name="عنوان زیر کادر پروژه ها"
     )
 
-    project_card_icon = models.ImageField(
-        max_length=256,
-        null=True,
-        blank=True
-    )
+    project_card_icon = models.CharField(max_length=256,verbose_name="ایکون",null=True,blank=True)
 
     class Meta : 
         verbose_name = "صفحه پروژه ها"

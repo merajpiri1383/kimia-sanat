@@ -1,6 +1,8 @@
 from django.db import models
 from uuid import uuid4
 from django_jalali.db.models import jDateTimeField
+from django.core.exceptions import ValidationError
+import re
 
 class Item(models.Model) : 
 
@@ -18,11 +20,16 @@ class Item(models.Model) :
 
 
 # مدل پایه کامنت
+
+phone_regex = re.compile("^0[0-9]{10}$")
+
 class CommentBase (models.Model) : 
 
     id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
 
     name = models.CharField(max_length=256,verbose_name='نام و نام خانوادگی')
+
+    phone = models.SlugField(verbose_name="شماره تلفن")
 
     email = models.EmailField(verbose_name="ایمیل",null=True,blank=True)
 
@@ -46,3 +53,7 @@ class CommentBase (models.Model) :
     
     class Meta : 
         abstract = True
+
+    def clean(self) : 
+        if not phone_regex.findall(self.phone) : 
+            raise ValidationError("invalid phone number .")

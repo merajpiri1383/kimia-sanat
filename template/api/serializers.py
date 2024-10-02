@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,
                     Menu,SubMenu,CategoryFooter,CommingSoon,BlogTitle,ProjectTitle,Comment,
-                    AchievementCardItem,AchievementCard,AnswerQuestionTitle,ProductTitle,Slider,ImageSlider,
-                    FirstPageContent,License,Consult)
+                    AchievementCardItem,AchievementCard,AnswerQuestionTitle,ProductTitle,
+                    FirstPageContent,Consult,ElectroLicense,Slider,PhoneAnswerQuestion,Achievement,AchievementTitle)
 from blog.api.serializers import BlogSimpleSerializer
 from project.api.serializers import CategorySerializer as ProjectCategorySerializer
 from product.api.serializers import CategorySerializer as ProductCategorySerializer 
@@ -31,6 +31,11 @@ class FooterLinkSerializer (serializers.ModelSerializer) :
         model = FooterLink
         exclude = ["id","footer"]
 
+class ElectroLicenseSerializer (serializers.ModelSerializer) : 
+    class Meta : 
+        model = ElectroLicense
+        exclude = ["id","footer"]
+
 class FooterSerializer (serializers.ModelSerializer) : 
 
 
@@ -44,6 +49,7 @@ class FooterSerializer (serializers.ModelSerializer) :
         context["links"] = FooterLinkSerializer(instance.footer_links.all(),many=True,context=self.context).data
         context["socials"] = SocialFooterSerializer(instance.footer_socials.all(),many=True,context=self.context).data
         context["categories"] = CategoryFooter(instance.footer_category.all(),many=True,context=self.context).data
+        context["licenses"] = ElectroLicenseSerializer(instance.licenses.all(),many=True,context=self.context).data
         return context
 
 
@@ -81,7 +87,7 @@ class CommingSoonSerializer (serializers.ModelSerializer) :
 
     class Meta : 
         model = CommingSoon
-        fields = ["title","background_image","is_active","time"]
+        exclude = ["id"]
 
 
 
@@ -146,8 +152,17 @@ class AchievementCardSerializer (serializers.ModelSerializer) :
     
 
 # مدل پاسخ به سوالات مشتری
+
+class PhoneAnswerSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = PhoneAnswerQuestion
+        exclude = ["card","id"]
+
 class AnswerQuestionTitleSerializer (serializers.ModelSerializer) : 
 
+    phones = PhoneAnswerSerializer(many=True)
+    
     class Meta : 
         model = AnswerQuestionTitle
         exclude = ["id"]
@@ -171,45 +186,38 @@ class ProductTitleSerializer (serializers.ModelSerializer) :
 
 # اسلایدر 
 
-class ImageSliderSerializer (serializers.ModelSerializer) : 
-
-    class Meta : 
-        model = ImageSlider
-        exclude = ["id","slider"]
 
 class SliderSerializer (serializers.ModelSerializer) : 
 
     class Meta : 
         model = Slider
         exclude = ["id"]
-    
-    def to_representation(self,instance,**kwargs) : 
-        context = super().to_representation(instance,**kwargs)
-        context["images"] = ImageSliderSerializer(instance.images.all(),many=True,context=self.context).data
-        return context
-    
+
+
+# دستاورد 
+class AchievementTitleSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = AchievementTitle
+        exclude = ["id"]
+
+class AchievementSerializer (serializers.ModelSerializer) :
+    class Meta : 
+        model = Achievement
+        exclude = ["card","id"]
+
 
 # مدال صفحه اول
 
-class LicenseSerializer (serializers.ModelSerializer) : 
-
-    class Meta : 
-        model = License
-        exclude = ["id","content_page"]
  
 class FirstPageSerilizer (serializers.ModelSerializer) : 
+
+    achievements = AchievementSerializer(many=True)
+
     class Meta : 
         model = FirstPageContent
         exclude = ["id"]
-    
-    def to_representation(self, instance):
-        context = super().to_representation(instance)
-        context["licenses"] = LicenseSerializer(
-            instance.licenses.all(),
-            many=True,
-            context=self.context
-        ).data
-        return context
+
     
 
 # مدل درخواست مشاوره
@@ -225,4 +233,4 @@ class ConsultSerializer (serializers.ModelSerializer) :
 
         if not regex_phone.findall(attrs["phone"]) : 
             raise ValidationError({'phone' : 'invalid phone number .'})
-        return super().validate(attrs)
+        return super().validate(attrs) 

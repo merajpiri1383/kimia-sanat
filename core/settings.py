@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 load_dotenv()
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -54,12 +55,14 @@ INSTALLED_APPS = [
     'template.apps.TemplateConfig',
     'driver.apps.DriverConfig',
     'order.apps.OrderConfig',
+    'authentication.apps.AuthenticationConfig',
     # external apps 
     'corsheaders',
     'rest_framework',
     'drf_yasg',
     'nested_inline',
     'django_summernote',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -163,3 +166,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / "media"
+
+# celery 
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL","redis://localhost:6379/")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND","redis://localhost:6379/")
+
+
+# rest framework 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES" : [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_THROTTLE_RATES" : {
+        "otp" : "1/min"
+    }
+}
+
+
+# SIMPLE JWT 
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME" : timedelta(minutes=60),
+    "SLIDING_TOKEN_REFRESH_LIFETIME" : timedelta(days=1),
+    "SLIDING_TOKEN_LIFETIME" : timedelta(hours=1),
+    "SLIDING_TOKEN_LIFETIME_LATE_USER" : timedelta(hours=2),
+    "SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER" : timedelta(days=1)
+}

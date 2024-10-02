@@ -5,15 +5,14 @@ from rest_framework.views import APIView
 # models
 from blog.models import Category,Blog,Comment,BlogsPage
 # serializers
-from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,BlogsPageSerializer,
-                CategorySerializer,CommentReplySerializer,CommentSerializer) 
+from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,
+                CategorySerializer,CommentReplySerializer,CommentSerializer,BlogsPageSerializer) 
 # swagger
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 # pagination
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-# python tools
-from datetime import datetime
+from django.contrib.postgres.search import SearchQuery,SearchVector,SearchRank
 
 
 # لسیت مقالات
@@ -28,12 +27,9 @@ class BlogListAPIView(APIView) :
         except PageNotAnInteger :
             blogs = paginator.page(1)
         data = {
-            "page_titles" : BlogsPageSerializer(
-                BlogsPage.objects.first(),
-                context={'request' : request}
-            ).data,
             "blogs" : BlogSimpleSerializer(blogs,many=True,context={"request":request}).data,
             "count" : paginator.count,
+            "pages" : paginator.num_pages,
             "not_published" : BlogSimpleSerializer(
                 Blog.objects.filter(is_published=False).order_by("-created_date")[:3],
                 many=True,
@@ -72,7 +68,7 @@ class BlogPageAPIView(APIView) :
                 many=True
             ).data,
             'newest' : BlogSimpleSerializer(
-                Blog.objects.all().order_by("-created_date")[:4],
+                Blog.objects.filter(is_published=True).exclude(id=blog.id).order_by("-created_date")[:4],
                 many=True,
                 context={'request':request}
             ).data,
@@ -187,3 +183,26 @@ class CategoryAPIView (APIView) :
         if blogs.has_previous() : 
             data["previous_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={blogs.previous_page_number()}"
         return Response(data,status.HTTP_200_OK)
+    
+
+
+
+# سرچ بلاگ ها 
+class BlogSearchAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="جست و جوی بلاگ",
+        operation_description="کلمه کلیدی با استفاده از پارامتر query مشخص میشه",
+        responses={
+            200 : BlogSimpleSerializer(many=True)
+        }
+    )
+    def get(self,request) : 
+        blogs = []
+        query = request.GET.get("query")
+        if query : 
+            blogs = Blog.objects.annotate(rank=SearchRank(
+                vector = SearchVector("title","description","author"),
+                query = SearchQuery(query)
+            )).filter(rank__gt=0.001).order_by("-rank")
+        return Response(BlogSimpleSerializer(blogs,many=True,context={'request':request}).data,status.HTTP_200_OK)

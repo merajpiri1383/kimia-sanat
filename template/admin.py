@@ -1,8 +1,9 @@
 from django.contrib import admin
 from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
-                            Header,Slider,ImageSlider,FirstPageContent,License,Footer,FooterLink,PhoneFooter,SocialFooter
-                            ,AchievementCardItem,Consult)
+                            Header,FirstPageContent,Footer,FooterLink,PhoneFooter,SocialFooter
+                            ,AchievementCardItem,Consult,ElectroLicense,CustomerClub,Slider,
+                            PhoneAnswerQuestion,AchievementTitle,Achievement)
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
 
@@ -24,28 +25,17 @@ class BlogTitleAdmin (admin.ModelAdmin) :
     exclude = ["id"]
 
 
-# مدیرت محتوای صفحه اول
-class LicenseInline (admin.StackedInline) : 
-    exclude = ["id"]
-    model = License
-    extra = 1
 
 @admin.register(FirstPageContent) 
 class FirstPageContentAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-    inlines = [LicenseInline]
 
 # اسلایدر
 
-class SliderTabular (admin.TabularInline) : 
-    model = ImageSlider
-    exclude = ["id"]
-    extra = 1
 
 @admin.register(Slider)
 class SliderAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-    inlines = [SliderTabular]
 
 
 # مدل هدر 
@@ -80,11 +70,17 @@ class ProductTitleAdmin (admin.ModelAdmin) :
     exclude = ["id"]
 
 
-# مدیرت سوالات شما 
+# مدیرت سوالات شما  
+
+class PhoneInline (admin.TabularInline) : 
+    model = PhoneAnswerQuestion
+    extra = 0
+    exclude = ["id"]
 
 @admin.register(AnswerQuestionTitle)
 class AnswerQuestionTitleAdmin (admin.ModelAdmin) : 
     exclude = ['id']
+    inlines = [PhoneInline]
 
 # مدیرت عنوان دستاورد ها
 class AchievementCardItemInline (admin.TabularInline) : 
@@ -119,13 +115,37 @@ class CategoryFooterInline (admin.TabularInline) :
     exclude = ["id"]
     extra = 0
 
+class ElectroLicenseInline (admin.TabularInline) : 
+    model = ElectroLicense
+    exclude = ["id"]
+    extra = 0
+
 @admin.register(Footer)
 class FooterAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-    inlines= [FooterLinkInline,SocialFooterInline,PhoneFooterInline,CategoryFooterInline]
+    inlines= [FooterLinkInline,SocialFooterInline,PhoneFooterInline,CategoryFooterInline,ElectroLicenseInline]
 
 
 # درخواست های مشاوره
 @admin.register(Consult)
 class ConsultAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
+
+
+# باشگاه مشتریان
+@admin.register(CustomerClub)
+class CustomerClubAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+
+
+# دستاورد ها
+
+class AchievementInline (admin.StackedInline) : 
+    model = Achievement
+    exclude = ["id"]
+    extra = 0
+
+@admin.register(AchievementTitle)
+class AchievementTitleAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+    inlines = [AchievementInline]

@@ -8,8 +8,19 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from utils.views import get_ip
 from user.models import Ip
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticated
 from drf_yasg import openapi
+from django.db.models import Count
 
+
+def get_types_of_product () : 
+    data = []
+    for item in types_of_product : 
+        data.append({
+            "key" : str(item[0]),
+            "value" : str(item[1])
+        })
+    return data
 
 # لسیت محصولات
 class ProductListAPIView(APIView) :
@@ -18,6 +29,7 @@ class ProductListAPIView(APIView) :
         operation_summary="product list page",
         operation_description="""
         ?most-viewd=True :    پربازید ترین ها 
+        ?most-fan=True :   پرطرفتار ترین
         ?category={category_slug} :     دسته بندی 
         ?type={product_type} :     نوع محصول
         default :  جدیدترین ها
@@ -25,19 +37,31 @@ class ProductListAPIView(APIView) :
     )
     def get(self,request):
         products = Product.objects.all().order_by("-created")
-
         try :
             if request.GET.get("most-viewed",True):
                 products = products.order_by("views")
+        except :
+            products = [] 
 
+        try :
+            if request.GET.get("most-viewed",True):
+                products = products.annotate(fans=Count("liked")).order_by("-fans")
+        except :
+            products = [] 
+
+        try :
             if request.GET.get("category"):
                 category = Category.objects.get(slug=request.GET.get("category"))
                 products = products.filter(category=category)
+        except : 
+            products = []
 
+        try : 
             if request.GET.get("type"):
                 products = products.filter(type=request.GET.get("type"))
         except :
-            return Response({'detail' : "incorrect filter ."})
+            products = [] 
+
 
         paginator = Paginator(products, 10)
         try :
@@ -56,9 +80,11 @@ class ProductListAPIView(APIView) :
                 Category.objects.all(),
                 many=True,
             ).data,
-            'types_of_product' : types_of_product,
+            'pages' : paginator.num_pages,
+            'count' : paginator.count,
+            'types_of_product' : get_types_of_product(),
         }
-        if products.has_next() :
+        if products.has_next() : 
             print()
             data["next_page"] = (f"{request.build_absolute_uri().split("?")[0]}?page={products.next_page_number()}")
         if products.has_previous() :
@@ -73,7 +99,11 @@ class ProductPageAPIView (APIView) :
 
     @swagger_auto_schema(
         operation_summary="product page",
-        operation_description="details of product"
+        operation_description="details of product",
+        responses={
+            200 : ProductSerializer(),
+            404 : "invalid slug "
+        }
     )
     def get(self,request,slug):
         try :
@@ -84,14 +114,7 @@ class ProductPageAPIView (APIView) :
         if ip :
             ip,created = Ip.objects.get_or_create(ip=ip)
             product.views.add(ip)
-        data = {
-            'product' : ProductSerializer(product,context={'request':request}).data,
-            'comments' : CommentSerializer(
-                product.comments.filter(reply_to=None),
-                many=True
-            ).data
-        }
-        return Response(data,status.HTTP_200_OK)
+        return Response(ProductSerializer(product,context={'request':request}).data,status.HTTP_200_OK)
 
 
 # ارسال کامنت برای محصول
@@ -111,14 +134,9 @@ class SendCommentProductAPIView(APIView) :
             required=["name","email","description"]
         )
     )
-    def post(self,request,slug):
-        try :
-            product = Product.objects.get(slug=slug)
-        except :
-            return Response({'detail' : 'product not found .'},status.HTTP_404_NOT_FOUND)
-
+    def post(self,request,product_id):
         data = request.data.copy()
-        data["product"] = product.id
+        data["product"] = product_id
         serializer = CommentSerializer(data=data)
         if serializer.is_valid() :
             serializer.save()
@@ -158,3 +176,29 @@ class ReplyCommentAPIView(APIView) :
             return Response(serializer.data,status.HTTP_201_CREATED)
         else :
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+class LikedProductAPIView (APIView) : 
+
+    permission_classes = [IsAuthenticated]
+
+    def dispatch(self,request,product_slug) : 
+        try : 
+            self.product = Product.objects.get(slug=product_slug)
+        except : 
+            self.product = None
+        return super().dispatch(request,product_slug)
+
+    @swagger_auto_schema(
+        operation_summary="لایک محصول",
+    )
+    def post(self,request,product_slug) : 
+        self.product.liked.add(request.user)
+        return Response({"message" : "liked successfully"},status.HTTP_200_OK) 
+    
+    @swagger_auto_schema(
+        operation_summary="دیس لایک محصول",
+    )
+    def delete(self,request,product_slug) : 
+        self.product.liked.remove(request.user)
+        return Response({"message" : "unliked successfully"},status.HTTP_200_OK)
