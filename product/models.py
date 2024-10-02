@@ -35,7 +35,7 @@ class Category (models.Model) :
 
     slug = models.SlugField(null=True,blank=True,allow_unicode=True)
 
-    icon = models.CharField(max_length=256,verbose_name="ایکون",null=True,blank=True)
+    icon = models.ImageField(max_length=256,verbose_name="ایکون",null=True,blank=True)
     
     description = models.TextField(verbose_name="توضیحات دسته بندی")
 
