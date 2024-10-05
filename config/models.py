@@ -141,11 +141,15 @@ class FeqTitle (models.Model) :
         verbose_name_plural = "عنوان سوالات متداول"
 
 # سوالات متداول
-class Feq(Item) : 
+class Feq(models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
     about = models.ForeignKey(AboutUs,on_delete=models.CASCADE,related_name="feqs")
+
+    question = models.TextField(verbose_name="سوال", null=True)
+
+    answer = models.TextField(verbose_name="جواب", null=True)
 
     class Meta : 
         verbose_name = "سوال "
