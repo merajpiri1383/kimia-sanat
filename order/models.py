@@ -108,7 +108,13 @@ class PaySlip (models.Model) :
 
     iban = models.SlugField(verbose_name="شماره شبا")
 
-    time = jDateTimeField(verbose_name="تاریخ واریز")
+    time = jDateTimeField(verbose_name="تاریخ واریز") 
+
+    order_tracking_number = models.IntegerField(verbose_name="شماره پیگیری سفارش", null=True)
+
+    sheba_number = models.PositiveBigIntegerField(verbose_name="شماره کارت واریز کننده", null=True)
+
+    description = models.TextField(verbose_name="توضیحات", null=True)
 
     def __str__ (self) : 
         return str(self.name)

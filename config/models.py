@@ -151,6 +151,9 @@ class Feq(models.Model) :
 
     answer = models.TextField(verbose_name="جواب", null=True)
 
+    def __str__(self) -> str:
+        return "سوال"
+
     class Meta : 
         verbose_name = "سوال "
         verbose_name_plural = "سوالات متداول"
@@ -277,11 +280,16 @@ class Location (models.Model) :
 
 class ContactConsult (models.Model) : 
 
+    CHOICES_FIELDS = (
+        ("legal", "حقوقی"),
+        ("personal", "حقیقی")
+    )
+
     id = models.UUIDField(unique=True,primary_key=True,default=uuid4)
 
     name = models.CharField(verbose_name="نام", max_length=100)
     
-    department = models.CharField(max_length=256,verbose_name="دپارتمان")
+    department = models.CharField(max_length=256,verbose_name="دپارتمان", choices=CHOICES_FIELDS)
 
     phone = models.SlugField(verbose_name="شماره تلفن")
 
