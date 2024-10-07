@@ -18,7 +18,7 @@ class Header (models.Model) :
 
     email = models.EmailField(verbose_name="ایمیل داخل هدر",null=True,blank=True)
 
-    icon = models.ImageField(verbose_name="آیکون کنار شماره و ایمیل در هدر",null=True,blank=True)
+    # icon = models.ImageField(verbose_name="آیکون کنار شماره و ایمیل در هدر",null=True,blank=True)
 
 
     def __str__(self) : 
@@ -110,7 +110,7 @@ class ProductTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,null=True,blank=True,verbose_name="عنوان زیر محصولات")
 
-    icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="ایکون کادر")
+    # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="ایکون کادر")
 
     button_text = models.CharField(max_length=128,null=True,blank=True,verbose_name="متن button")
 
@@ -137,7 +137,7 @@ class AnswerQuestionTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان پایینی فرم تماس",null=True,blank=True)
 
-    icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="ایکون ")
+    # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="ایکون ")
 
     box_title = models.CharField(max_length=256,verbose_name="عنوان باکس",null=True,blank=True)
 
@@ -147,7 +147,7 @@ class AnswerQuestionTitle (models.Model) :
 
     text = models.TextField(null=True,blank=True,verbose_name="متن کادر زرد")
 
-    icon_phone = models.ImageField(max_length=256,verbose_name="آیکون قسمت شماره ها",null=True,blank=True)
+    # icon_phone = models.ImageField(max_length=256,verbose_name="آیکون قسمت شماره ها",null=True,blank=True)
 
     def __str__(self) : 
         return "مدیرت سوالات  مشتری"
@@ -181,7 +181,7 @@ class AchievementCard (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان زیر ",null=True,blank=True)
 
-    icon = models.ImageField(max_length=256,verbose_name="ایکون",null=True,blank=True)
+    # icon = models.ImageField(max_length=256,verbose_name="ایکون",null=True,blank=True)
 
     def __str__(self) : 
         return str(self.title)
@@ -207,7 +207,7 @@ class BlogTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان مقاله",null=True,blank=True)
 
-    icon = models.ImageField(max_length=256,verbose_name="ایکون کادر مقاله",null=True,blank=True)
+    # icon = models.ImageField(max_length=256,verbose_name="ایکون کادر مقاله",null=True,blank=True)
 
     button_text = models.CharField(max_length=128,null=True,blank=True,verbose_name="متن button")
 
@@ -237,7 +237,7 @@ class ProjectTitle (models.Model) :
 
     button_url = models.URLField(null=True,blank=True,verbose_name="آدرس button")
 
-    icon = models.ImageField(max_length=256,verbose_name="ایکون کادر پروژه ها",null=True,blank=True)
+    # icon = models.ImageField(max_length=256,verbose_name="ایکون کادر پروژه ها",null=True,blank=True)
 
     category_projects = models.ManyToManyField(CategoryProject,blank=True,verbose_name="دسته بندی های پروژه")
 
@@ -302,7 +302,7 @@ class AchievementTitle (models.Model) :
 
     title = models.CharField(max_length=256,verbose_name="عنوان",null=True,blank=True)
 
-    icon = models.ImageField(max_length=128,unique=True,blank=True,verbose_name="آیکون")
+    # icon = models.ImageField(max_length=128,unique=True,blank=True,verbose_name="آیکون")
 
     text = models.TextField(null=True,blank=True,verbose_name="متن")
 
@@ -396,7 +396,7 @@ class PhoneFooter (models.Model) :
 
     footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_phones")
 
-    icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="آیکون")
+    # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="آیکون")
 
     phone = models.CharField(max_length=256,verbose_name="شماره")
 
@@ -434,7 +434,7 @@ class SocialFooter (models.Model) :
 
     footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_socials")
 
-    icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="آیکون")
+    # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="آیکون")
 
     url = models.URLField(verbose_name="آدرس")
 

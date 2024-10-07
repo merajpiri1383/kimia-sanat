@@ -127,7 +127,7 @@ class ProjectsPage (models.Model) :
         verbose_name="عنوان زیر کادر پروژه ها"
     )
 
-    project_card_icon = models.ImageField(max_length=256,verbose_name="ایکون",null=True,blank=True)
+    # project_card_icon = models.ImageField(max_length=256,verbose_name="ایکون",null=True,blank=True)
 
     class Meta : 
         verbose_name = "صفحه پروژه ها"
