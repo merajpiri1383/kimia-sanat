@@ -2,7 +2,7 @@ from rest_framework import serializers
 from project.models import Category,Project,ProjectImage,Comment,ProjectsPage
 import re
 from rest_framework.exceptions import ValidationError
-from django_jalali.serializers.serializerfield import JDateField
+from jalali_date import  date2jalali
 
 
 # کلاس دسته بندی
@@ -66,10 +66,6 @@ class CommentSendSerializer(serializers.ModelSerializer) :
 # کلاس پروژه
 class ProjectSerializer(serializers.ModelSerializer) :
 
-    launch_date = JDateField()
-
-    JDateField = JDateField()
-
     class Meta :
         model = Project
         fields = "__all__"
@@ -81,6 +77,9 @@ class ProjectSerializer(serializers.ModelSerializer) :
             many=True,
             context=self.context
         ).data
+
+        # context["launch_date"] = date2jalali(instance.launch_date).strftime("%Y-%d-%m")
+        # context["start_date"] = date2jalali(instance.start_date).strftime("%Y-%d-%m")
 
         context["comments"] = CommentSendSerializer(
             instance.comments.filter(reply_to=None,is_valid=True),
@@ -104,7 +103,9 @@ class ProjectSimpleSerializer (serializers.ModelSerializer) :
         context = super().to_representation(instance)
         context["image"] = ProjectImageSerializer(instance.images.first(),context=self.context).data
         context["cateogry"] = CategorySerializer(instance.category,context=self.context).data
-        return context
+        # context["launch_date"] = date2jalali(instance.launch_date).strftime("%Y-%d-%m")
+        # context["start_date"] = date2jalali(instance.start_date).strftime("%Y-%d-%m")
+        return context 
     
 # مدل صفحه پروژه ها
 class ProjectsPageSerializer (serializers.ModelSerializer) : 

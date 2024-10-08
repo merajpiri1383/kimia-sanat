@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 # models
-from blog.models import Category,Blog,Comment,BlogsPage
+from blog.models import Category,Blog,Comment
 # serializers
 from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,
-                CategorySerializer,CommentReplySerializer,CommentSerializer,BlogsPageSerializer) 
+                CategorySerializer,CommentReplySerializer,CommentSerializer) 
 # swagger
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi

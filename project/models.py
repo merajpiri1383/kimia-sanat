@@ -3,6 +3,7 @@ from uuid import uuid4
 from django_jalali.db.models import jDateField
 from utils.models import CommentBase
 from django.utils.text import slugify
+from datetime import datetime
 
 
 # مدل دسته بندی
@@ -51,9 +52,9 @@ class Project(models.Model) :
 
     contractor = models.CharField(max_length=256,verbose_name="نام پیمانکار")
 
-    launch_date = jDateField(null=True,blank=True,verbose_name="تاریخ راه اندازی")
+    launch_date = jDateField(verbose_name="تاریخ راه اندازی",null=True,blank=True)
 
-    start_date = jDateField(null=True,blank=True,verbose_name="تاریخ ساخت",auto_now_add=True)
+    start_date = jDateField(verbose_name="تاریخ ساخت",null=True,blank=True)
 
     location = models.CharField(max_length=256,verbose_name="موقیعت")
 
@@ -127,7 +128,6 @@ class ProjectsPage (models.Model) :
         verbose_name="عنوان زیر کادر پروژه ها"
     )
 
-    # project_card_icon = models.ImageField(max_length=256,verbose_name="ایکون",null=True,blank=True)
 
     class Meta : 
         verbose_name = "صفحه پروژه ها"

@@ -126,31 +126,3 @@ class Comment (CommentBase) :
     class Meta : 
         verbose_name = "کامنت "
         verbose_name_plural = "کامنت های بلاگ"
-
-
-
-# مدل صفحه بلاگ 
-class BlogsPage (models.Model) : 
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    background_title = models.CharField(
-        max_length=256,
-        null=True,
-        blank=True,
-        verbose_name = "عنوان روی بک گراند"
-    )
-
-    background_image = models.ImageField(
-        upload_to="blog/background/",
-        null=True,
-        blank=True,
-        verbose_name="بک گراند"
-    )
-
-    def __str__(self) : 
-        return "صفحه بلاگ ها"
-    
-    class Meta : 
-        verbose_name = "صفحه بلاگ ها"
-        verbose_name_plural = "مدیرت صفحه بلاگ ها"
