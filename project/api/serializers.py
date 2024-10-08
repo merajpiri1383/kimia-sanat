@@ -2,6 +2,7 @@ from rest_framework import serializers
 from project.models import Category,Project,ProjectImage,Comment,ProjectsPage
 import re
 from rest_framework.exceptions import ValidationError
+from django_jalali.serializers.serializerfield import JDateField
 
 
 # کلاس دسته بندی
@@ -64,6 +65,10 @@ class CommentSendSerializer(serializers.ModelSerializer) :
 
 # کلاس پروژه
 class ProjectSerializer(serializers.ModelSerializer) :
+
+    launch_date = JDateField()
+
+    JDateField = JDateField()
 
     class Meta :
         model = Project

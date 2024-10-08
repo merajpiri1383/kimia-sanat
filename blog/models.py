@@ -13,8 +13,6 @@ class Tag (models.Model) :
 
     slug = models.SlugField(null=True,blank=True,allow_unicode=True)
 
-    url = models.URLField(null=True,blank=True,verbose_name="ادرس")
-
     def __str__(self) : 
         return str(self.name)
     
@@ -100,10 +98,6 @@ class Module (models.Model) :
     )
 
     text = models.TextField(null=True,blank=True,verbose_name="متن")
-
-    image = models.ImageField(upload_to="blog/module/image/",null=True,blank=True,verbose_name="تصویر")
-
-    file = models.FileField(upload_to="blog/module/file/",null=True,blank=True,verbose_name="فایل")
 
     created = models.DateTimeField(auto_now_add=True,verbose_name="تاریخ ایجاد")
 

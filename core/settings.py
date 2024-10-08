@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'nested_inline',
     'django_summernote',
     'rest_framework_simplejwt',
+    'jalali_date'
 ]
 
 MIDDLEWARE = [
@@ -102,24 +103,16 @@ AUTH_USER_MODEL = "user.User"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.getenv("DATABASE_NAME"),
-#         'USER' : os.getenv("DATABASE_USER"),
-#         'PASSWORD' : os.getenv('DATABASE_PASSWORD'),
-#         'PORT' : os.getenv('DATABASE_PORT',5432),
-#         'HOST' : os.getenv('DATABASE_HOST'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv("DATABASE_NAME"),
+        'USER' : os.getenv("DATABASE_USER"),
+        'PASSWORD' : os.getenv('DATABASE_PASSWORD'),
+        'PORT' : os.getenv('DATABASE_PORT',5432),
+        'HOST' : os.getenv('DATABASE_HOST'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -143,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'fa-ir'
+LANGUAGE_CODE = 'fa'
 
 TIME_ZONE = 'Asia/Tehran'
 
@@ -152,7 +145,8 @@ USE_I18N = True
 USE_TZ = True
 
 import locale
-locale.setlocale(locale.LC_ALL)
+locale.setlocale(locale.LC_ALL, "fa_IR.UTF-8")
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -191,4 +185,30 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME" : timedelta(hours=1),
     "SLIDING_TOKEN_LIFETIME_LATE_USER" : timedelta(hours=2),
     "SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER" : timedelta(days=1)
+}
+
+
+SUMMERNOTE_CONFIG = {
+    'attachment_filesize_limit':  int(1024 * 1024 * 1024 // 4 // 3),
+    'attachment_absolute_uri': True
+}
+
+# jalali date 
+JALALI_DATE_DEFAULTS = {
+   # if change it to true then all dates of the list_display will convert to the Jalali.
+   'LIST_DISPLAY_AUTO_CONVERT': False,
+   'Strftime': {
+        'date': '%y/%m/%d',
+        'datetime': '%H:%M:%S _ %y/%m/%d',
+    },
+    'Static': {
+        'js': [
+            'admin/js/django_jalali.min.js',
+        ],
+        'css': {
+            'all': [
+                'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css',
+            ]
+        }
+    },
 }

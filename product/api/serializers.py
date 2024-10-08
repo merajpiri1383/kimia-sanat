@@ -35,7 +35,7 @@ class CategorySerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Category
-        fields = ["name","slug","icon","description"]
+        fields = "__all__"
 
     def to_representation(self,instance) : 
         context = super().to_representation(instance)

@@ -38,7 +38,7 @@ urlpatterns = [
 
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
 
-    path("summernote/", include("django_summernote.urls")),
+    path("summernote", include("django_summernote.urls")),
 
     re_path('^media/(?P<path>.*)$',serve,{'document_root' : settings.MEDIA_ROOT}),
 ]

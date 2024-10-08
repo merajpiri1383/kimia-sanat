@@ -2,11 +2,12 @@ from django.contrib import admin
 from blog.models import Blog,Category,Module,Comment,BlogsPage,Tag
 from django_summernote.widgets import SummernoteWidget
 from django.db import models
+from jalali_date.admin import ModelAdminJalaliMixin, StackedInlineJalaliMixin	
 
-class ModuleStackInline (admin.StackedInline) :
+class ModuleStackInline (StackedInlineJalaliMixin,admin.StackedInline) :
 
     model = Module
-    extra = 1
+    extra = 0
     exclude = ["id"]
     formfield_overrides = {
         models.TextField : {'widget' : SummernoteWidget}
@@ -14,13 +15,13 @@ class ModuleStackInline (admin.StackedInline) :
 
 # مدل دسته بندی
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin) :
+class CategoryAdmin(ModelAdminJalaliMixin,admin.ModelAdmin) :
     exclude = ["id","slug"]
 
 
 # مدل بلاگ
 @admin.register(Blog)
-class BlogAdmin(admin.ModelAdmin) :
+class BlogAdmin(ModelAdminJalaliMixin,admin.ModelAdmin) :
     inlines = [ModuleStackInline]
     exclude = ["id","slug"]
     list_filter = ["is_published","created_date","author"]
@@ -29,7 +30,7 @@ class BlogAdmin(admin.ModelAdmin) :
 
 # مدل کامنت
 @admin.register(Comment)
-class CommentAdmin (admin.ModelAdmin) :
+class CommentAdmin (ModelAdminJalaliMixin,admin.ModelAdmin) :
     exclude = ["id"]
     search_fields = ["blog","email","name",'description']
     list_filter = ["blog","is_valid","created","reply_to"]
@@ -37,7 +38,7 @@ class CommentAdmin (admin.ModelAdmin) :
 
 # مدل صفحه بلاگ
 @admin.register(BlogsPage)
-class BlogsPageAdmin (admin.ModelAdmin) : 
+class BlogsPageAdmin (ModelAdminJalaliMixin,admin.ModelAdmin) : 
     exclude = ["id"]
 
 

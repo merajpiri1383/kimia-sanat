@@ -53,7 +53,7 @@ class Project(models.Model) :
 
     launch_date = jDateField(null=True,blank=True,verbose_name="تاریخ راه اندازی")
 
-    start_date = jDateField(null=True,blank=True,verbose_name="تاریخ ساخت")
+    start_date = jDateField(null=True,blank=True,verbose_name="تاریخ ساخت",auto_now_add=True)
 
     location = models.CharField(max_length=256,verbose_name="موقیعت")
 
