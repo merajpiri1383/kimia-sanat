@@ -43,7 +43,7 @@ class Project(models.Model) :
 
     video = models.FileField(upload_to="project/video/",verbose_name='ویدیو پروژه',null=True,blank=True)
 
-    main_image = models.ImageField(upload_to="project/image/",null=True,blank=True,verbose_name="تصویر اصلی")
+    # main_image = models.ImageField(upload_to="project/image/",null=True,blank=True,verbose_name="تصویر اصلی")
 
     name = models.CharField(max_length=256,verbose_name="نام پروژه",unique=True)
 
