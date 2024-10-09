@@ -1,8 +1,7 @@
 from rest_framework import serializers
-from project.models import Category,Project,ProjectImage,Comment,ProjectsPage
+from project.models import Category,Project,ProjectImage,Comment,ProjectsPage,VideoProject
 import re
 from rest_framework.exceptions import ValidationError
-from jalali_date import  date2jalali
 
 
 # کلاس دسته بندی
@@ -18,7 +17,14 @@ class ProjectImageSerializer(serializers.ModelSerializer) :
 
     class Meta :
         model = ProjectImage
-        fields = ["id","image"]
+        fields = ["image"]
+
+# کلاس ویدیو های پروژه 
+class VideoProjectSerializer (serializers.ModelSerializer) : 
+
+    class Meta :
+        model = VideoProject
+        fields = ["video"]
 
 # کلاس پاسخ به کامنت
 class ReplyCommentSerializer(serializers.ModelSerializer) :
@@ -66,27 +72,23 @@ class CommentSendSerializer(serializers.ModelSerializer) :
 # کلاس پروژه
 class ProjectSerializer(serializers.ModelSerializer) :
 
+    category = CategorySerializer() 
+
+    images = ProjectImageSerializer(many=True)
+
+    videos = VideoProjectSerializer(many=True)
+
     class Meta :
         model = Project
         fields = "__all__"
 
     def to_representation(self,instance,**kwargs):
         context = super().to_representation(instance,**kwargs)
-        context["images"] = ProjectImageSerializer(
-            instance.images.all(),
-            many=True,
-            context=self.context
-        ).data
-
-        # context["launch_date"] = date2jalali(instance.launch_date).strftime("%Y-%d-%m")
-        # context["start_date"] = date2jalali(instance.start_date).strftime("%Y-%d-%m")
 
         context["comments"] = CommentSendSerializer(
             instance.comments.filter(reply_to=None,is_valid=True),
             many=True
         ).data
-
-        context["category"] = CategorySerializer(instance.category,context=self.context).data
         return context
 
 

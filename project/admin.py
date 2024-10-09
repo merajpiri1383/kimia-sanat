@@ -1,12 +1,18 @@
 from django.contrib import admin
-from project.models import Category,Project,ProjectImage,Comment,ProjectsPage
+from project.models import Category,Project,ProjectImage,Comment,ProjectsPage,VideoProject
 from jalali_date.admin import ModelAdminJalaliMixin
 
 # تصاویر پروژه
 class ProjectImageInline(admin.TabularInline) :
     model = ProjectImage
     exclude = ["id"]
-    extra = 1
+    extra = 0
+
+# ویدیو های پروژه 
+class VideoProjectInline (admin.TabularInline) : 
+    model = VideoProject
+    exclude = ["id"]
+    extra = 0
 
 # مدل دسته بندی
 @admin.register(Category)
@@ -17,7 +23,7 @@ class CategoryAdminModel(admin.ModelAdmin) :
 @admin.register(Project)
 class ProjectAdminModel(ModelAdminJalaliMixin,admin.ModelAdmin) :
     exclude = ["id","slug"]
-    inlines = [ProjectImageInline]
+    inlines = [ProjectImageInline,VideoProjectInline]
 
 
 # مدل کامنت

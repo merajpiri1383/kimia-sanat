@@ -3,7 +3,6 @@ from uuid import uuid4
 from django_jalali.db.models import jDateField
 from utils.models import CommentBase
 from django.utils.text import slugify
-from datetime import datetime
 
 
 # مدل دسته بندی
@@ -42,7 +41,9 @@ class Project(models.Model) :
         verbose_name = "دسته بندی پروژه"
     )
 
-    video = models.FileField(upload_to="project/video/",verbose_name='ویدیو پروژه')
+    video = models.FileField(upload_to="project/video/",verbose_name='ویدیو پروژه',null=True,blank=True)
+
+    main_image = models.ImageField(upload_to="project/image/",null=True,blank=True,verbose_name="تصویر اصلی")
 
     name = models.CharField(max_length=256,verbose_name="نام پروژه",unique=True)
 
@@ -135,3 +136,25 @@ class ProjectsPage (models.Model) :
     
     def __str__(self) : 
         return "صفحه پروژه ها"
+    
+
+# ویدیو های پروژه 
+
+class VideoProject (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    project = models.ForeignKey(
+        to = Project , 
+        on_delete = models.CASCADE , 
+        related_name = "videos"
+    )
+    
+    video = models.FileField(upload_to="project/video/",verbose_name="فیلم")
+
+    def __str__ (self) : 
+        return "video"
+    
+    class Meta : 
+        verbose_name = "video"
+        verbose_name_plural = "ویدیو های پروژه"

@@ -12,6 +12,8 @@ class AboutUs (models.Model) :
         verbose_name="پروژه های صفحه درباره ما"
     )
 
+
+
     def __str__ (self) : 
         return "صفحه درباره ما"
     
