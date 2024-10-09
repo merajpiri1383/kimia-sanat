@@ -33,6 +33,7 @@ services :
       context : ./
       dockerfile : ./Dockerfile
     restart : always
+    command : celery -A core worker --loglevel=INFO
     environment : 
       - DEBUG=True
       - DATABASE_NAME=kimia_db
