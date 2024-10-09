@@ -25,34 +25,19 @@ class PaySlipSerializer (serializers.ModelSerializer) :
 
 class OrderSerializer (serializers.ModelSerializer) : 
 
+    products_count = CountSerializer(many=True)
+
+    pay_slips = PaySlipSerializer(many=True)
+
+
     class Meta :  
         model = Order
-        exclude = ["products","user","created"] 
-
-    def to_representation(self,instance) : 
-        context = super().to_representation(instance)
-        context["created_date"] = instance.created.strftime('%Y-%m-%d')
-        context["created_time"] = instance.created.strftime('%H:%M:%S')
-        context["product"] = CountSerializer(
-            instance.products.all(),
-            many=True
-        ).data
-        context["pay_slips"] = PaySlipSerializer(
-            instance.pay_slips.all(),
-            many=True,
-            context=self.context
-        ).data
-        return context
+        fields = "__all__"
+        read_only_fields = ["tracking_code"]
     
 # مدل ساده سفارش 
 class OrderSimpleSerializer (serializers.ModelSerializer) : 
 
     class Meta :  
         model = Order
-        exclude = ["products","user","created"] 
-
-    def to_representation(self,instance) : 
-        context = super().to_representation(instance)
-        context["created_date"] = instance.created.strftime('%Y-%m-%d')
-        context["created_time"] = instance.created.strftime('%H:%M:%S')
-        return context
+        exclude = ["products_count","user"] 

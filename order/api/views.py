@@ -64,7 +64,7 @@ class OrderProductAPIView (APIView) :
             self.product = Count.objects.get(id=product_count_id)
         except : 
             return Response({'detail' : 'product count not found .'},status.HTTP_404_NOT_FOUND) 
-        self.order = request.user.orders.filter(is_paid=False,is_valid=False).first()
+        self.order = request.user.orders.filter(is_send=False,is_valid=False).first()
         if not self.order : 
             self.order = Order.objects.create(user=request.user)
 
@@ -75,7 +75,7 @@ class OrderProductAPIView (APIView) :
     def post(self,request,product_count_id) : 
         result = self.get_order(request,product_count_id)
         if result : return result
-        self.order.products.add(self.product)
+        self.order.products_count.add(self.product)
         serializer = OrderSerializer(self.order)
         return Response(serializer.data,status.HTTP_200_OK)
     
@@ -87,7 +87,7 @@ class OrderProductAPIView (APIView) :
     def delete(self,request,product_count_id) : 
         result = self.get_order(request,product_count_id)
         if result : return result
-        self.order.products.remove(self.product)
+        self.order.products_count.remove(self.product)
         serializer = OrderSerializer(self.order)
         return Response(serializer.data,status.HTTP_200_OK) 
     

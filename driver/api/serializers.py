@@ -13,7 +13,7 @@ class DriverSerializer (serializers.ModelSerializer) :
 
     class Meta : 
         model = Driver
-        exclude = ["created"]
+        fields = "__all__"
     
     def __init__(self,instance=None,**kwargs) :
         if instance : 
@@ -21,11 +21,6 @@ class DriverSerializer (serializers.ModelSerializer) :
         return super().__init__(instance,**kwargs) 
 
     def validate(self,attrs) : 
-        if not phone_regex.findall(attrs["phone"]) : 
+        if "phone" in attrs and not phone_regex.findall(attrs["phone"]) : 
             raise ValidationError({'phone' : "please enter correct phone number ."})
         return super().validate(attrs)
-    
-    def to_representation(self, instance):
-        context = super().to_representation(instance)
-        context["created"] = instance.created.strftime("%Y-%m-%d | %H:%M:%S")
-        return context

@@ -54,6 +54,12 @@ class User (AbstractBaseUser,PermissionsMixin) :
 
     otp_code = models.SlugField(max_length=5,verbose_name="کد تایید",null=True,blank=True)
 
+    drivers = models.ManyToManyField(
+        to = Driver , 
+        blank = True , 
+        verbose_name = "راننده ها"
+    )
+
     USERNAME_FIELD = "phone"
     REQUIRED_FIELDS = []
 

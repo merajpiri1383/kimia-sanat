@@ -6,6 +6,8 @@ from uuid import uuid4
 from django_jalali.db.models import jDateTimeField
 from django.core.exceptions import ValidationError
 import re
+from random import randint
+from driver.models import Driver
 
 number_regex = re.compile("^[0-9]{8,}$")
 
@@ -33,7 +35,7 @@ class Order (models.Model) :
         related_name = "orders"
     )
 
-    products = models.ManyToManyField(
+    products_count = models.ManyToManyField(
         to = Count,
         blank=True,
         verbose_name="محصولات"
@@ -44,6 +46,16 @@ class Order (models.Model) :
     is_valid = models.BooleanField(default=False,verbose_name="تایید شده")
 
     created  = jDateTimeField(auto_now_add=True)
+
+    tracking_code = models.SlugField(null=True,blank=True,verbose_name="کد رهگیری")
+
+    driver = models.ForeignKey(
+        to = Driver , 
+        on_delete = models.SET_NULL ,
+        null = True , 
+        blank = True ,
+        verbose_name = "راننده" 
+    )
 
     delivery_time = models.CharField(
         max_length=2,
@@ -67,6 +79,11 @@ class Order (models.Model) :
     class Meta : 
         verbose_name = 'سفارش'
         verbose_name_plural = 'سفارش ها'
+    
+    def save(self,**kwargs) : 
+        if not self.tracking_code : 
+            self.tracking_code = f"ksp_{randint(10000,99999)}"
+        return super().save(**kwargs)
 
 
 
