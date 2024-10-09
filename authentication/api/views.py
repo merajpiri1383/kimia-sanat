@@ -44,7 +44,7 @@ class LoginAPIView (APIView) :
             check_user_is_active_for_register.apply_async(args=[phone])
         else :
             send_otp.apply_async(args=[phone])
-        return Response({"otp" : user.otp_code , 'detail' : "otp code has been sent ."},status.HTTP_200_OK)
+        return Response({'detail' : "otp code has been sent ."},status.HTTP_200_OK)
     
 
 
@@ -126,6 +126,6 @@ class ResendOtpCodeAPIView (APIView) :
         try : 
             user = get_user_model().objects.get(phone=phone)
             send_otp.apply_async(args=[phone])
-            return Response({ "otp" : user.otp_code,'detail':'otp code has been sent .'},status.HTTP_200_OK)
+            return Response({'detail':'otp code has been sent .'},status.HTTP_200_OK)
         except : 
             return Response({'detail': 'phone not found .'},status.HTTP_404_NOT_FOUND)

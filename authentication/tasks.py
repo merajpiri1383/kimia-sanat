@@ -1,12 +1,16 @@
 from celery import shared_task
 from django.contrib.auth import get_user_model
 from time import sleep
+from authentication.sms import send_sms
+
 
 
 @shared_task
 def send_otp (phone) : 
     user = get_user_model().objects.get(phone=phone)
-    print(user.otp_code)
+    try : 
+        send_sms(phone,user.otp_code)
+    except : pass 
     sleep(120)
     user.save()
 
