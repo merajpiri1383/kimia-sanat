@@ -3,7 +3,7 @@ from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
                             Header,FirstPageContent,Footer,FooterLink,PhoneFooter,SocialFooter
                             ,AchievementCardItem,Consult,ElectroLicense,CustomerClub,Slider,
-                            PhoneAnswerQuestion,AchievementTitle,Achievement)
+                            PhoneAnswerQuestion,AchievementTitle,Achievement,FooterFeq)
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
 
@@ -120,10 +120,22 @@ class ElectroLicenseInline (admin.TabularInline) :
     exclude = ["id"]
     extra = 0
 
+class FooterFeqInline (admin.StackedInline) : 
+    model = FooterFeq
+    exclude = ["id"]
+    extra = 0
+
 @admin.register(Footer)
 class FooterAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-    inlines= [FooterLinkInline,SocialFooterInline,PhoneFooterInline,CategoryFooterInline,ElectroLicenseInline]
+    inlines= [
+        FooterLinkInline,
+        SocialFooterInline,
+        PhoneFooterInline,
+        CategoryFooterInline,
+        ElectroLicenseInline,
+        FooterFeqInline
+    ]
 
 
 # درخواست های مشاوره

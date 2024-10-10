@@ -388,7 +388,7 @@ class PhoneFooter (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_phones")
+    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="phones")
 
     # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="آیکون")
 
@@ -426,9 +426,7 @@ class SocialFooter (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_socials")
-
-    # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="آیکون")
+    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="socials")
 
     url = models.URLField(verbose_name="آدرس")
 
@@ -443,7 +441,7 @@ class FooterLink (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_links")
+    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="links")
 
     name = models.CharField(max_length=256,verbose_name="نام لینک")
 
@@ -462,7 +460,7 @@ class CategoryFooter (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="footer_category")
+    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="categories")
 
     name = models.CharField(max_length=256,verbose_name="نام دسته بندی")
 
@@ -493,6 +491,7 @@ class Consult (models.Model ) :
         max_length=5,
         choices=persons,
         default="real",
+        verbose_name="شخص"
     )
 
     phone = models.SlugField(max_length=11,verbose_name="شماره همراه")
@@ -501,7 +500,7 @@ class Consult (models.Model ) :
 
     text = models.TextField(verbose_name="توضیحات")
 
-    is_valid = models.BooleanField(default=False,verbose_name="تایید شده توسط ادمین")
+    is_valid = models.BooleanField(default=False,verbose_name="خوانده شده")
 
     def __str__(self) : 
         return  str(self.name)
@@ -532,3 +531,27 @@ class CustomerClub (models.Model) :
 
         if not regex_phone.findall(self.phone) : 
             raise ValidationError("invalid phone number .")
+        
+
+# سوالات متداول فوتر 
+
+class FooterFeq (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    footer = models.ForeignKey(
+        to = Footer , 
+        on_delete = models.CASCADE , 
+        related_name = "feqs"
+    )
+
+    question = models.CharField(verbose_name="سوال",max_length=256)
+
+    answer = models.TextField(verbose_name="پاسخ")
+
+    def __str__ (self) : 
+        return str (self.question)
+    
+    class Meta : 
+        verbose_name = "سوال فوتر"
+        verbose_name_plural = "سوالات متداول فوتر"

@@ -2,7 +2,8 @@ from rest_framework import serializers
 from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,
                     Menu,SubMenu,CategoryFooter,CommingSoon,BlogTitle,ProjectTitle,Comment,
                     AchievementCardItem,AchievementCard,AnswerQuestionTitle,ProductTitle,
-                    FirstPageContent,Consult,ElectroLicense,Slider,PhoneAnswerQuestion,Achievement,AchievementTitle)
+                    FirstPageContent,Consult,ElectroLicense,Slider,PhoneAnswerQuestion,Achievement,AchievementTitle,
+                    FooterFeq)
 from blog.api.serializers import BlogSimpleSerializer
 from project.api.serializers import CategorySerializer as ProjectCategorySerializer
 from product.api.serializers import CategorySerializer as ProductCategorySerializer 
@@ -11,7 +12,7 @@ from rest_framework.exceptions import ValidationError
 
 # مدل فوتر 
 
-class CategoryFooter (serializers.ModelSerializer) : 
+class CategoryFooterSerializer (serializers.ModelSerializer) : 
     class Meta : 
         model = CategoryFooter
         exclude = ["id","footer"]
@@ -36,21 +37,29 @@ class ElectroLicenseSerializer (serializers.ModelSerializer) :
         model = ElectroLicense
         exclude = ["id","footer"]
 
+
+class FooterFeqSerializer ( serializers.ModelSerializer ) : 
+    class Meta : 
+        model = FooterFeq
+        exclude = ["id","footer"] 
+
 class FooterSerializer (serializers.ModelSerializer) : 
 
+    phones = FooterPhoneSerializer(many=True)
+
+    links = FooterLinkSerializer(many=True)
+
+    socials = SocialFooterSerializer(many=True)
+
+    categories = CategoryFooterSerializer(many=True)
+
+    licenses = ElectroLicenseSerializer(many=True)
+
+    feqs = FooterFeqSerializer(many=True)
 
     class Meta : 
         model = Footer
         exclude = ["id"]
-
-    def to_representation(self,instance,**kwargs) : 
-        context = super().to_representation(instance,**kwargs)
-        context["phones"] = FooterPhoneSerializer(instance.footer_phones.all(),many=True,context=self.context).data
-        context["links"] = FooterLinkSerializer(instance.footer_links.all(),many=True,context=self.context).data
-        context["socials"] = SocialFooterSerializer(instance.footer_socials.all(),many=True,context=self.context).data
-        context["categories"] = CategoryFooter(instance.footer_category.all(),many=True,context=self.context).data
-        context["licenses"] = ElectroLicenseSerializer(instance.licenses.all(),many=True,context=self.context).data
-        return context
 
 
 # مدل هدر 
