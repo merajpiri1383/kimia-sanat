@@ -137,8 +137,6 @@ class AnswerQuestionTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان پایینی فرم تماس",null=True,blank=True)
 
-    # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="ایکون ")
-
     box_title = models.CharField(max_length=256,verbose_name="عنوان باکس",null=True,blank=True)
 
     box_text = models.TextField(null=True,blank=True,verbose_name="متن باکس")
@@ -146,8 +144,6 @@ class AnswerQuestionTitle (models.Model) :
     image = models.ImageField(verbose_name="تصویر کادر زرد",upload_to="answer/image/",null=True,blank=True)
 
     text = models.TextField(null=True,blank=True,verbose_name="متن کادر زرد")
-
-    # icon_phone = models.ImageField(max_length=256,verbose_name="آیکون قسمت شماره ها",null=True,blank=True)
 
     def __str__(self) : 
         return "مدیرت سوالات  مشتری"
@@ -180,8 +176,6 @@ class AchievementCard (models.Model) :
     title = models.CharField(max_length=256,verbose_name="عنوان دستاورد های ما ",null=True,blank=True)
 
     sub_title = models.CharField(max_length=256,verbose_name="عنوان زیر ",null=True,blank=True)
-
-    # icon = models.ImageField(max_length=256,verbose_name="ایکون",null=True,blank=True)
 
     def __str__(self) : 
         return str(self.title)
@@ -495,7 +489,11 @@ class Consult (models.Model ) :
 
     name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی")
 
-    person = models.CharField(max_length=5,choices=persons,default="real")
+    person = models.CharField(
+        max_length=5,
+        choices=persons,
+        default="real",
+    )
 
     phone = models.SlugField(max_length=11,verbose_name="شماره همراه")
 

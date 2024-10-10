@@ -1,40 +1,41 @@
-services : 
-  redis :
-    image : redis 
-    ports : 
+services: 
+  redis:
+    image: redis 
+    ports: 
       - 6379:6379
-    restart : always
-  db : 
-    image : postgres
-    restart : always
-    ports : 
-        - "5432:5432"
-    environment : 
+    restart: always
+
+  db: 
+    image: postgres
+    restart: always
+    ports: 
+      - "5432:5432"
+    environment: 
       - POSTGRES_HOST_AUTH_METHOD=trust
       - POSTGRES_DB=kimia_db 
       - POSTGRES_USER=kimia_user
       - POSTGRES_PASSWORD=kimia_password
-    volumes : 
+    volumes: 
       - pgdata:/var/lib/postgresql/data
     
-  pgadmin : 
-    image : dpage/pgadmin4
-    restart : always
-    ports : 
+  pgadmin: 
+    image: dpage/pgadmin4
+    restart: always
+    ports: 
       - "8888:80"
-    environment : 
-      PGADMIN_DEFAULT_EMAIL : kimia@gmail.com
-      PGADMIN_DEFAULT_PASSWORD : password
-    volumes : 
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: kimia@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes: 
       - pgadmin-data:/var/lib/pgadmin
   
-  celery : 
-    build :
-      context : ./
-      dockerfile : ./Dockerfile
-    restart : always
-    command : celery -A core worker --loglevel=INFO
-    environment : 
+  celery: 
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    restart: always
+    command: celery -A core worker --loglevel=INFO
+    environment: 
       - DEBUG=True
       - DATABASE_NAME=kimia_db
       - DATABASE_USER=kimia_user
@@ -42,18 +43,19 @@ services :
       - DATABASE_HOST=db
       - CELERY_BROKER_URL=redis://redis:6379/
       - CELERY_RESULT_BACKEND=redis://redis:6379/
-    volumes :
+    volumes:
       - .:/app
-    depends_on : 
+    depends_on: 
       - db
       - redis
-  django : 
-    build : 
-      context : ./
-      dockerfile : ./Dockerfile
-    ports : 
+
+  django: 
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile
+    ports: 
       - "8000:8000"
-    environment : 
+    environment: 
       - DEBUG=True
       - DATABASE_NAME=kimia_db
       - DATABASE_USER=kimia_user
@@ -61,11 +63,12 @@ services :
       - DATABASE_HOST=db
       - CELERY_BROKER_URL=redis://redis:6379/
       - CELERY_RESULT_BACKEND=redis://redis:6379/
-    depends_on : 
+    depends_on: 
       - db
-    volumes :
+    volumes:
       - .:/app
-    command : ["sh","start.sh"]
-volumes :
+    command: ["sh", "start.sh"]
+
+volumes:
   pgdata:
   pgadmin-data:
