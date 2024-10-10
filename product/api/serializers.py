@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from product.models import (Product,Category,ImageProduct,Comment,Count,Standard,FeatureProduct,UsageProduct)
+from product.models import (Product,Category,ImageProduct,Comment,Count,Standard
+            ,FeatureProduct,UsageProduct,ViolationComment)
 
 
 # مدل تصویر
@@ -137,3 +138,13 @@ class ProductSerializer (serializers.ModelSerializer) :
             context=self.context
         ).data
         return context
+
+    
+# مدل گزارش تخلف کامنت
+
+class ViolationCommentSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = ViolationComment 
+        fields = "__all__"
+        ref_name = "product_comment_violation"

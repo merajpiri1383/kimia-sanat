@@ -1,5 +1,5 @@
 from django.contrib import admin
-from project.models import Category,Project,ProjectImage,Comment,ProjectsPage,VideoProject
+from project.models import Category,Project,ProjectImage,Comment,ProjectsPage,VideoProject,ViolationComment
 from jalali_date.admin import ModelAdminJalaliMixin
 
 # تصاویر پروژه
@@ -25,6 +25,11 @@ class ProjectAdminModel(ModelAdminJalaliMixin,admin.ModelAdmin) :
     exclude = ["id","slug"]
     inlines = [ProjectImageInline,VideoProjectInline]
 
+class ViolationCommentInline (admin.StackedInline) : 
+    model = ViolationComment
+    exclude = ["id"]
+    extra = 0
+
 
 # مدل کامنت
 @admin.register(Comment)
@@ -32,6 +37,7 @@ class CommentAdmin (admin.ModelAdmin) :
     exclude = ["id"]
     search_fields = ["project","email","name",'description']
     list_filter = ["project","is_valid","created","reply_to"]
+    inlines = [ViolationCommentInline]
 
 
 # صفحه پروژه ها 

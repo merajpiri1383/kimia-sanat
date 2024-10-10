@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from project.models import Category,Project,ProjectImage,Comment,ProjectsPage,VideoProject
+from project.models import Category,Project,ProjectImage,Comment,ProjectsPage,VideoProject,ViolationComment
 import re
 from rest_framework.exceptions import ValidationError
 
@@ -115,3 +115,12 @@ class ProjectsPageSerializer (serializers.ModelSerializer) :
     class Meta : 
         model = ProjectsPage
         exclude = ["id"]
+
+# مدل گزارش تخلف کامنت
+
+class ViolationCommentSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = ViolationComment 
+        fields = "__all__"
+        ref_name = "project_comment_violation"

@@ -43,8 +43,6 @@ class Project(models.Model) :
 
     video = models.FileField(upload_to="project/video/",verbose_name='ویدیو پروژه',null=True,blank=True)
 
-    # main_image = models.ImageField(upload_to="project/image/",null=True,blank=True,verbose_name="تصویر اصلی")
-
     name = models.CharField(max_length=256,verbose_name="نام پروژه",unique=True)
 
     slug = models.SlugField(null=True,unique=True,blank=True,allow_unicode=True)
@@ -158,3 +156,27 @@ class VideoProject (models.Model) :
     class Meta : 
         verbose_name = "video"
         verbose_name_plural = "ویدیو های پروژه"
+
+
+# مدل گزارش تخلف
+class ViolationComment (models.Model) :
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    comment = models.ForeignKey(
+        to = Comment , 
+        on_delete = models.CASCADE , 
+        related_name = "violations",
+        verbose_name = "کامنت"
+    )
+
+    topic = models.CharField(max_length=256,verbose_name="موضوع")
+
+    description = models.TextField(verbose_name="توضیحات")
+
+    def __str__ (self) : 
+        return str(self.topic)
+    
+    class Meta : 
+        verbose_name = "گزارش تخلف کامنت"
+        verbose_name_plural = "گزارشات تخلف کامنت ها"

@@ -1,12 +1,12 @@
 # rest framework tools
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status 
 from rest_framework.views import APIView
 # models
 from blog.models import Category,Blog,Comment
 # serializers
 from blog.api.serializers import (BlogSerializer,BlogSimpleSerializer,
-                CategorySerializer,CommentReplySerializer,CommentSerializer) 
+                CategorySerializer,CommentReplySerializer,CommentSerializer,ViolationCommentSerializer) 
 # swagger
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -206,3 +206,33 @@ class BlogSearchAPIView (APIView) :
                 query = SearchQuery(query)
             )).filter(rank__gt=0.001).order_by("-rank")
         return Response(BlogSimpleSerializer(blogs,many=True,context={'request':request}).data,status.HTTP_200_OK)
+    
+
+# گزارش تخلف
+
+class SendViolationCommentAPIView (APIView) : 
+    
+    @swagger_auto_schema(
+        operation_summary="گزارش تخلف کامنت",
+        tags=["blog / comment"],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "comment" : openapi.Schema(type=openapi.TYPE_STRING,description="ایدی کامنت"),
+                "topic" : openapi.Schema(type=openapi.TYPE_STRING,description="موضوع"),
+                "description" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
+            },
+            required=["topic","description"]
+        ),
+        responses={
+            201 : ViolationCommentSerializer(),
+            400 : 'bad request'
+        }
+    )
+    def post(self,request) : 
+        serializer = ViolationCommentSerializer(data=request.data)
+        if serializer.is_valid() : 
+            serializer.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        else : 
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)

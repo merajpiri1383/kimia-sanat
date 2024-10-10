@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from blog.models import Blog,Module,Category,Comment,Tag
+from blog.models import Blog,Module,Category,Comment,Tag,ViolationComment
 
 
-# مدل برچسب
+# مدل برچسب 
 class TagSerializer (serializers.ModelSerializer) : 
     
     class Meta : 
@@ -96,3 +96,13 @@ class CommentSerializer (serializers.ModelSerializer) :
         context["created_date"] = instance.created.strftime("%Y-%m-%d")
         context["created_time"] = instance.created.strftime("%H:%M:%S")
         return context
+    
+
+# مدل گزارش تخلف کامنت
+
+class ViolationCommentSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = ViolationComment 
+        fields = "__all__"
+        ref_name = "blog_comment_violation"

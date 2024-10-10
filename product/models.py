@@ -219,3 +219,27 @@ class Comment (CommentBase) :
     class Meta :
         verbose_name = "کامنت"
         verbose_name_plural = "کامنت های محصولات"
+
+
+# مدل گزارش تخلف
+class ViolationComment (models.Model) :
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    comment = models.ForeignKey(
+        to = Comment , 
+        on_delete = models.CASCADE , 
+        related_name = "violations",
+        verbose_name = "کامنت"
+    )
+
+    topic = models.CharField(max_length=256,verbose_name="موضوع")
+
+    description = models.TextField(verbose_name="توضیحات")
+
+    def __str__ (self) : 
+        return str(self.topic)
+    
+    class Meta : 
+        verbose_name = "گزارش تخلف کامنت"
+        verbose_name_plural = "گزارشات تخلف کامنت ها"

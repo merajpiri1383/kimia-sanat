@@ -1,5 +1,5 @@
 from django.contrib import admin
-from blog.models import Blog,Category,Module,Comment,Tag
+from blog.models import Blog,Category,Module,Comment,Tag,ViolationComment
 from django_summernote.widgets import SummernoteWidget
 from django.db import models
 from jalali_date.admin import ModelAdminJalaliMixin, StackedInlineJalaliMixin	
@@ -28,12 +28,18 @@ class BlogAdmin(ModelAdminJalaliMixin,admin.ModelAdmin) :
     search_fields = ["title","author","description"]
 
 
+class ViolationCommentInline (admin.StackedInline) : 
+    model = ViolationComment
+    exclude = ["id"]
+    extra = 0
+
 # مدل کامنت
 @admin.register(Comment)
 class CommentAdmin (ModelAdminJalaliMixin,admin.ModelAdmin) :
     exclude = ["id"]
     search_fields = ["blog","email","name",'description']
     list_filter = ["blog","is_valid","created","reply_to"]
+    inlines = [ViolationCommentInline]
 
 
 

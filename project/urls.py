@@ -12,5 +12,7 @@ urlpatterns = [
     # comment
     path('<project_slug>/comment/send/',views.SendCommentProjectAPIView.as_view(),name="send-comment-project"),
 
+    path('comment/send-violation/',views.SendViolationCommentAPIView.as_view(),name="send-violation"),
+
     path('comment/<comment_id>/reply/',views.ReplyCommentAPIView.as_view(),name="reply-comment-project"),
 ]

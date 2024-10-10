@@ -9,6 +9,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.tokens import RefreshToken
 from user.api.serializers import UserSerializer
 from authentication.throttling import ResendOtpCodeThrottle
+from django.conf import settings
 
 
 regex_phone = re.compile("^0[0-9]{10}$")
@@ -87,6 +88,8 @@ class VerifyAPIView (APIView) :
                 'user' : UserSerializer(user).data,
                 'access' : str(refresh_token.access_token),
                 'refresh' : str(refresh_token),
+                'access_token_life_time' : settings.ACCESS_TOKEN_LIFETIME ,
+                'refresh_token_life_time' : settings.SLIDING_TOKEN_REFRESH_LIFETIME
             }
             return Response(data,status.HTTP_200_OK)
         else :

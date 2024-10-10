@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from product.models import Product,Category,types_of_product,Comment
 from product.api.serializers import (ProductSimpleSerializer,ProductSerializer,CategorySerializer,
-            CommentSerializer,CommentReplySerializer)
+            CommentSerializer,CommentReplySerializer,ViolationCommentSerializer)
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from utils.views import get_ip
 from user.models import Ip
@@ -202,3 +202,33 @@ class LikedProductAPIView (APIView) :
     def delete(self,request,product_slug) : 
         self.product.liked.remove(request.user)
         return Response({"message" : "unliked successfully"},status.HTTP_200_OK)
+    
+
+# گزارش تخلف
+
+class SendViolationCommentAPIView (APIView) : 
+    
+    @swagger_auto_schema(
+        operation_summary="گزارش تخلف کامنت",
+        tags= ["product / comment"],
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "comment" : openapi.Schema(type=openapi.TYPE_STRING,description="ایدی کامنت"),
+                "topic" : openapi.Schema(type=openapi.TYPE_STRING,description="موضوع"),
+                "description" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
+            },
+            required=["topic","description"]
+        ),
+        responses={
+            201 : ViolationCommentSerializer(),
+            400 : 'bad request'
+        }
+    )
+    def post(self,request) : 
+        serializer = ViolationCommentSerializer(data=request.data)
+        if serializer.is_valid() : 
+            serializer.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
+        else : 
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
