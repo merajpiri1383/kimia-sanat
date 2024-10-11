@@ -6,6 +6,7 @@ from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             PhoneAnswerQuestion,AchievementTitle,Achievement,FooterFeq)
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
+from jalali_date.admin import ModelAdminJalaliMixin
 
 # عنوان پروژه 
 
@@ -60,7 +61,7 @@ class HeaderAdmin (NestedModelAdmin) :
 
 # مدیرت Comming Soon
 @admin.register(CommingSoon) 
-class CommingSoonAdminModel (admin.ModelAdmin) : 
+class CommingSoonAdminModel (ModelAdminJalaliMixin,admin.ModelAdmin) : 
     exclude = ["id"]
 
 

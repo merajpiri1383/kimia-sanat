@@ -110,8 +110,6 @@ class ProductTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,null=True,blank=True,verbose_name="عنوان زیر محصولات")
 
-    # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="ایکون کادر")
-
     button_text = models.CharField(max_length=128,null=True,blank=True,verbose_name="متن button")
 
     button_url = models.URLField(null=True,blank=True,verbose_name="آدرس button")
@@ -201,8 +199,6 @@ class BlogTitle (models.Model) :
 
     sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان مقاله",null=True,blank=True)
 
-    # icon = models.ImageField(max_length=256,verbose_name="ایکون کادر مقاله",null=True,blank=True)
-
     button_text = models.CharField(max_length=128,null=True,blank=True,verbose_name="متن button")
 
     button_url = models.CharField(max_length=128,null=True,blank=True,verbose_name="آدرس button")
@@ -230,8 +226,6 @@ class ProjectTitle (models.Model) :
     button_text = models.CharField(max_length=128,null=True,blank=True,verbose_name="متن button")
 
     button_url = models.URLField(null=True,blank=True,verbose_name="آدرس button")
-
-    # icon = models.ImageField(max_length=256,verbose_name="ایکون کادر پروژه ها",null=True,blank=True)
 
     category_projects = models.ManyToManyField(CategoryProject,blank=True,verbose_name="دسته بندی های پروژه")
 
@@ -350,14 +344,12 @@ class FirstPageContent (models.Model) :
         verbose_name="دستاورد ها "
     )
 
-    pattern_image = models.ImageField(upload_to="first_page_content/pattern_image/",verbose_name="عکس پترن",null=True,blank=True)
-
     def __str__ (self) : 
-        return "محتوای صفحه اول"
+        return "گواهینامه های صفحه اصلی"
     
     class Meta : 
-        verbose_name = "محتوای صفحه اول"
-        verbose_name_plural = "مدیرت محتوای صفحه اول"
+        verbose_name = "گواهینامه های صفحه اصلی"
+        verbose_name_plural = "گواهینامه های صفحه اصلی"
 
 
 # فوتر 
@@ -427,6 +419,8 @@ class SocialFooter (models.Model) :
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
     footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="socials")
+
+    name = models.CharField(max_length=256,verbose_name="نام شبکه اجتماعی",null=True,blank=True)
 
     url = models.URLField(verbose_name="آدرس")
 

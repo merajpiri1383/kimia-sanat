@@ -1,6 +1,8 @@
 from django.contrib import admin
 from product.models import (Product,Category,UsageProduct,FeatureProduct,Standard,Count
             ,ImageProduct,Comment,ViolationComment)
+from django.db import models 
+from django_summernote.admin import SummernoteWidget
 
 # مدل کاربرد محصول
 class UsageProductStackInline (admin.TabularInline) :
@@ -30,6 +32,9 @@ class CountInline (admin.TabularInline) :
 class ProductAdmin (admin.ModelAdmin) :
     exclude = ["id","slug","views","liked"]
     inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline,CountInline]
+    formfield_overrides = {
+        models.TextField : { 'widget' : SummernoteWidget }
+    }
 
 # مدل استاندارد
 @admin.register(Standard)
