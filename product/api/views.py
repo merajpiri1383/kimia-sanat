@@ -120,6 +120,8 @@ class ProductPageAPIView (APIView) :
 # ارسال کامنت برای محصول
 class SendCommentProductAPIView(APIView) :
 
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         tags=["product / comment"],
         operation_summary="send comment",
@@ -147,6 +149,8 @@ class SendCommentProductAPIView(APIView) :
 
 # پاسخ به کامنت
 class ReplyCommentAPIView(APIView) :
+
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         tags=["product / comment"],

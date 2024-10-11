@@ -3,6 +3,7 @@ from product.models import (Product,Category,UsageProduct,FeatureProduct,Standar
             ,ImageProduct,Comment,ViolationComment)
 from django.db import models 
 from django_summernote.admin import SummernoteWidget
+from nested_inline.admin import NestedModelAdmin,NestedStackedInline
 
 # مدل کاربرد محصول
 class UsageProductStackInline (admin.TabularInline) :
@@ -47,15 +48,23 @@ class StandardAdmin (admin.ModelAdmin) :
 class CategoryAdmin ( admin.ModelAdmin ) :
     exclude = ["id","slug"]
 
-class ViolationCommentInline (admin.StackedInline) : 
+class ViolationCommentInline (NestedStackedInline) : 
     model = ViolationComment
     exclude = ["id"]
     extra = 0
 
+
+
+class CommentInline (NestedStackedInline) : 
+    model = Comment
+    exclude = ["id"]
+    extra = 0
+
+    
 # مدل کامنت
 @admin.register(Comment)
-class CommentAdmin (admin.ModelAdmin) :
+class CommentAdmin (NestedModelAdmin) :
     exclude = ["id"]
     search_fields = ["product","email","name",'description']
     list_filter = ["product","is_valid","created","reply_to"]
-    inlines = [ViolationCommentInline]
+    inlines = [ViolationCommentInline,CommentInline]
