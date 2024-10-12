@@ -5,7 +5,6 @@ from utils.models import Item,CommentBase
 from user.models import Ip
 from django_jalali.db.models import jDateField
 from django.contrib.auth import get_user_model
-from stock.models import ProductGroup
 
 
 # مدل استاندارد
@@ -35,8 +34,6 @@ class Category (models.Model) :
     name = models.CharField(max_length=256,verbose_name="نام دسته بندی",unique=True)
 
     slug = models.SlugField(null=True,blank=True,allow_unicode=True)
-
-    # icon = models.ImageField(max_length=256,verbose_name="ایکون",null=True,blank=True)
     
     description = models.TextField(verbose_name="توضیحات دسته بندی")
 
@@ -64,14 +61,6 @@ class Product (models.Model) :
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    group = models.ForeignKey(
-        to = ProductGroup , 
-        on_delete = models.CASCADE , 
-        related_name = "products",
-        null = True , 
-        blank = True,
-    )
-
     category = models.ForeignKey(
         to = Category,
         on_delete = models.CASCADE,
@@ -86,8 +75,6 @@ class Product (models.Model) :
     title = models.CharField(max_length=256,verbose_name="عنوان محصول",unique=True)
 
     slug = models.SlugField(null=True,blank=True,allow_unicode=True)
-
-    count = models.PositiveBigIntegerField(default=0,verbose_name="مقدار محصول در انبار")
 
     type = models.CharField(max_length=10,choices=types_of_product,default="fluid",verbose_name="نوع محصول")
 
@@ -142,8 +129,6 @@ class Count (models.Model) :
     )
 
     count = models.CharField(max_length=256,verbose_name="مقدار")
-
-    price = models.PositiveBigIntegerField(null=True,blank=True,verbose_name="قیمت")
 
     def __str__(self) : 
         return f"{self.product.title} -- {self.count}"
