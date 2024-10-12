@@ -95,11 +95,11 @@ class Rule (models.Model) :
     text = models.TextField(verbose_name="متن")
 
     def __str__ (self) : 
-        return "قانون"
+        return "قوانین و مقررات خرید کاربر"
     
     class Meta : 
-        verbose_name ="قانون"
-        verbose_name_plural = 'قوانین و مقررات'
+        verbose_name = "قوانین و مقررات خرید کاربر"
+        verbose_name_plural = "قوانین و مقررات خرید کاربر"
 
 
 # مدل فیش واریزی

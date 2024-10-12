@@ -37,12 +37,11 @@ class CommentBase (models.Model) :
         to = "Comment",
         on_delete = models.CASCADE,
         related_name = "replys",
-        verbose_name="پاسخ به",
         null=True,
         blank=True
     )
 
-    description = models.TextField(verbose_name="توضیحات")
+    description = models.TextField(verbose_name="پیام کاربر")
 
     is_valid = models.BooleanField(default=False,verbose_name="تایید شده توسط ادمین")
 

@@ -19,19 +19,28 @@ DEBUG = os.getenv("DEBUG",False)
 ALLOWED_HOSTS = [
     "localhost",
     "www.ksparseh.com",
+    "127.0.0.1",
+    "db.ksparseh.com",
+    "www.db.ksparseh.com",
     "cms.ksparseh.com",
     "www.cms.ksparseh.com",
-    "127.0.0.1",
+    "ksparseh.com",
+    "91.107.134.107",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-   'http://localhost:3001',
-   'http://127.0.0.1:3001',
+   'http://localhost',
+   'http://127.0.0.1',
    'https://ksparseh.com',
    'https://www.ksparseh.com',
    'https://cms.ksparseh.com',
    'https://www.cms.ksparseh.com',
-   'https://cms.ksparseh.com'
+   'https://cms.ksparseh.com',
+   "https://www.ksparseh.com",
+   "https://db.ksparseh.com",
+   "https://cms.ksparseh.com",
+   "https://ksparseh.com",
+   "https://91.107.134.107",
 ]
 
 
