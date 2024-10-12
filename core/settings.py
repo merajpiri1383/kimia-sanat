@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'order.apps.OrderConfig',
     'authentication.apps.AuthenticationConfig',
     'system.apps.SystemConfig',
+    'ticket.apps.TicketConfig',
     # external apps 
     'corsheaders',
     'rest_framework',

@@ -34,6 +34,8 @@ urlpatterns = [
 
     path('user/',include('user.urls')),
 
+    path('ticket/',include("ticket.urls")),
+
     path('auth/',include("authentication.urls")),
 
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
