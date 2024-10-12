@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     'driver.apps.DriverConfig',
     'order.apps.OrderConfig',
     'authentication.apps.AuthenticationConfig',
-    'stock.apps.StockConfig',
     'system.apps.SystemConfig',
     # external apps 
     'corsheaders',
