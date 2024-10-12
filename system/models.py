@@ -33,16 +33,16 @@ class ProductSystem (models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="نام محصول")
 
-    colleague_price = models.PositiveBigIntegerField(
+    colleague_price = models.FloatField(
         null=True,
         blank=True
-        ,verbose_name="قیمت هر کیلو گرم برای همکار"
+        ,verbose_name="قیمت هر کیلو گرم برای همکار(ریال)"
     )
     
-    buy_price = models.PositiveBigIntegerField(
+    buy_price = models.FloatField(
         null=True,
         blank=True,
-        verbose_name="قیمت هر کیلو گرم برای فروش"
+        verbose_name="قیمت هر کیلو گرم برای فروش (ریال)"
     )
     
 

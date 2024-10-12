@@ -74,7 +74,8 @@ INSTALLED_APPS = [
     'nested_inline',
     'django_summernote',
     'rest_framework_simplejwt',
-    'jalali_date'
+    'jalali_date',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -226,3 +227,5 @@ JALALI_DATE_DEFAULTS = {
         }
     },
 }
+
+
