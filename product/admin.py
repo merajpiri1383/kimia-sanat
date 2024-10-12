@@ -26,12 +26,12 @@ class ImageProductInline (admin.TabularInline) :
 class CountInline (admin.TabularInline) : 
     model = Count
     extra = 1 
-    exclude = ["id"]
+    exclude = ["id","price"]
 
 # مدل محصول
 @admin.register(Product)
 class ProductAdmin (admin.ModelAdmin) :
-    exclude = ["id","slug","views","liked"]
+    exclude = ["id","slug","views","liked","group","count"]
     inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline,CountInline]
     formfield_overrides = {
         models.TextField : { 'widget' : SummernoteWidget }

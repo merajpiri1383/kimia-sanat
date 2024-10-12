@@ -70,7 +70,7 @@ class CommentSerializer (serializers.ModelSerializer) :
 class CountSerializer (serializers.ModelSerializer) : 
     class Meta : 
         model = Count
-        exclude = ["product"]
+        exclude = ["product","price"]
     
     def to_representation(self, instance):
         context = super().to_representation(instance)
@@ -125,7 +125,7 @@ class ProductSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Product
-        exclude = ["views","liked"]
+        exclude = ["views","liked","group","count"]
 
     def to_representation(self,instance,**kwargs):
         context = super().to_representation(instance,**kwargs)
