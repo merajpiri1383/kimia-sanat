@@ -17,30 +17,27 @@ SECRET_KEY = 'django-insecure-*^60c)fy-fd=$@38z4*5t=wnfl_(^1kfn_ja6n^+m7y&a=6qd5
 DEBUG = os.getenv("DEBUG",False)
 
 ALLOWED_HOSTS = [
-    "localhost",
-    "www.ksparseh.com",
-    "127.0.0.1",
     "db.ksparseh.com",
     "www.db.ksparseh.com",
     "cms.ksparseh.com",
     "www.cms.ksparseh.com",
     "ksparseh.com",
-    "91.107.134.107",
+    "www.ksparseh.com",
+    "localhost",
+    "127.0.0.1",
+    "91.107.134.107"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-   'http://localhost',
-   'http://127.0.0.1',
-   'https://ksparseh.com',
-   'https://www.ksparseh.com',
-   'https://cms.ksparseh.com',
-   'https://www.cms.ksparseh.com',
-   'https://cms.ksparseh.com',
-   "https://www.ksparseh.com",
-   "https://db.ksparseh.com",
-   "https://cms.ksparseh.com",
-   "https://ksparseh.com",
-   "https://91.107.134.107",
+    "https://db.ksparseh.com",
+    "https://www.db.ksparseh.com",
+    "https://cms.ksparseh.com",
+    "https://www.cms.ksparseh.com",
+    "https://ksparseh.com",
+    "https://www.ksparseh.com",
+    "http://localhost",
+    "http://127.0.0.1",
+    "https://91.107.134.107"
 ]
 
 

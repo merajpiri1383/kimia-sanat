@@ -1,6 +1,7 @@
 from django.contrib import admin
 from system.models import GroupProduct,ProductSystem
 from import_export.admin import ExportActionMixin
+from system.resources import ProductSystemResource
 
 
 @admin.register(GroupProduct)
@@ -11,3 +12,4 @@ class GroupProductAdmin (admin.ModelAdmin) :
 @admin.register(ProductSystem)
 class ProductSystemAdmin (ExportActionMixin,admin.ModelAdmin) : 
     exclude = ["id"]
+    resource_class = ProductSystemResource
