@@ -72,7 +72,6 @@ INSTALLED_APPS = [
     'django_summernote',
     'rest_framework_simplejwt',
     'jalali_date',
-    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -87,6 +86,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+
+USE_THOUSAND_SEPARATOR = True
 
 TEMPLATES = [
     {

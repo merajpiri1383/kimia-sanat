@@ -2,6 +2,7 @@ from django.db import models
 from uuid import uuid4
 from django_jalali.db.models import jDateTimeField
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 import re
 
 class Item(models.Model) : 

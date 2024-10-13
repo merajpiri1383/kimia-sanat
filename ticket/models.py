@@ -28,19 +28,19 @@ class Ticket (models.Model) :
 
     department = models.CharField(max_length=256,verbose_name="دپارتمان")
 
+    reply_to = models.ForeignKey(
+        to = "Ticket",
+        on_delete = models.CASCADE , 
+        related_name = "replys",
+        null=True,
+        blank=True
+    )
+
     text = models.TextField(verbose_name="توضیحات")
 
     created = jDateTimeField(auto_now_add=True,verbose_name="تاریخ")
 
     status = models.CharField(verbose_name="وضعیت",choices=ticket_status,default="closed")
-
-    file_1 = models.FileField(upload_to="ticket/files/",null=True,blank=True,verbose_name="فایل شماره ۱")
-
-    file_2 = models.FileField(upload_to="ticket/files/",null=True,blank=True,verbose_name="فایل شماره ۲")
-
-    file_3 = models.FileField(upload_to="ticket/files/",null=True,blank=True,verbose_name="فایل شماره ۳")
-
-    file_4 = models.FileField(upload_to="ticket/files/",null=True,blank=True,verbose_name="فایل شماره ۴")
 
     def __str__ (self) : 
         return str(self.user)

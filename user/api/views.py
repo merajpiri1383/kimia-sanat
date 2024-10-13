@@ -5,7 +5,7 @@ from user.api.serializers import LegaProfileSerializer,RealProfileSerializer,Soc
 from rest_framework.permissions import IsAuthenticated
 from user.models import SocialMedia
 from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema 
 
 
 # پروفایل حقیقی

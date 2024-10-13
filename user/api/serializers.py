@@ -4,7 +4,7 @@ from user.models import RealProfile,LegalProfile,SocialMedia
 import re
 from rest_framework.exceptions import ValidationError
 
-phone_regex = re.compile("^0[0-9]{10}$")
+phone_regex = re.compile("^0[0-9]{10}$") 
 telephone_regex = re.compile("^[0-9]{6,}$")
 
 
