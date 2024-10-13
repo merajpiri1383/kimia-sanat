@@ -1,3 +1,5 @@
+from typing import Dict
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status 
@@ -10,8 +12,26 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from user.api.serializers import UserSerializer
 from authentication.throttling import ResendOtpCodeThrottle
 from django.conf import settings
+from rest_framework_simplejwt.views import TokenRefreshView
+
+
 
 regex_phone = re.compile("^0[0-9]{10}$")
+
+
+class CustomTokenRefreshView (TokenRefreshView) : 
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        origin = super().post(request, *args, **kwargs)
+        if origin.status_code == 200 : 
+            data = {
+                "access" : origin.data["access"],
+                "refresh" : origin.data["refresh"],
+                'access_token_life_time' : settings.ACCESS_TOKEN_LIFETIME ,
+                'refresh_token_life_time' : settings.SLIDING_TOKEN_REFRESH_LIFETIME
+            }
+            return Response(data,status.HTTP_200_OK)
+        return origin
 
 
 # ورود 
