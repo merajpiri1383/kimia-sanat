@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 import re
 from random import randint
 from driver.models import Driver
+from system.models import ProductSystem
 
 number_regex = re.compile("^[0-9]{8,}$")
 
@@ -69,6 +70,13 @@ class Order (models.Model) :
         choices=delivery_type,
         default="send-factory",
         verbose_name="نوع تحویل"
+    )
+
+    official_invoice = models.FileField(
+        upload_to = "order/official-invoice/",
+        verbose_name = "فاکتور رسمی",
+        null = True , 
+        blank = True
     )
 
     ident_code = models.SlugField(max_length=5,verbose_name="کد معرف",null=True,blank=True)
@@ -146,3 +154,70 @@ class PaySlip (models.Model) :
         
         if not number_regex.findall(self.credit_card_number) : 
             raise  ValidationError("creadit card number must be number and at least 8 character .")
+        
+
+
+# پیش فاکتور 
+
+class PreInvoice (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    order = models.OneToOneField(
+        to = Order ,
+        on_delete = models.CASCADE , 
+        related_name = "pre_invoice",
+    )
+
+    total_price = models.PositiveBigIntegerField(default=0,verbose_name="قیمت نهایی",null=True,blank=True)
+
+    is_for_collegue = models.BooleanField(default=False,verbose_name="برای همکار است")
+
+    is_for_customer = models.BooleanField(default=False,verbose_name="برای مشتری است")
+
+    class Meta : 
+        verbose_name = "پیش فاکتور"
+        verbose_name_plural = "پیش فاکتور ها"
+
+    def __str__ (self) : 
+        return "پیش فاکتور"
+    
+    def clean(self): 
+        total = 0
+        price = 0
+        for product in self.products.all() : 
+            if self.is_for_collegue : 
+                price = product.title.colleague_price
+            elif self.is_for_customer : 
+                price = product.title.buy_price
+            total = total + price * product.count       
+        self.total_price = total  
+        self.save()
+    
+
+class PreInvoiceProduct (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    title = models.ForeignKey(
+        to = ProductSystem , 
+        on_delete = models.CASCADE , 
+        verbose_name = "شرح کالا"
+    )
+
+    pre_invoice = models.ForeignKey(
+        to = PreInvoice , 
+        on_delete = models.CASCADE,
+        related_name = "products",
+    )
+
+    count = models.PositiveBigIntegerField(default=1,verbose_name="مقدار")
+
+    unit = models.CharField(max_length=256,verbose_name="واحد",default="کیلو گرم")
+
+    def __str__ (self) : 
+        return str(self.title)
+    
+    class Meta : 
+        verbose_name = "محصول"
+        verbose_name_plural = "محصولات"
