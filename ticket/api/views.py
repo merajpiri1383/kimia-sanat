@@ -58,7 +58,7 @@ class TicketListCreateAPIView (APIView) :
     def post(self,request) : 
         data = request.data.copy()
         data["user"] = request.user.id
-        serializer = TicketSerializer(data=data)
+        serializer = TicketSerializer(data=data,context={'request':request})
         if serializer.is_valid() : 
             ticket = serializer.save()
             return Response(serializer.data,status.HTTP_200_OK)
@@ -111,7 +111,7 @@ class TicketDetailAPIView (APIView) :
         if self.get_ticket(request,ticket_id) : return self.get_ticket(request,ticket_id)
         if not self.ticket.status == "checking" : 
             return Response({'detail':"ticket cant edit ."},status.HTTP_400_BAD_REQUEST)
-        serializer = TicketSerializer(instance=self.ticket,data=request.data)
+        serializer = TicketSerializer(instance=self.ticket,data=request.data,context={'request':request})
         if serializer.is_valid() : 
             serializer.save()
             return Response(serializer.data,status.HTTP_200_OK)
