@@ -11,7 +11,6 @@ from user.api.serializers import UserSerializer
 from authentication.throttling import ResendOtpCodeThrottle
 from django.conf import settings
 
-
 regex_phone = re.compile("^0[0-9]{10}$")
 
 

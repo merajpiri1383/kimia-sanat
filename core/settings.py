@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'django_summernote',
     'rest_framework_simplejwt',
     'jalali_date',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -193,13 +194,11 @@ ACCESS_TOKEN_LIFETIME = timedelta(minutes=60)
 SLIDING_TOKEN_REFRESH_LIFETIME = timedelta(days=1)
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME" : ACCESS_TOKEN_LIFETIME ,
-    "SLIDING_TOKEN_REFRESH_LIFETIME" : SLIDING_TOKEN_REFRESH_LIFETIME ,
-    "SLIDING_TOKEN_LIFETIME" : timedelta(hours=1),
-    "SLIDING_TOKEN_LIFETIME_LATE_USER" : timedelta(hours=2),
-    "SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER" : timedelta(days=1)
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+    'ROTATE_REFRESH_TOKENS': True, 
+    'BLACKLIST_AFTER_ROTATION': True, 
 }
-
 
 SUMMERNOTE_CONFIG = {
     'attachment_filesize_limit':  int(1024 * 1024 * 1024 // 4 // 3),
