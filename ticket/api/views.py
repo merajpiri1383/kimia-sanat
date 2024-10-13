@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status 
-from ticket.models import Ticket
+from ticket.models import Ticket,TicketFile
 from ticket.api.serializers import TicketSerializer
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -47,6 +47,10 @@ class TicketListCreateAPIView (APIView) :
                 "title" : openapi.Schema(type=openapi.TYPE_STRING,description="عنوان"),
                 "department" : openapi.Schema(type=openapi.TYPE_STRING,description="دپارتمان"),
                 "text" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
+                "file_1" : openapi.Schema(type=openapi.TYPE_FILE,description="فایل"),
+                "file_2" : openapi.Schema(type=openapi.TYPE_FILE,description="فایل"),
+                "file_3" : openapi.Schema(type=openapi.TYPE_FILE,description="فایل"),
+                "file_4" : openapi.Schema(type=openapi.TYPE_FILE,description="فایل"),
             },
             required=["title","department","text"],
         ),
@@ -60,7 +64,7 @@ class TicketListCreateAPIView (APIView) :
         data["user"] = request.user.id
         serializer = TicketSerializer(data=data)
         if serializer.is_valid() : 
-            serializer.save()
+            ticket = serializer.save()
             return Response(serializer.data,status.HTTP_200_OK)
         else : 
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
@@ -73,6 +77,12 @@ class TicketDetailAPIView (APIView) :
 
     permission_classes = [IsAuthenticated]
 
+    def get_ticket (self,request,ticket_id) : 
+        try : 
+            self.ticket = Ticket.objects.get(id=ticket_id)
+        except :
+            return Response({'detail':"ticket not found ."},status.HTTP_404_NOT_FOUND)
+        
     @swagger_auto_schema(
         operation_summary="جزيیات تیکت",
         responses={
@@ -80,12 +90,6 @@ class TicketDetailAPIView (APIView) :
             404 : "not found"
         }
     )
-    def get_ticket (self,request,ticket_id) : 
-        try : 
-            self.ticket = Ticket.objects.get(id=ticket_id)
-        except :
-            return Response({'detail':"ticket not found ."},status.HTTP_404_NOT_FOUND)
-
     def get(self,request,ticket_id) : 
         if self.get_ticket(request,ticket_id) : return self.get_ticket(request,ticket_id)
         serializer = TicketSerializer(self.ticket,context={"request":request})
@@ -100,6 +104,10 @@ class TicketDetailAPIView (APIView) :
                 "title" : openapi.Schema(type=openapi.TYPE_STRING,description="عنوان"),
                 "department" : openapi.Schema(type=openapi.TYPE_STRING,description="دپارتمان"),
                 "text" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
+                "file_1" : openapi.Schema(type=openapi.TYPE_FILE,description="فایل"),
+                "file_2" : openapi.Schema(type=openapi.TYPE_FILE,description="فایل"),
+                "file_3" : openapi.Schema(type=openapi.TYPE_FILE,description="فایل"),
+                "file_4" : openapi.Schema(type=openapi.TYPE_FILE,description="فایل"),
             },
         ),
         responses={
@@ -109,7 +117,6 @@ class TicketDetailAPIView (APIView) :
     )
     def put(self,request,ticket_id) : 
         if self.get_ticket(request,ticket_id) : return self.get_ticket(request,ticket_id)
-        print(self.ticket.status)
         if not self.ticket.status == "checking" : 
             return Response({'detail':"ticket cant edit ."},status.HTTP_400_BAD_REQUEST)
         serializer = TicketSerializer(instance=self.ticket,data=request.data)

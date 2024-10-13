@@ -13,3 +13,4 @@ class GroupProductAdmin (admin.ModelAdmin) :
 class ProductSystemAdmin (ExportActionMixin,admin.ModelAdmin) : 
     exclude = ["id"]
     resource_class = ProductSystemResource
+    list_display = ["group","product_code","name","colleague_price","buy_price"]
