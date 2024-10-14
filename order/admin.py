@@ -3,12 +3,14 @@ from order.models import Order,PaySlip,Rule,PreInvoice,PreInvoiceProduct
 from nested_inline.admin import NestedStackedInline,NestedModelAdmin,NestedTabularInline
 
 
-class PreInvoiceProductInline (NestedStackedInline) : 
+class PreInvoiceProductInline (NestedTabularInline) : 
     model = PreInvoiceProduct
-    extra = 0
+    extra = 0   
     exclude = ["id"]
 
-class PreInvoiceInline (NestedStackedInline) : 
+    
+
+class PreInvoiceInline (NestedTabularInline) : 
     model = PreInvoice
     extra = 0
     exclude = ['id']

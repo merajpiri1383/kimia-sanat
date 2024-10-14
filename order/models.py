@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from django.contrib.auth import get_user_model
 from product.models import Count
@@ -124,20 +125,14 @@ class PaySlip (models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی واریز کننده")
 
-    credit_card_number = models.SlugField(verbose_name="شماره حساب")
-
     image = models.ImageField(
         upload_to="order/slip/",
         verbose_name="تصویر فیش واریزی"
     )
 
-    iban = models.SlugField(verbose_name="شماره شبا")
-
     time = jDateTimeField(verbose_name="تاریخ واریز") 
 
     order_tracking_number = models.IntegerField(verbose_name="شماره پیگیری سفارش", null=True)
-
-    sheba_number = models.PositiveBigIntegerField(verbose_name="شماره کارت واریز کننده", null=True)
 
     description = models.TextField(verbose_name="توضیحات", null=True)
 
@@ -175,24 +170,21 @@ class PreInvoice (models.Model) :
 
     is_for_customer = models.BooleanField(default=False,verbose_name="برای مشتری است")
 
+    is_final = models.BooleanField(default=False,verbose_name="نهایی شده")
+
+    def save(self,**kwargs) : 
+        total = 0
+        for product in self.products.all() : 
+            total = total + product.total_price
+        self.total_price = total
+        return super().save(**kwargs)
+
     class Meta : 
         verbose_name = "پیش فاکتور"
         verbose_name_plural = "پیش فاکتور ها"
 
     def __str__ (self) : 
         return "پیش فاکتور"
-    
-    def clean(self): 
-        total = 0
-        price = 0
-        for product in self.products.all() : 
-            if self.is_for_collegue : 
-                price = product.title.colleague_price
-            elif self.is_for_customer : 
-                price = product.title.buy_price
-            total = total + price * product.count       
-        self.total_price = total  
-        self.save()
     
 
 class PreInvoiceProduct (models.Model) : 
@@ -214,6 +206,32 @@ class PreInvoiceProduct (models.Model) :
     count = models.PositiveBigIntegerField(default=1,verbose_name="مقدار")
 
     unit = models.CharField(max_length=256,verbose_name="واحد",default="کیلو گرم")
+
+    colleague_price = models.PositiveBigIntegerField(
+        null=True,
+        blank=True
+        ,verbose_name="قیمت برای همکار"
+    )
+    
+    buy_price = models.PositiveBigIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="قیمت برای فروش"
+    )
+
+    total_price = models.PositiveBigIntegerField(default=0,verbose_name="مجموع")
+
+
+    def clean(self) -> None:
+        self.colleague_price = self.title.colleague_price
+        self.buy_price = self.title.buy_price
+        if self.pre_invoice.is_for_collegue : 
+            self.total_price = self.count * self.title.colleague_price
+        elif self.pre_invoice.is_for_customer : 
+            self.total_price = self.count * self.title.buy_price
+        self.save()
+        self.pre_invoice.save()
+        return super().clean()
 
     def __str__ (self) : 
         return str(self.title)

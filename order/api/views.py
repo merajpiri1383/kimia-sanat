@@ -108,21 +108,9 @@ class SendPaySlipAPIView (APIView) :
                     minLength=1,  # حداقل طول نام
                     maxLength=256  # حداکثر طول نام
                 ),
-                'credit_card_number': openapi.Schema(
-                    type=openapi.TYPE_STRING, 
-                    description="شماره حساب",
-                    minLength=16,  # حداقل طول شماره حساب
-                    maxLength=16  # حداکثر طول شماره حساب
-                ),
                 'image': openapi.Schema(
                     type=openapi.TYPE_FILE, 
                     description="تصویر فیش واریزی"
-                ),
-                'iban': openapi.Schema(
-                    type=openapi.TYPE_STRING, 
-                    description="شماره شبا",
-                    minLength=24,  # حداقل طول شماره شبا
-                    maxLength=24  # حداکثر طول شماره شبا
                 ),
                 'time': openapi.Schema(
                     type=openapi.TYPE_STRING, 
@@ -134,12 +122,6 @@ class SendPaySlipAPIView (APIView) :
                     description="شماره پیگیری سفارش",
                     minimum=100000,  # حداقل مقدار
                     maximum=999999  # حداکثر مقدار
-                ),
-                'sheba_number': openapi.Schema(
-                    type=openapi.TYPE_INTEGER, 
-                    description="شماره کارت واریز کننده",
-                    minimum=1000000000000000,  # حداقل مقدار شماره کارت
-                    maximum=9999999999999999  # حداکثر مقدار شماره کارت
                 ),
                 'description': openapi.Schema(
                     type=openapi.TYPE_STRING, 
