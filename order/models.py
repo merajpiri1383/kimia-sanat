@@ -10,6 +10,7 @@ import re
 from random import randint
 from driver.models import Driver
 from system.models import ProductSystem
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 number_regex = re.compile("^[0-9]{8,}$")
 
@@ -164,7 +165,12 @@ class PreInvoice (models.Model) :
         related_name = "pre_invoice",
     )
 
-    total_price = models.PositiveBigIntegerField(default=0,verbose_name="قیمت نهایی",null=True,blank=True)
+    total_price = models.PositiveBigIntegerField(
+        default= 0,
+        verbose_name="قیمت کل",
+        null=True,
+        blank=True
+    )
 
     is_for_collegue = models.BooleanField(default=False,verbose_name="برای همکار است")
 
@@ -172,12 +178,11 @@ class PreInvoice (models.Model) :
 
     is_final = models.BooleanField(default=False,verbose_name="نهایی شده")
 
-    def save(self,**kwargs) : 
+    def calculate_total (self) : 
         total = 0
         for product in self.products.all() : 
-            total = total + product.total_price
-        self.total_price = total
-        return super().save(**kwargs)
+            total = product.get_total() + total
+        return total
 
     class Meta : 
         verbose_name = "پیش فاکتور"
@@ -185,6 +190,13 @@ class PreInvoice (models.Model) :
 
     def __str__ (self) : 
         return "پیش فاکتور"
+    
+    def save(self,**kwargs) : 
+        total = 0
+        for product in self.products.all() : 
+            total = total + product.get_total()
+        self.total_price = total
+        return super().save(**kwargs)
     
 
 class PreInvoiceProduct (models.Model) : 
@@ -207,31 +219,36 @@ class PreInvoiceProduct (models.Model) :
 
     unit = models.CharField(max_length=256,verbose_name="واحد",default="کیلو گرم")
 
-    colleague_price = models.PositiveBigIntegerField(
-        null=True,
-        blank=True
-        ,verbose_name="قیمت برای همکار"
-    )
+    def colleague_price (self ) : 
+        return intcomma(self.title.colleague_price,False)
     
-    buy_price = models.PositiveBigIntegerField(
-        null=True,
-        blank=True,
-        verbose_name="قیمت برای فروش"
-    )
-
-    total_price = models.PositiveBigIntegerField(default=0,verbose_name="مجموع")
-
-
-    def clean(self) -> None:
-        self.colleague_price = self.title.colleague_price
-        self.buy_price = self.title.buy_price
+    def buy_price (self) : 
+        return intcomma(self.title.buy_price,False)
+    
+    def get_total (self) : 
+        price = 0
         if self.pre_invoice.is_for_collegue : 
-            self.total_price = self.count * self.title.colleague_price
+            price = self.title.colleague_price
         elif self.pre_invoice.is_for_customer : 
-            self.total_price = self.count * self.title.buy_price
-        self.save()
+            price = self.title.buy_price
+        return price * self.count
+    
+    def totoal_price (self) : 
+        return intcomma(self.get_total(),False)
+    
+    def save(self,*args,**kwargs) :
         self.pre_invoice.save()
+        return super().save(*args,**kwargs)
+    
+    def clean(self) -> None:
+        self.save()
         return super().clean()
+
+
+    totoal_price.short_description = "مجموع(ریال)"
+    colleague_price.short_description = "قیمت برای همکار(ریال)"
+    buy_price.short_description = "قیمت برای فروش (ریال)"
+
 
     def __str__ (self) : 
         return str(self.title)

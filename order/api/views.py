@@ -4,7 +4,7 @@ from rest_framework import status
 from utils.permissions import IsOwnOrNot,IsActiveOrNot
 from product.models import Count
 from order.models import Order
-from order.api.serializers import OrderSerializer,PaySlipSerializer,OrderSimpleSerializer
+from order.api.serializers import OrderSerializer,PaySlipSerializer,OrderSimpleSerializer,PreInvoiceSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -146,3 +146,30 @@ class SendPaySlipAPIView (APIView) :
             return Response(serializer.data,status.HTTP_201_CREATED)
         else :
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+
+# پیش فاکتور 
+
+class PreInvoiceAPIView (APIView) : 
+
+    permission_classes = [IsActiveOrNot]
+
+    @swagger_auto_schema(
+        operation_summary="پیش فاکتور سفارش",
+        responses={
+            200 : PreInvoiceSerializer(),
+            404 : "not found ",
+            400 : "pre invoice not ready",
+        }
+    )
+    def get(self,request,order_id) : 
+        order = request.user.orders.filter(id=order_id).first()
+        if order : 
+            if hasattr(order,"pre_invoice") : 
+                serializer = PreInvoiceSerializer(order.pre_invoice)
+                return Response(serializer.data,status.HTTP_200_OK)
+            else : 
+                return Response({'detail' : 'pre invoice not ready .'},status.HTTP_400_BAD_REQUEST)
+        else : 
+            return Response({'detail':'order not found .'},status.HTTP_404_NOT_FOUND)

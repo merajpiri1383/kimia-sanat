@@ -7,14 +7,16 @@ class PreInvoiceProductInline (NestedTabularInline) :
     model = PreInvoiceProduct
     extra = 0   
     exclude = ["id"]
+    fields = ["title","count","unit","colleague_price","buy_price","totoal_price"]
+    readonly_fields = ["colleague_price","buy_price","totoal_price"]
 
     
 
 class PreInvoiceInline (NestedTabularInline) : 
+    inlines = [PreInvoiceProductInline]
     model = PreInvoice
     extra = 0
-    exclude = ['id']
-    inlines = [PreInvoiceProductInline]
+    exclude = ["id"]
 
 
 class PaySlipInline (NestedStackedInline) : 
