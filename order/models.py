@@ -124,32 +124,19 @@ class PaySlip (models.Model) :
         related_name = "pay_slips"
     )
 
-    name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی واریز کننده")
-
-    image = models.ImageField(
-        upload_to="order/slip/",
-        verbose_name="تصویر فیش واریزی"
+    file = models.FileField(
+        upload_to="order/pay-slip/files/",
+        verbose_name="فایل فیش واریزی",
     )
 
-    time = jDateTimeField(verbose_name="تاریخ واریز") 
-
-    order_tracking_number = models.IntegerField(verbose_name="شماره پیگیری سفارش", null=True)
-
-    description = models.TextField(verbose_name="توضیحات", null=True)
+    time = jDateTimeField(auto_now_add=True,verbose_name="تاریخ ارسال فیش واریزی")
 
     def __str__ (self) : 
-        return str(self.name)
+        return str(self.time)
     
     class Meta : 
         verbose_name = "فیش واریزی"
         verbose_name_plural = "فیش های واریزی"
-
-    def clean(self) : 
-        if not number_regex.findall(self.iban) : 
-            raise ValidationError("iban must be number and at least 8 character .")
-        
-        if not number_regex.findall(self.credit_card_number) : 
-            raise  ValidationError("creadit card number must be number and at least 8 character .")
         
 
 

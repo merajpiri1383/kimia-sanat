@@ -3,10 +3,18 @@ from rest_framework.views import APIView
 from rest_framework import status
 from utils.permissions import IsOwnOrNot,IsActiveOrNot
 from product.models import Count
-from order.models import Order
-from order.api.serializers import OrderSerializer,PaySlipSerializer,OrderSimpleSerializer,PreInvoiceSerializer
+from order.models import Order,PaySlip
+from order.api.serializers import (
+    OrderSerializer,OrderSimpleSerializer,
+    PreInvoiceSerializer,
+    PaySlipSerializer,
+)
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+
+
+
 
 
 # سفارش ها
@@ -102,34 +110,12 @@ class SendPaySlipAPIView (APIView) :
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'name': openapi.Schema(
-                    type=openapi.TYPE_STRING, 
-                    description="نام و نام خانوادگی واریز کننده",
-                    minLength=1,  # حداقل طول نام
-                    maxLength=256  # حداکثر طول نام
+                'file': openapi.Schema(
+                    type=openapi.TYPE_FILE,
+                    description=" فیش واریزی"
                 ),
-                'image': openapi.Schema(
-                    type=openapi.TYPE_FILE, 
-                    description="تصویر فیش واریزی"
-                ),
-                'time': openapi.Schema(
-                    type=openapi.TYPE_STRING, 
-                    description="تاریخ واریز",
-                    format="date-time"  # فرمت تاریخ و زمان
-                ),
-                'order_tracking_number': openapi.Schema(
-                    type=openapi.TYPE_INTEGER, 
-                    description="شماره پیگیری سفارش",
-                    minimum=100000,  # حداقل مقدار
-                    maximum=999999  # حداکثر مقدار
-                ),
-                'description': openapi.Schema(
-                    type=openapi.TYPE_STRING, 
-                    description="توضیحات",
-                    minLength=0,  # حداقل طول توضیحات
-                    maxLength=500  # حداکثر طول توضیحات (به طور مثال 500 کاراکتر)
-                )
-            }
+            },
+            required=["file"]
         )
     )
     def post(self,request,order_id) : 
@@ -139,7 +125,7 @@ class SendPaySlipAPIView (APIView) :
         except : 
             return Response({'detail' : 'order not found .'},status.HTTP_404_NOT_FOUND)
         data = request.data.copy()
-        data["order"] = order_id
+        data["order"] = order.id
         serializer = PaySlipSerializer(data=data)
         if serializer.is_valid () :
             serializer.save()
@@ -173,3 +159,57 @@ class PreInvoiceAPIView (APIView) :
                 return Response({'detail' : 'pre invoice not ready .'},status.HTTP_400_BAD_REQUEST)
         else : 
             return Response({'detail':'order not found .'},status.HTTP_404_NOT_FOUND)
+        
+
+
+# لیست فیش های واریزی 
+
+class PaySlipListAPIView (APIView ) : 
+
+    permission_classes = [IsActiveOrNot]
+
+    def get(self,request) : 
+        pay_slips = []
+        orders = request.user.orders.all().order_by("-created")
+        for order in orders : 
+            for pay_slip in order.pay_slips.all().order_by("-time") : 
+                pay_slips.append(pay_slip)
+        print(pay_slips)
+        paginator = Paginator(pay_slips,8)
+        try : 
+            pay_slips = paginator.page(request.GET.get("page",1))
+        except EmptyPage : 
+            pay_slips = paginator.page(1)
+        except PageNotAnInteger : 
+            pay_slips = paginator.page(1)
+
+        data = {
+            "results" : PaySlipSerializer(pay_slips,many=True,context={'request':request}).data,
+            "count" : paginator.count , 
+            "page_nums" : paginator.num_pages,
+            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={pay_slips.next_page_number()}" 
+            if pay_slips.has_next() else None ,
+            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?page={pay_slips.previous_page_number()}" 
+            if pay_slips.has_previous() else None ,
+        }
+        return Response(data,status.HTTP_200_OK)
+
+
+# جزییات فیش واریزی 
+
+class PaySlipDetailAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="جزییات فیش واریزی",
+        responses={
+            200 : PaySlipSerializer(),
+            404 : "not found "
+        }
+    )
+    def get(self,request,pay_slip_id) :
+        try : 
+            pay_slip = PaySlip.objects.get(id=pay_slip_id)
+        except : 
+            return Response({'detail' : 'pay slip not found .'},status.HTTP_404_NOT_FOUND)
+        serializer = PaySlipSerializer(pay_slip,context={'request' : request})
+        return Response(serializer.data,status.HTTP_200_OK) 
