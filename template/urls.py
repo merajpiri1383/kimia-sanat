@@ -11,5 +11,7 @@ urlpatterns = [
 
     path('home/achievements/',views.AcheivementTitleAPIView.as_view(),name="achievement-list"),
 
-    path('search/',views.SearchAPIView.as_view(),name="search"),
+    path('search/',views.SearchAPIView.as_view(),name="search"), 
+
+    path("card-number-page/",views.CardNumberPageAPIView.as_view(),name="card-number-page")
 ] 

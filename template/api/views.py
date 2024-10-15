@@ -3,9 +3,11 @@ from rest_framework import status
 from rest_framework.response import Response 
 from template.api.serializers import (HeaderSerializer,FooterSerializer,CommingSoonSerializer,BlogTtileSerializer,
         ProjectTitleSerializer,AchievementCardSerializer,AnswerQuestionTitleSerializer,ProductTitleSerializer,
-        FirstPageSerilizer,ConsultSerializer,SliderSerializer,AchievementTitleSerializer,AchievementSerializer)
+        FirstPageSerilizer,ConsultSerializer,SliderSerializer,AchievementTitleSerializer,AchievementSerializer,
+        CardNumbersPageSerializer)
 from template.models import (Header,Footer,CommingSoon,BlogTitle,ProjectTitle,AchievementCard,
-        AnswerQuestionTitle,ProductTitle,FirstPageContent,Slider,AchievementTitle,Achievement)
+        AnswerQuestionTitle,ProductTitle,FirstPageContent,Slider,AchievementTitle,Achievement,
+        CompanyCardsPage)
 from drf_yasg.utils import swagger_auto_schema
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from drf_yasg import openapi
@@ -177,3 +179,19 @@ class SearchAPIView (APIView) :
                 "blogs" : []
             }
         return Response(data,status.HTTP_200_OK)
+    
+
+# صفحه شماره کارت های شرکت
+
+class CardNumberPageAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="صفحه شماره کارت های شرکت",
+        responses={
+            200 : CardNumbersPageSerializer()
+        }
+    )
+    def get(self,request) : 
+        page = CompanyCardsPage.objects.first()
+        serializer = CardNumbersPageSerializer(page,context={'request':request})
+        return Response(serializer.data,status.HTTP_200_OK)

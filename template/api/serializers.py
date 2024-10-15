@@ -3,7 +3,7 @@ from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,
                     Menu,SubMenu,CategoryFooter,CommingSoon,BlogTitle,ProjectTitle,Comment,
                     AchievementCardItem,AchievementCard,AnswerQuestionTitle,ProductTitle,
                     FirstPageContent,Consult,ElectroLicense,Slider,PhoneAnswerQuestion,Achievement,AchievementTitle,
-                    FooterFeq)
+                    FooterFeq , CompanyCard,CompanyCardsPage)
 from blog.api.serializers import BlogSimpleSerializer
 from project.api.serializers import CategorySerializer as ProjectCategorySerializer
 from product.api.serializers import CategorySerializer as ProductCategorySerializer 
@@ -243,3 +243,19 @@ class ConsultSerializer (serializers.ModelSerializer) :
         if not regex_phone.findall(attrs["phone"]) : 
             raise ValidationError({'phone' : 'invalid phone number .'})
         return super().validate(attrs) 
+    
+# صفحه شماره کارت های شرکت 
+
+class CardNumberSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = CompanyCard
+        exclude = ["id","page"]
+
+class CardNumbersPageSerializer (serializers.ModelSerializer) : 
+
+    cards = CardNumberSerializer(many=True)
+
+    class Meta : 
+        model = CompanyCardsPage
+        exclude = ["id"]
