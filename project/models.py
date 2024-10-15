@@ -3,6 +3,7 @@ from uuid import uuid4
 from django_jalali.db.models import jDateField
 from utils.models import CommentBase
 from django.utils.text import slugify
+from django.contrib.auth import get_user_model
 
 
 # مدل دسته بندی
@@ -103,6 +104,20 @@ class Comment (CommentBase) :
         on_delete=models.CASCADE,
         related_name="comments",
         verbose_name="پروژه"
+    )
+
+    liked_by = models.ManyToManyField(
+        to=get_user_model(),
+        blank=True,
+        related_name="project_comment_likeds",
+        verbose_name="لایک شده توسط"
+    )
+
+    disliked_by = models.ManyToManyField(
+        to=get_user_model(),
+        blank=True,
+        verbose_name="دیس لایک شده توسط",
+        related_name="project_comment_dislikeds",
     )
 
     class Meta :

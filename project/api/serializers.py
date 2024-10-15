@@ -31,10 +31,16 @@ class ReplyCommentSerializer(serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        fields = "__all__"
+        exclude = ["liked_by","disliked_by"]
         extra_kwargs = {
             "reply_to" : {"required" : True}
         }
+
+    def to_representation(self, instance):
+        context = super().to_representation(instance)
+        context["like_count"] = instance.liked_by.count()
+        context["dislike_count"] = instance.disliked_by.count()
+        return context
     
     def validate(self, attrs):
         if not phone_regex.findall(attrs["phone"]) : 
@@ -49,7 +55,7 @@ class CommentSendSerializer(serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        fields = "__all__"
+        exclude = ["reply_to","liked_by","disliked_by"]
         extra_kwargs = {
             "phone" : {'required' : True},
             "email" : {"required" : True}
@@ -61,6 +67,8 @@ class CommentSendSerializer(serializers.ModelSerializer) :
             instance.replys.all(),
             many=True
         ).data
+        context["like_count"] = instance.liked_by.count()
+        context["dislike_count"] = instance.disliked_by.count()
         return context
     
     def validate(self, attrs):

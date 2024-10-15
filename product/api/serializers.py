@@ -49,7 +49,7 @@ class CommentReplySerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        fields = "__all__"
+        exclude = ["liked_by","disliked_by"]
         extra_kwargs = {
             "reply_to" : {"required" : True}
         }
@@ -59,11 +59,13 @@ class CommentSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        exclude = ["reply_to"]
+        exclude = ["reply_to","liked_by","disliked_by"]
 
     def to_representation(self, instance):
         context = super().to_representation(instance)
         context["replys"] = CommentReplySerializer(instance.replys.all(),many=True).data
+        context["like_count"] = instance.liked_by.count()
+        context["dislike_count"] = instance.disliked_by.count()
         return context
     
 # مدل مقدار محصول

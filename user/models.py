@@ -52,6 +52,8 @@ class User (AbstractBaseUser,PermissionsMixin) :
 
     is_legal = models.BooleanField(default=False,verbose_name="حقوقی")
 
+    is_panel_active = models.BooleanField(default=False,verbose_name="پنل فعال است")
+
     otp_code = models.SlugField(max_length=5,verbose_name="کد تایید",null=True,blank=True)
 
     drivers = models.ManyToManyField(
@@ -134,6 +136,11 @@ class ProfileBase (models.Model) :
         if not regex_telephone.findall(self.telephone) :
             raise ValidationError("telephone must be integer .")
 
+real_user_types = [
+    ("customer","خریدار"),
+    ("seller","فروشنده"),
+    ("seller-customer","خریدار-فروشنده")
+]
 
 # پروفایل کاربر حقیقی
 class RealProfile ( ProfileBase ) :
@@ -145,6 +152,13 @@ class RealProfile ( ProfileBase ) :
     )
 
     name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی")
+
+    type = models.CharField(
+        max_length=20,
+        verbose_name="نوع کاربر",
+        choices=real_user_types,
+        default="customer"
+    )
 
     class Meta :
         verbose_name = "پروفایل حقیقی"

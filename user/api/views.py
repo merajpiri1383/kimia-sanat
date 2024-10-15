@@ -10,6 +10,9 @@ from django.core.paginator import PageNotAnInteger,Paginator,EmptyPage
 from product.api.serializers import ProductSimpleSerializer
 from project.api.serializers import ProjectSimpleSerializer
 from blog.api.serializers import BlogSimpleSerializer
+from product.models import Comment as ProductComment
+from project.models import Comment as ProjectComment
+from blog.models import Comment as BlogComment
 
 
 
@@ -262,3 +265,44 @@ class SavedItems (APIView) :
             if result.has_previous() else None,
         }
         return Response(data,status.HTTP_200_OK) 
+
+
+# لایک و دیس لایک کامنت 
+
+class CommentInteractionAPIView (APIView) : 
+
+    permission_classes = [IsAuthenticated]
+
+    comment = None
+
+    def dispatch(self,request,comment_id) : 
+        try : 
+            self.comment = ProductComment.objects.get(id=comment_id)
+        except : pass
+        if not self.comment :
+            try : 
+                self.comment = ProjectComment.objects.get(id=comment_id)
+            except : pass
+        if not self.comment : 
+            try : 
+                self.comment = BlogComment.objects.get(id=comment_id)
+            except : pass 
+        return super().dispatch(request,comment_id)
+
+    @swagger_auto_schema(
+        operation_summary="لایک کامنت"
+    )
+    def post(self,request,comment_id) : 
+        if not self.comment : return Response({'detail':'comment not found .'},status.HTTP_404_NOT_FOUND)
+        self.comment.liked_by.add(request.user)
+        self.comment.disliked_by.remove(request.user)
+        return Response({"message": "comment liked successfully ."},status.HTTP_200_OK)
+    
+    @swagger_auto_schema(
+        operation_summary="دیس لایک کامنت"
+    )
+    def delete(self,request,comment_id) : 
+        if not self.comment : return Response({'detail':'comment not found .'},status.HTTP_404_NOT_FOUND)
+        self.comment.liked_by.remove(request.user)
+        self.comment.disliked_by.add(request.user)
+        return Response({"message": "comment disliked successfully ."},status.HTTP_200_OK)

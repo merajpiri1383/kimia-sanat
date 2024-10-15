@@ -213,6 +213,20 @@ class Comment (CommentBase) :
         related_name = "comments",
         verbose_name = "محصول"
     )
+
+    liked_by = models.ManyToManyField(
+        to=get_user_model(),
+        blank=True,
+        related_name="product_comment_likeds",
+        verbose_name="لایک شده توسط"
+    )
+
+    disliked_by = models.ManyToManyField(
+        to=get_user_model(),
+        blank=True,
+        verbose_name="دیس لایک شده توسط",
+        related_name="product_comment_dislikeds"
+    )
     
     class Meta :
         verbose_name = "کامنت"

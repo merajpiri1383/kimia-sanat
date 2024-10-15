@@ -71,16 +71,10 @@ class CommentReplySerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        exclude = ["created"]
+        exclude = ["liked_by","disliked_by"]
         extra_kwargs = {
             "reply_to" : {"required" : True}
         }
-
-    def to_representation(self, instance):
-        context = super().to_representation(instance)
-        context["created_date"] = instance.created.strftime("%Y-%m-%d")
-        context["created_time"] = instance.created.strftime("%H:%M:%S")
-        return context
 
 # مدل کامنت
 
@@ -88,13 +82,13 @@ class CommentSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        exclude = ["reply_to","created"]
+        exclude = ["reply_to","liked_by","disliked_by"]
 
     def to_representation(self, instance):
         context = super().to_representation(instance)
         context["replys"] = CommentReplySerializer(instance.replys.all(),many=True).data
-        context["created_date"] = instance.created.strftime("%Y-%m-%d")
-        context["created_time"] = instance.created.strftime("%H:%M:%S")
+        context["like_count"] = instance.liked_by.count()
+        context["dislike_count"] = instance.disliked_by.count()
         return context
     
 

@@ -4,6 +4,9 @@ from django.utils.text import slugify
 from django_jalali.db.models import jDateField
 from django.core.exceptions import ValidationError
 from utils.models import CommentBase
+from django.contrib.auth import get_user_model
+
+
 
 class Tag (models.Model) : 
 
@@ -120,7 +123,21 @@ class Comment (CommentBase) :
         to = Blog,
         on_delete=models.CASCADE,
         related_name="comments",
-        verbose_name="بلاگ"
+        verbose_name="بلاگ",
+    )
+
+    liked_by = models.ManyToManyField(
+        to=get_user_model(),
+        blank=True,
+        related_name="blog_comment_likeds",
+        verbose_name="لایک شده توسط"
+    )
+
+    disliked_by = models.ManyToManyField(
+        to=get_user_model(),
+        blank=True,
+        verbose_name="دیس لایک شده توسط",
+        related_name="blog_comment_dislikeds"
     )
 
     class Meta : 
