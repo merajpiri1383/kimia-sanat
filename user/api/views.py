@@ -6,6 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 from user.models import SocialMedia
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema 
+from django.core.paginator import PageNotAnInteger,Paginator,EmptyPage
+from product.api.serializers import ProductSimpleSerializer
+from project.api.serializers import ProjectSimpleSerializer
+from blog.api.serializers import BlogSimpleSerializer
+
 
 
 # پروفایل حقیقی
@@ -205,3 +210,55 @@ class SocialMediaAPIView(APIView) :
     def get(self,request) : 
         serializer = SocialMediaSerializer(SocialMedia.objects.all(),many=True)
         return Response(serializer.data,status.HTTP_200_OK)
+    
+
+# موارد ذخیره شده 
+
+class SavedItems (APIView) : 
+
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="موارد ذخیره شده",
+        operation_description="""
+            ?type=product => saved products 
+            ?type=blog => saved blogs 
+            ?type=project => saved projects
+            default => saved products
+        """
+    )
+    def get(self,request) :
+        type = request.GET.get("type","product")
+        queryset = []
+        if type == "product" : 
+            queryset = request.user.saved_products.all()
+        elif type == "project" : 
+            queryset = request.user.saved_projects.all()
+        elif type == "blog" : 
+            queryset = request.user.saved_blogs.all()
+
+        paginator = Paginator(queryset,10)
+        try : 
+            result = paginator.page(request.GET.get("page",1))
+        except EmptyPage : 
+            result = paginator.page(1)
+        except PageNotAnInteger : 
+            result = paginator.page(1)
+
+        if type == "product" : 
+            results = ProductSimpleSerializer(result,many=True,context={'request':request}).data
+        elif type == "project" : 
+            results = ProjectSimpleSerializer(result,many=True,context={'request':request}).data
+        elif type == "blog" : 
+            results = BlogSimpleSerializer(result,many=True,context={'request':request}).data
+        print(result.count)
+        data = {
+            "results" : results,
+            "count" : paginator.count,
+            "page_nums" : paginator.num_pages,
+            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={result.next_page_number()}&type={type}"
+            if result.has_next() else None,
+            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?page={result.previous_page_number()}&type={type}"
+            if result.has_previous() else None,
+        }
+        return Response(data,status.HTTP_200_OK) 

@@ -13,6 +13,8 @@ from drf_yasg import openapi
 # pagination
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from django.contrib.postgres.search import SearchQuery,SearchVector,SearchRank
+# permissions 
+from rest_framework.permissions import IsAuthenticated
 
 
 # لسیت مقالات
@@ -236,3 +238,27 @@ class SendViolationCommentAPIView (APIView) :
             return Response(serializer.data,status.HTTP_201_CREATED)
         else : 
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+# ذخیره بلاگ ها 
+
+class SaveBlogAPIView (APIView) : 
+
+    permission_classes = [IsAuthenticated]
+
+    def dispatch(self,request,blog_slug) : 
+        try : 
+            self.blog = Blog.objects.get(slug=blog_slug)
+        except : 
+            self.blog = None
+        return super().dispatch(request,blog_slug)
+
+    def post(self,request,blog_slug) : 
+        if not self.blog : return Response({'detail':'blog not found .'},status.HTTP_404_NOT_FOUND)
+        request.user.saved_blogs.add(self.blog)
+        return Response({'message':'blog saved successfully .'},status.HTTP_200_OK)
+    
+    def delete(self,request,blog_slug) : 
+        if not self.blog : return Response({'detail':'blog not found .'},status.HTTP_404_NOT_FOUND)
+        request.user.saved_blogs.remove(self.blog)
+        return Response({'message':'blog unsaved successfully .'},status.HTTP_200_OK)

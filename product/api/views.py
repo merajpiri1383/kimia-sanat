@@ -198,6 +198,7 @@ class LikedProductAPIView (APIView) :
     )
     def post(self,request,product_slug) : 
         self.product.liked.add(request.user)
+        request.user.saved_products.add(self.product)
         return Response({"message" : "liked successfully"},status.HTTP_200_OK) 
     
     @swagger_auto_schema(
@@ -205,6 +206,7 @@ class LikedProductAPIView (APIView) :
     )
     def delete(self,request,product_slug) : 
         self.product.liked.remove(request.user)
+        request.user.saved_products.remove(self.product)
         return Response({"message" : "unliked successfully"},status.HTTP_200_OK)
     
 

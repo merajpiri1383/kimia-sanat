@@ -15,4 +15,8 @@ urlpatterns = [
     path('comment/send-violation/',views.SendViolationCommentAPIView.as_view(),name="send-violation"),
 
     path('comment/<comment_id>/reply/',views.ReplyCommentAPIView.as_view(),name="reply-comment-project"),
+
+    # save 
+
+    path("<project_slug>/save/",views.SaveProjectAPIView.as_view(),name="save-project")
 ]

@@ -60,6 +60,24 @@ class User (AbstractBaseUser,PermissionsMixin) :
         verbose_name = "راننده ها"
     )
 
+    saved_products = models.ManyToManyField(
+        to = "product.Product" , 
+        blank = True ,
+        verbose_name = "محصولات ذخیره شده"
+    )
+
+    saved_blogs = models.ManyToManyField(
+        to = "blog.Blog" , 
+        blank = True , 
+        verbose_name = "بلاگ های ذخیره شده"
+    )
+
+    saved_projects = models.ManyToManyField(
+        to = "project.Project",
+        blank = True ,
+        verbose_name = "پروژه های ذخیره شده"
+    )
+
     USERNAME_FIELD = "phone"
     REQUIRED_FIELDS = []
 

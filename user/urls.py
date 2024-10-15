@@ -8,4 +8,6 @@ urlpatterns = [
     path('legal-profile/',views.LegalProfileAPIView.as_view(),name="legal-profile"),
 
     path('social-media/',views.SocialMediaAPIView.as_view(),name="social-media"),
+
+    path('saved/',views.SavedItems.as_view(),name="saved"),
 ]

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg import openapi
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
+from rest_framework.permissions import IsAuthenticated
 
 
 # صفحه دسته بندی ها
@@ -187,3 +188,27 @@ class SendViolationCommentAPIView (APIView) :
             return Response(serializer.data,status.HTTP_201_CREATED)
         else : 
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+# ذخیره پروژه
+
+class SaveProjectAPIView (APIView) : 
+
+    permission_classes = [IsAuthenticated]
+
+    def dispatch(self, request, project_slug):
+        try : 
+            self.project = Project.objects.get(slug=project_slug)
+        except : 
+            self.project = None
+        return super().dispatch(request,project_slug)
+
+    def post(self,request,project_slug) : 
+        if not self.project : return Response({'detail':'project not found .'},status.HTTP_404_NOT_FOUND)
+        request.user.saved_projects.add(self.project)
+        return Response({'message':'project saved successfully .'},status.HTTP_200_OK)
+    
+    def delete (self,request,project_slug) : 
+        if not self.project : return Response({'detail':'project not found .'},status.HTTP_404_NOT_FOUND)
+        request.user.saved_projects.remove(self.project)
+        return Response({'message': 'project unsaved successfully .'},status.HTTP_200_OK)
