@@ -70,3 +70,44 @@ class TicketFile (models.Model) :
     class Meta : 
         verbose_name = "فایل"
         verbose_name_plural = "فایل ها"
+
+
+# مدل بازخورد کامنت 
+
+
+types_feedback = [
+    ('good','خوب'),
+    ('middle','متوسط'),
+    ('bad','بد')
+]
+
+class Feedback ( models.Model ) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True) 
+
+    user = models.ForeignKey(
+        to = get_user_model(),
+        on_delete = models.CASCADE,
+        related_name="feedbacks",
+        verbose_name = "کاربر"
+    )
+
+    ticket = models.OneToOneField(
+        to = Ticket , 
+        on_delete = models.CASCADE , 
+        related_name = "feedback",
+        verbose_name="تیکت",
+        null=True,
+        blank=True
+    ) 
+
+    type = models.CharField(verbose_name="نوع بازخورد",max_length=10,choices=types_feedback,default="middle")
+
+    description = models.TextField(verbose_name="توضیحات",null=True,blank=True)
+
+    def __str__ (self) : 
+        return str(self.type)
+    
+    class Meta : 
+        verbose_name = 'بازخورد'
+        verbose_name_plural = 'بازخورد تیکت'

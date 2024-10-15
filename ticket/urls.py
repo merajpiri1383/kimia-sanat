@@ -7,6 +7,8 @@ urlpatterns = [
 
     path("",views.TicketListCreateAPIView.as_view(),name="list-create-ticket"),
 
-    path("<ticket_id>/",views.TicketDetailAPIView.as_view(),name="ticket-detail")
+    path("<ticket_id>/",views.TicketDetailAPIView.as_view(),name="ticket-detail"),
+
+    path("<ticket_id>/send-feedback/",views.SendFeedbackAPIView.as_view(),name="send-feedback")
 
 ]

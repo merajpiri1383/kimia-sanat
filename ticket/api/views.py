@@ -1,12 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status 
-from ticket.models import Ticket,TicketFile
-from ticket.api.serializers import TicketSerializer
+from ticket.models import Ticket
+from ticket.api.serializers import TicketSerializer,FeedbackSerializer
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
+from ticket.permissions import FeedbackPermission
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 
@@ -115,5 +118,44 @@ class TicketDetailAPIView (APIView) :
         if serializer.is_valid() : 
             serializer.save()
             return Response(serializer.data,status.HTTP_200_OK)
+        else : 
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+# ارسال بازخورد برای تیکت
+
+class SendFeedbackAPIView (APIView) : 
+
+    permission_classes = [IsAuthenticated,FeedbackPermission]
+
+    @swagger_auto_schema(
+        operation_summary="ارسال بازخورد",
+        operation_description="""
+                    type میتونه سه حالت داشته باشه 
+                    1 good , 2 middle , 3 bad
+        """,
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "type" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع بازخورد"),
+                "description" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
+            },
+            required=["type","description"]
+        ),
+    )
+    def post(self,request,ticket_id) : 
+        try : 
+            ticket = Ticket.objects.get(id=ticket_id)
+        except : 
+            return Response({'detail':'ticket not found .'},status.HTTP_404_NOT_FOUND)
+        self.check_object_permissions(request,ticket)
+        data = request.data.copy()
+        data["user"] = request.user.id
+        serializer = FeedbackSerializer(data=data)
+        if serializer.is_valid() : 
+            instance = serializer.save()
+            instance.ticket = ticket
+            instance.save()
+            return Response(serializer.data,status.HTTP_201_CREATED)
         else : 
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)

@@ -1,5 +1,4 @@
-from ticket.models import Ticket,TicketFile
-from rest_framework.exceptions import ValidationError
+from ticket.models import Ticket,TicketFile,Feedback
 from rest_framework import serializers
 
 
@@ -12,14 +11,39 @@ class TicketFileSerializer (serializers.ModelSerializer) :
         exclude = ["ticket"]
 
 
+# فیدبک
+
+class FeedbackSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = Feedback 
+        exclude = ["id","ticket"]
+
+
+# رپلای تیکت 
+
+class ReplyTicketSerializer (serializers.ModelSerializer) : 
+
+    files = TicketFileSerializer(many=True,required=False)
+
+    feedback = FeedbackSerializer()
+
+    class Meta : 
+        model = Ticket
+        exclude = ["reply_to"]
+
 # تیکت
 class TicketSerializer (serializers.ModelSerializer) : 
 
     files = TicketFileSerializer(many=True,required=False)
 
+    replys = ReplyTicketSerializer(many=True)
+
+    feedback = FeedbackSerializer()
+
     class Meta : 
         model = Ticket
-        fields = "__all__"
+        exclude = ["reply_to"]
     
     def __init__(self,instance=None,**kwargs) :
         if instance : 

@@ -1,8 +1,13 @@
 from django.contrib import admin
-from ticket.models import Ticket,TicketFile
+from ticket.models import Ticket,TicketFile,Feedback
 
 
 # مدل تیکت
+
+class FeedbackInline (admin.StackedInline) : 
+    model = Feedback
+    extra = 0
+    exclude = ["id"]
 
 class TicketInline (admin.StackedInline) : 
     model = Ticket
@@ -17,4 +22,4 @@ class TicketFile (admin.TabularInline) :
 @admin.register(Ticket)
 class TicketAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
-    inlines = [TicketInline,TicketFile]
+    inlines = [TicketInline,TicketFile,FeedbackInline]
