@@ -100,6 +100,20 @@ class User (AbstractBaseUser,PermissionsMixin) :
     def clean(self) :
         if not regex_phone.findall(self.phone) :
             raise ValidationError("phone must be integer , start with 0 and 11 character .")
+        
+    def username (self) : 
+        if hasattr(self,"legal_profile") : 
+            return self.legal_profile.name
+        if hasattr(self,"real_profile") : 
+            return self.real_profile.name
+        return "hello "
+    
+    def user_type (self) : 
+        if hasattr(self,"real_profile") : 
+            return self.real_profile.type
+    
+    username.short_description = "نام / نام شرکت"
+    user_type.short_description = "نوع کاربر حقیقی"
 
 
 
@@ -117,12 +131,17 @@ class ProfileBase (models.Model) :
 
     social_phone = models.SlugField(verbose_name="شماره موبایل شبکه اجتماعی")
 
+    profile_image = models.ImageField(
+        upload_to="user/profile/image/",
+        null=True,
+        blank=True,
+        verbose_name="تصویر پروفایل"
+    )
+
     social_media = models.ManyToManyField(
         to = SocialMedia,
         verbose_name="شبکه اجتماعی"
     )
-
-    national_id = models.PositiveBigIntegerField(verbose_name="کد ملی")
 
     email = models.EmailField(verbose_name="ایمیل")
 
@@ -160,6 +179,8 @@ class RealProfile ( ProfileBase ) :
         default="customer"
     )
 
+    national_id = models.PositiveBigIntegerField(verbose_name="کد ملی")
+
     class Meta :
         verbose_name = "پروفایل حقیقی"
 
@@ -179,11 +200,7 @@ class LegalProfile ( ProfileBase ) :
 
     economic_code = models.SlugField(verbose_name="کد اقتصادی")
 
-    foundation_date = jDateField(null=True,blank=True,verbose_name="سال تاسیس شرکت")
-
-    company_registration_number = models.PositiveBigIntegerField(verbose_name="شماره ثبت شرکت",null=True,blank=True)
-
-    founder_company = models.CharField(max_length=256,verbose_name="نام صاحب شرکت",null=True,blank=True)
+    national_id_company = models.PositiveBigIntegerField(verbose_name="کد ملی شرکت")
 
     class Meta :
         verbose_name = "پروفایل حقوقی"
@@ -222,7 +239,7 @@ class Marketer (models.Model) :
 
     social_phone = models.SlugField(unique=True,max_length=11,verbose_name="شماره شبکه اجتماعی")
 
-    authenticated_code = models.SlugField(null=True,blank=True,verbose_name="کد معرف")
+    # authenticated_code = models.SlugField(null=True,blank=True,verbose_name="کد معرف")
 
     time_work = models.CharField(max_length=10,
                                  choices=time_working,
@@ -240,14 +257,14 @@ class Marketer (models.Model) :
 
     national_id = models.PositiveBigIntegerField(verbose_name="کد ملی")
 
-    percent = models.IntegerField(
-        validators=[MaxValueValidator(100),MinValueValidator(0)],
-        verbose_name="درصد بازاریاب")
+    # percent = models.IntegerField(
+    #     validators=[MaxValueValidator(100),MinValueValidator(0)],
+    #     verbose_name="درصد بازاریاب")
 
-    discount_percent = models.IntegerField(
-        validators=[MaxValueValidator(100),MinValueValidator(0)],
-        verbose_name="درصد تخفیف بازاریاب",
-        null=True,blank=True)
+    # discount_percent = models.IntegerField(
+    #     validators=[MaxValueValidator(100),MinValueValidator(0)],
+    #     verbose_name="درصد تخفیف بازاریاب",
+    #     null=True,blank=True)
 
     class Meta :
         verbose_name = "بازاریاب"

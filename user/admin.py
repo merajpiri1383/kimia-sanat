@@ -28,6 +28,8 @@ class OrderInline (admin.StackedInline) :
 class UserAdmin (admin.ModelAdmin) :
     exclude = ["id","password"]
     inlines = [RealProfileStackInline,LegalProfileStackInline,OrderInline]
+    list_display = ["phone","id","is_real","is_legal","username","user_type"]
+    readonly_fields = ["username","user_type"]
 
 @admin.register(SocialMedia)
 class SocialMediaAdmin(admin.ModelAdmin):
@@ -38,3 +40,4 @@ class SocialMediaAdmin(admin.ModelAdmin):
 @admin.register(Marketer)
 class MarketerAdmin(admin.ModelAdmin):
     exclude = ["id"]
+    list_display = ["id","name","active_phone","image","type"]

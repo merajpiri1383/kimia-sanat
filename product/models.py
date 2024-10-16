@@ -70,7 +70,7 @@ class Product (models.Model) :
 
     video = models.FileField(upload_to="product/video/",verbose_name="ویدیو")
 
-    code = models.SlugField(verbose_name="کد انباری محصول",max_length=20)
+    code = models.SlugField(verbose_name="کد محصول",max_length=20)
 
     title = models.CharField(max_length=256,verbose_name="عنوان محصول",unique=True)
 
@@ -84,25 +84,23 @@ class Product (models.Model) :
         related_name = "products_liked"
     )
 
-    description = models.TextField(verbose_name="توضیحات محصول")
-
     views = models.ManyToManyField(Ip)
 
-    catalog_url = models.URLField(verbose_name='آدرس کاتالوگ',null=True,blank=True)
+    description = models.TextField(verbose_name="توضیحات محصول")
 
-    maintain_description = models.TextField(verbose_name="روش نگهداری محصول",null=True,blank=True)
+    maintain_description = models.TextField(verbose_name="روند نگهداری محصول",null=True,blank=True)
 
     consumtion_order = models.TextField(verbose_name="روش مصرف",blank=True,null=True)
-
-    immunity_description = models.TextField(verbose_name="ایمنی محصول",null=True,blank=True)
-
-    packing_description = models.TextField(verbose_name="بسته بندی محصول",null=True,blank=True)
 
     standard = models.ManyToManyField(
         to = Standard ,
         verbose_name = "استاندارد ها",
         blank=True
     )
+
+    packing_description = models.TextField(verbose_name="بسته بندی محصول",null=True,blank=True)
+
+    catalog_url = models.URLField(verbose_name='آدرس کاتالوگ',null=True,blank=True)
 
     created = jDateField(auto_now_add=True)
 

@@ -18,14 +18,21 @@ number_regex = re.compile("^[0-9]{8,}$")
 delivery_times = [
     ("12","12 ساعت"),
     ("24","24 ساعت"),
+    ("48","48 ساعت"),
     ("72","72 ساعت")
 ]
 
 delivery_type = (
-    ("driver","معرفی راننده"),
-    ("send-factory","ارسال از درب کارخانه"),
-    ("factory","تحویل درب کارخانه")
+    ("not-send","ارسال نشده (درحال پردازش)"),
+    ("driver","تحویل راننده"),
+    ("company","ارسال توسط شرکت")
 )
+
+state_types = [
+    ("accept","تایید شده"),
+    ("reject","عدم تایید"),
+    ("paid","پرداخت شده"),
+]
 
 # سفارش
 class Order (models.Model) : 
@@ -44,9 +51,13 @@ class Order (models.Model) :
         verbose_name="محصولات"
     )
 
-    is_send =models.BooleanField(default=False,verbose_name="ارسال شده")
-
-    is_valid = models.BooleanField(default=False,verbose_name="تایید شده")
+    state = models.CharField(
+        max_length=20,
+        verbose_name="وضعیت سفارش",
+        choices=state_types,
+        null=True,
+        blank=True
+    )
 
     created  = jDateTimeField(auto_now_add=True)
 
@@ -70,8 +81,9 @@ class Order (models.Model) :
     delivery_type = models.CharField(
         max_length=20,
         choices=delivery_type,
-        default="send-factory",
-        verbose_name="نوع تحویل"
+        verbose_name="نوع تحویل",
+        null=True,
+        blank=True
     )
 
     official_invoice = models.FileField(
