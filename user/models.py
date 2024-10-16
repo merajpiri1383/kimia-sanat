@@ -106,7 +106,7 @@ class User (AbstractBaseUser,PermissionsMixin) :
             return self.legal_profile.name
         if hasattr(self,"real_profile") : 
             return self.real_profile.name
-        return "hello "
+        return None
     
     def user_type (self) : 
         if hasattr(self,"real_profile") : 
