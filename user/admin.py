@@ -1,6 +1,7 @@
 from django.contrib import admin
 from user.models import User,LegalProfile,RealProfile,Marketer,SocialMedia
 from django.contrib.auth.models import Group
+from django.utils.html import format_html
 from order.models import Order
 
 admin.site.unregister(Group)
@@ -28,8 +29,8 @@ class OrderInline (admin.StackedInline) :
 class UserAdmin (admin.ModelAdmin) :
     exclude = ["id","password"]
     inlines = [RealProfileStackInline,LegalProfileStackInline,OrderInline]
-    list_display = ["phone","id","is_real","is_legal","username","user_type"]
-    readonly_fields = ["username","user_type"]
+    list_display = ["index","phone","is_real","is_legal","username","user_type"]
+    readonly_fields = ["username","user_type","index"]
 
 @admin.register(SocialMedia)
 class SocialMediaAdmin(admin.ModelAdmin):
@@ -40,4 +41,10 @@ class SocialMediaAdmin(admin.ModelAdmin):
 @admin.register(Marketer)
 class MarketerAdmin(admin.ModelAdmin):
     exclude = ["id"]
-    list_display = ["id","name","active_phone","image","type"]
+    list_display = ["index","name","active_phone","type","show_image"]
+    readonly_fields = ["index"]
+
+    def show_image(self, obj):
+        if obj.image:  # بررسی وجود تصویر
+            return format_html('<img src="{}" width="50" height="50" />', obj.image.url)
+        return "بدون تصویر"

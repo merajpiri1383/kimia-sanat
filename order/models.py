@@ -1,11 +1,9 @@
-from typing import Iterable
 from django.db import models
 from django.contrib.auth import get_user_model
 from product.models import Count
 from django_jalali.db.models import jDateTimeField
 from uuid import uuid4
 from django_jalali.db.models import jDateTimeField
-from django.core.exceptions import ValidationError
 import re
 from random import randint
 from driver.models import Driver
@@ -23,9 +21,9 @@ delivery_times = [
 ]
 
 delivery_type = (
-    ("not-send","ارسال نشده (درحال پردازش)"),
-    ("driver","تحویل راننده"),
-    ("company","ارسال توسط شرکت")
+    ("factory","ارسال از درب کارخانه توسط شرکت"),
+    ("customer","تحویل کالا درب کارخانه توسط مشتری"),
+    ("driver","معرفی راننده باربر توسط مشتری")
 )
 
 state_types = [
@@ -93,7 +91,7 @@ class Order (models.Model) :
         blank = True
     )
 
-    ident_code = models.SlugField(max_length=5,verbose_name="کد معرف",null=True,blank=True)
+    # ident_code = models.SlugField(max_length=5,verbose_name="کد معرف",null=True,blank=True)
 
     def __str__ (self) : 
         return f"cart - {self.user.phone}"

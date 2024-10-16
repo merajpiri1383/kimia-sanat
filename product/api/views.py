@@ -11,6 +11,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg import openapi
 from django.db.models import Count
+from utils.permissions import IsActiveOrNot
 
 
 def get_types_of_product () : 
@@ -120,7 +121,7 @@ class ProductPageAPIView (APIView) :
 # ارسال کامنت برای محصول
 class SendCommentProductAPIView(APIView) :
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsActiveOrNot]
 
     @swagger_auto_schema(
         tags=["product / comment"],
@@ -139,6 +140,11 @@ class SendCommentProductAPIView(APIView) :
     def post(self,request,product_id):
         data = request.data.copy()
         data["product"] = product_id
+        data["phone"] = request.user.phone
+        if hasattr(request.user,"legal_profile") : 
+            data["name"] = request.user.legal_profile.name
+        if hasattr(request.user,"real_profile") : 
+            data["name"] = request.user.real_profile.name
         serializer = CommentSerializer(data=data)
         if serializer.is_valid() :
             serializer.save()
@@ -150,7 +156,7 @@ class SendCommentProductAPIView(APIView) :
 # پاسخ به کامنت
 class ReplyCommentAPIView(APIView) :
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsActiveOrNot]
 
     @swagger_auto_schema(
         tags=["product / comment"],
@@ -174,6 +180,11 @@ class ReplyCommentAPIView(APIView) :
         data= request.data.copy()
         data["product"] = comment.product.id
         data["reply_to"] = comment_id
+        data["phone"] = request.user.phone
+        if hasattr(request.user,"legal_profile") : 
+            data["name"] = request.user.legal_profile.name
+        if hasattr(request.user,"real_profile") : 
+            data["name"] = request.user.real_profile.name
         serializer  = CommentReplySerializer(data=data)
         if serializer.is_valid() :
             serializer.save()

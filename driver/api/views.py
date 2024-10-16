@@ -47,7 +47,7 @@ class DriverListCreateAPIView (APIView) :
                 'license_plate' : openapi.Schema(type=openapi.TYPE_STRING,description="پلاک ماشین"), 
                 'car' : openapi.Schema(type=openapi.TYPE_STRING,description="نام ماشین"), 
                 'phone' : openapi.Schema(type=openapi.TYPE_STRING,description="شماره راننده"), 
-                'national_id' : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی راننده"), 
+                'national_id' : openapi.Schema(type=openapi.TYPE_STRING,description="شناسه  راننده"), 
             },
             required=["name","license_plate","car","phone","national_id"]
         )

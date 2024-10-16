@@ -20,7 +20,7 @@ class Driver (models.Model) :
 
     phone = models.SlugField(max_length=11,verbose_name="شماره راننده",unique=True)
 
-    national_id = models.PositiveBigIntegerField(verbose_name="کد ملی",unique=True)
+    national_id = models.PositiveBigIntegerField(verbose_name="شناسه راننده",unique=True)
 
     created = jDateTimeField(auto_now_add=True)
 

@@ -8,6 +8,7 @@ import re
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator,MaxValueValidator
 from django_jalali.db.models import jDateField
+from django.utils.html import format_html
 
 
 # مدل شبکه اجتماعی بازار یاب
@@ -108,61 +109,28 @@ class User (AbstractBaseUser,PermissionsMixin) :
             return self.real_profile.name
         return None
     
+    def index (self) : 
+        return list(User.objects.all()).index(self) + 1
+    
     def user_type (self) : 
         if hasattr(self,"real_profile") : 
             return self.real_profile.type
     
     username.short_description = "نام / نام شرکت"
     user_type.short_description = "نوع کاربر حقیقی"
+    index.short_description = "ردیف"
 
 
 
 regex_telephone = re.compile("^[0-9]{5,12}$")
 
-# مدل پایه پروفایل
-
-class ProfileBase (models.Model) :
-
-    address = models.TextField(verbose_name="آدرس پستی")
-
-    postal_code = models.PositiveBigIntegerField(verbose_name="کد پستی")
-
-    telephone = models.SlugField(verbose_name="تلفن ثابت")
-
-    social_phone = models.SlugField(verbose_name="شماره موبایل شبکه اجتماعی")
-
-    profile_image = models.ImageField(
-        upload_to="user/profile/image/",
-        null=True,
-        blank=True,
-        verbose_name="تصویر پروفایل"
-    )
-
-    social_media = models.ManyToManyField(
-        to = SocialMedia,
-        verbose_name="شبکه اجتماعی"
-    )
-
-    email = models.EmailField(verbose_name="ایمیل")
-
-    class Meta :
-        abstract = True
-
-    def clean(self):
-        if not regex_phone.findall(self.social_phone) :
-            raise ValidationError("phone must be integer , start with 0 and 11 character .")
-
-        if not regex_telephone.findall(self.telephone) :
-            raise ValidationError("telephone must be integer .")
-
 real_user_types = [
     ("customer","خریدار"),
     ("seller","فروشنده"),
-    ("seller-customer","خریدار-فروشنده")
 ]
 
 # پروفایل کاربر حقیقی
-class RealProfile ( ProfileBase ) :
+class RealProfile ( models.Model ) :
 
     user = models.OneToOneField(
         to=User,
@@ -172,6 +140,22 @@ class RealProfile ( ProfileBase ) :
 
     name = models.CharField(max_length=256,verbose_name="نام و نام خانوادگی")
 
+    national_id = models.PositiveBigIntegerField(verbose_name="کد ملی")
+
+    email = models.EmailField(verbose_name="ایمیل")
+
+    social_phone = models.SlugField(verbose_name="شماره موبایل شبکه اجتماعی")
+
+    social_media = models.ManyToManyField(
+        to = SocialMedia,
+        verbose_name="شبکه اجتماعی",
+        blank=True
+    )
+
+    telephone = models.SlugField(verbose_name="تلفن ثابت")
+
+    postal_code = models.PositiveBigIntegerField(verbose_name="کد پستی")
+
     type = models.CharField(
         max_length=20,
         verbose_name="نوع کاربر",
@@ -179,16 +163,30 @@ class RealProfile ( ProfileBase ) :
         default="customer"
     )
 
-    national_id = models.PositiveBigIntegerField(verbose_name="کد ملی")
+    address = models.TextField(verbose_name="آدرس پستی")
+
+    profile_image = models.ImageField(
+        upload_to="user/profile/image/",
+        null=True,
+        blank=True,
+        verbose_name="تصویر پروفایل"
+    )
 
     class Meta :
         verbose_name = "پروفایل حقیقی"
 
     def __str__(self):
         return str(self.name)
+    
+    def clean(self):
+        if not regex_phone.findall(self.social_phone) :
+            raise ValidationError("phone must be integer , start with 0 and 11 character .")
+
+        if not regex_telephone.findall(self.telephone) :
+            raise ValidationError("telephone must be integer .")
 
 # پروفایل حقوقی کاربر
-class LegalProfile ( ProfileBase ) :
+class LegalProfile ( models.Model ) :
 
     user = models.OneToOneField(
         to=User,
@@ -200,7 +198,26 @@ class LegalProfile ( ProfileBase ) :
 
     economic_code = models.SlugField(verbose_name="کد اقتصادی")
 
+    email = models.EmailField(verbose_name="ایمیل")
+
+    telephone = models.SlugField(verbose_name="تلفن ثابت")
+
+    postal_code = models.PositiveBigIntegerField(verbose_name="کد پستی")
+
     national_id_company = models.PositiveBigIntegerField(verbose_name="کد ملی شرکت")
+
+    address = models.TextField(verbose_name="آدرس پستی")
+
+    profile_image = models.ImageField(
+        upload_to="user/profile/image/",
+        null=True,
+        blank=True,
+        verbose_name="تصویر پروفایل"
+    )
+
+    def clean(self):
+        if not regex_telephone.findall(self.telephone) :
+            raise ValidationError("telephone must be integer .")
 
     class Meta :
         verbose_name = "پروفایل حقوقی"
@@ -280,10 +297,15 @@ class Marketer (models.Model) :
     def __str__(self):
         return str(self.name)
 
-    def save(self,**kwargs):
-        if not self.authenticated_code :
-            try :
-                self.authenticated_code = randint(10000,99999)
-            except :
-                self.authenticated_code = randint(10000,99999)
-        return super().save(**kwargs)
+    # def save(self,**kwargs):
+    #     if not self.authenticated_code :
+    #         try :
+    #             self.authenticated_code = randint(10000,99999)
+    #         except :
+    #             self.authenticated_code = randint(10000,99999)
+    #     return super().save(**kwargs)
+
+    def index (self) : 
+        return list(Marketer.objects.all()).index(self) + 1
+    
+    index.short_description = "ردیف"
