@@ -36,6 +36,8 @@ urlpatterns = [
 
     path('ticket/',include("ticket.urls")),
 
+    path('notification/',include('notification.urls')),
+
     path('auth/',include("authentication.urls")),
 
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
