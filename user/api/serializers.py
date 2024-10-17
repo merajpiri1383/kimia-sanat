@@ -8,6 +8,14 @@ phone_regex = re.compile("^0[0-9]{10}$")
 telephone_regex = re.compile("^[0-9]{6,}$")
 
 
+# مدل شبکه اجتماعی
+class SocialMediaSerializer (serializers.ModelSerializer) : 
+    
+    class Meta : 
+        model = SocialMedia
+        fields = "__all__"
+
+
 # مدل کاربر
 class UserSerializer (serializers.ModelSerializer) : 
 
@@ -18,6 +26,8 @@ class UserSerializer (serializers.ModelSerializer) :
 
 # مدل پروفایل حقیقی 
 class RealProfileSerializer (serializers.ModelSerializer) : 
+
+    social_media = SocialMediaSerializer(many=True)
 
     class Meta : 
         model = RealProfile
@@ -43,6 +53,8 @@ class RealProfileSerializer (serializers.ModelSerializer) :
 # مدل پروفایل حقوقی
 class LegaProfileSerializer (serializers.ModelSerializer) : 
 
+    social_media = SocialMediaSerializer(many=True,required=False)
+
     class Meta : 
         model = LegalProfile
         fields = "__all__"
@@ -54,19 +66,8 @@ class LegaProfileSerializer (serializers.ModelSerializer) :
     
 
     def validate(self,attrs) : 
-        if not self.instance and not phone_regex.findall(attrs["social_phone"]) : 
-            raise ValidationError({'social_phone' : 'invalid phone number .'})
         if not self.instance and not telephone_regex.findall(attrs["telephone"]) : 
             raise ValidationError({'telephone' : 'invalid phone number , must be more than 5 character .'})
-        if self.instance and "social_phone" in attrs :
-            raise ValidationError({'social_phone' : 'social_phone is not editable'})
         if self.instance and "telephone" in attrs and not telephone_regex.findall(attrs["telephone"]) : 
             raise ValidationError({'telephoe' : 'invalid phone number , must be more than 5 character .'})
         return super().validate(attrs)
-
-# مدل شبکه اجتماعی
-class SocialMediaSerializer (serializers.ModelSerializer) : 
-    
-    class Meta : 
-        model = SocialMedia
-        fields = "__all__"

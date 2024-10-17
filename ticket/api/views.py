@@ -22,6 +22,9 @@ class TicketListCreateAPIView (APIView) :
 
     @swagger_auto_schema(
         operation_summary="لیست تیکت ها",
+        responses={
+            200 : TicketSerializer(many=True),
+        }
     )
     def get(self,request) : 
 
@@ -48,8 +51,8 @@ class TicketListCreateAPIView (APIView) :
             type=openapi.TYPE_OBJECT,
             properties={
                 "title" : openapi.Schema(type=openapi.TYPE_STRING,description="عنوان"),
-                "department" : openapi.Schema(type=openapi.TYPE_STRING,description="دپارتمان"),
                 "text" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
+                "files" : openapi.Schema(type=openapi.TYPE_FILE,description="لیستی از فایل ها"),
             },
             required=["title","department","text"],
         ),
@@ -59,11 +62,11 @@ class TicketListCreateAPIView (APIView) :
         }
     )
     def post(self,request) : 
-        data = request.data.copy()
+        data = request.POST.copy()
         data["user"] = request.user.id
         serializer = TicketSerializer(data=data,context={'request':request})
         if serializer.is_valid() : 
-            ticket = serializer.save()
+            serializer.save()
             return Response(serializer.data,status.HTTP_200_OK)
         else : 
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
@@ -103,6 +106,7 @@ class TicketDetailAPIView (APIView) :
                 "title" : openapi.Schema(type=openapi.TYPE_STRING,description="عنوان"),
                 "department" : openapi.Schema(type=openapi.TYPE_STRING,description="دپارتمان"),
                 "text" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
+                "files" : openapi.Schema(type=openapi.TYPE_FILE,description="لیستی از فایل ها"),
             },
         ),
         responses={
@@ -151,6 +155,13 @@ class SendFeedbackAPIView (APIView) :
         self.check_object_permissions(request,ticket)
         data = request.data.copy()
         data["user"] = request.user.id
+        if hasattr(ticket,"feedback") : 
+            serializer = FeedbackSerializer(data=data,instance=ticket.feedback) 
+            if serializer.is_valid() : 
+                serializer.save()
+                return Response(serializer.data,status.HTTP_200_OK)
+            else : 
+                return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
         serializer = FeedbackSerializer(data=data)
         if serializer.is_valid() : 
             instance = serializer.save()

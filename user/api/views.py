@@ -43,19 +43,25 @@ class RealProfileAPIView (APIView) :
             social_media :‌ باید اول لیست شبکه های اجتماعی رو از ادرس
             /user/social-media/ 
              آیدی اون شبکه اجتماعی رو بذاریselect بگیری بعد توی تگ
+
+            type : 
+                1 => customer 
+                2 => seller
         """,
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
                 "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام"),
-                "social_phone" : openapi.Schema(type=openapi.TYPE_STRING,description="شماره تلفن دارای شبکه اجتماعی"),
+                "social_phone" : openapi.Schema(type=openapi.TYPE_NUMBER,description="شماره تلفن دارای شبکه اجتماعی"),
                 "social_media" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع شبکه اجتماعی شماره"),
                 "national_id" : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی"),
                 "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
                 "address" : openapi.Schema(type=openapi.TYPE_STRING,description="آدرس"),
-                "postal_code" : openapi.Schema(type=openapi.TYPE_STRING,description="کد پستی"),
+                "postal_code" : openapi.Schema(type=openapi.TYPE_NUMBER,description="کد پستی"),
+                "type" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع کاربر حقیقی"),
+                "profile_image" : openapi.Schema(type=openapi.TYPE_FILE,description="تصویر پروفایل")
             },
-            required=["name","social_phone","national_id","email","address","postal_code"]
+            required=["name","social_phone","national_id","email","address","postal_code","type","profile_image"]
         )
     )
     def post(self,request) :
@@ -72,7 +78,10 @@ class RealProfileAPIView (APIView) :
     
     @swagger_auto_schema(
         operation_summary="تغییر پروفایل حقیقی",
-        operation_description="درصورتی که کاربر اطلاعات حقیقی رو ارسال نکرده باشه ارور میده",
+        operation_description="""درصورتی که کاربر اطلاعات حقیقی رو ارسال نکرده باشه ارور میده
+            social_media :‌ باید اول لیست شبکه های اجتماعی رو از ادرس
+            /user/social-media/ 
+             آیدی اون شبکه اجتماعی رو بذاریselect بگیری بعد توی تگ""",
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
@@ -83,6 +92,8 @@ class RealProfileAPIView (APIView) :
                 "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
                 "address" : openapi.Schema(type=openapi.TYPE_STRING,description="آدرس"),
                 "postal_code" : openapi.Schema(type=openapi.TYPE_NUMBER,description="کد پستی"),
+                "type" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع کاربر حقیقی"),
+                "profile_image" : openapi.Schema(type=openapi.TYPE_FILE,description="تصویر پروفایل")
             }
         ),
         responses={
@@ -128,23 +139,20 @@ class LegalProfileAPIView (APIView) :
         operation_summary="ارسال اطلاعات پروفایل حقوقی",
         operation_description="""
             درصورتی که کاربر پروفایل حقوقی داشته باشه ارور میده
-            social_media :‌ باید اول لیست شبکه های اجتماعی رو از ادرس
-            /user/social-media/ 
-             آیدی اون شبکه اجتماعی رو بذاریselect بگیری بعد توی تگ
         """,
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
                 "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام"),
-                "social_phone" : openapi.Schema(type=openapi.TYPE_NUMBER,description="شماره تلفن دارای شبکه اجتماعی"),
-                "social_media" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع شبکه اجتماعی شماره"),
-                "national_id" : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی"),
+                "national_id_company" : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی شرکت"),
                 "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
                 "address" : openapi.Schema(type=openapi.TYPE_STRING,description="آدرس"),
                 "postal_code" : openapi.Schema(type=openapi.TYPE_NUMBER,description="کد پستی"),
                 "economic_code" : openapi.Schema(type=openapi.TYPE_STRING,description="کد اقتصادی"),
+                "telephone" : openapi.Schema(type=openapi.TYPE_STRING,description="تلفن"),
+                "profile_image" : openapi.Schema(type=openapi.TYPE_FILE,description="تصویر پروفایل")
             },
-            required=["name","social_phone","national_id","email","address","postal_code","economic_code"]
+            required=["name","national_id","email","address","postal_code","economic_code"]
         ),
         responses={
             201 : LegaProfileSerializer(),

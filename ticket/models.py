@@ -26,8 +26,6 @@ class Ticket (models.Model) :
 
     title = models.CharField(max_length=256,verbose_name="عنوان")
 
-    department = models.CharField(max_length=256,verbose_name="دپارتمان")
-
     reply_to = models.ForeignKey(
         to = "Ticket",
         on_delete = models.CASCADE , 
