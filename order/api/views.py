@@ -2,12 +2,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from utils.permissions import IsOwnOrNot,IsActiveOrNot
-from product.models import Count
-from order.models import Order,PaySlip
+from order.models import Order,PaySlip,ProductCount
+from product.models import Product
 from order.api.serializers import (
     OrderSerializer,OrderSimpleSerializer,
     PreInvoiceSerializer,
     PaySlipSerializer,
+    ProductCountSerializer
 )
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -32,12 +33,14 @@ class OrderListAPIView (APIView) :
 
 # مدیرت سفارش
 class OrderAPIView (APIView) : 
+
+    permission_classes = [IsOwnOrNot]
     
     def dispatch(self,request,order_id) :
         try : 
             self.order = Order.objects.get(id=order_id)
         except : 
-            self.order = None 
+            self.order = None  
         return super().dispatch(request,order_id)   
     
     @swagger_auto_schema(
@@ -62,42 +65,88 @@ class OrderAPIView (APIView) :
         else : 
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
 
-# مدیرت محصول
-class OrderProductAPIView (APIView) : 
 
-    permission_classes = [IsOwnOrNot]
+# افزودن محصول از سفارش 
+# اگه سفارشی که در حالت pending نداشته باشه 
+# یک سفارش جدید درست میکنه
 
-    def get_order(self,request,product_count_id) :
+class OrderProductCountAPIView (APIView) : 
+
+    permission_classes = [IsActiveOrNot,IsOwnOrNot]
+
+    def get_order(self,request) : 
         try : 
-            self.product = Count.objects.get(id=product_count_id)
+            return request.user.orders.get(state="pending")
         except : 
-            return Response({'detail' : 'product count not found .'},status.HTTP_404_NOT_FOUND) 
-        self.order = request.user.orders.filter(is_send=False,is_valid=False).first()
-        if not self.order : 
-            self.order = Order.objects.create(user=request.user)
-
+            return Order.objects.create(user=request.user)
+        
     @swagger_auto_schema(
         operation_summary="افزودن محصول به سفارش",
-        operation_description="افزودن محصول به سفارش "
+        operation_description="""
+                                id محصول رو میگیره
+                                درصورتی که سفارشی داشته باشه که در وضعیت pending باشه به اون سفارش اضافه میکنه
+                                در غیر این صورت یک سفارش جدید درست میکنه
+        """,
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "product" : openapi.Schema(type=openapi.TYPE_STRING,description="id محصول"),
+                "value" : openapi.Schema(type=openapi.TYPE_NUMBER,description="مقدار محصول"),
+            },
+            required=["product"],
+        ),
+        responses={
+            201 : "add prodcut to order ",
+            400 : "bad requred"
+        }
     )
-    def post(self,request,product_count_id) : 
-        result = self.get_order(request,product_count_id)
-        if result : return result
-        self.order.products_count.add(self.product)
-        serializer = OrderSerializer(self.order)
-        return Response(serializer.data,status.HTTP_200_OK)
+    def post(self,request) : 
+        order = self.get_order(request)
+        data = request.data.copy()
+        data["order"] = order.id
+        serializer = ProductCountSerializer(data=data)
+        if serializer.is_valid() :
+            serializer.save()
+            return Response({'message': 'product add to order '},status.HTTP_201_CREATED)
+        else :
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
     
 
     @swagger_auto_schema(
         operation_summary="حذف محصول از سفارش",
-        operation_description="حذف محصول از سفارش"
+        operation_description="""
+                    وقتی محصول به سفارش اضافه میکنی یک 
+                    object 
+                    از محصول و مقدار سفارش درست میشه حالا ایدی اون 
+                    object
+                    رو میگیره
+        """,
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "product_count_id" : openapi.Schema(type=openapi.TYPE_STRING,description="ایدی مقدار محصول")
+            },
+            required=["product_count_id"],
+        ),
+        responses={
+            204 : "deleted",
+            404 : "not found "
+        }
     )
-    def delete(self,request,product_count_id) : 
-        result = self.get_order(request,product_count_id)
-        if result : return result
-        self.order.products_count.remove(self.product)
-        serializer = OrderSerializer(self.order)
-        return Response(serializer.data,status.HTTP_200_OK) 
+    def delete(self,request) : 
+        product_count_id = request.data.get("product_count_id")
+        if not product_count_id : 
+            return Response({'product_count_id' : 'required .'},status.HTTP_400_BAD_REQUEST)
+        try : 
+            product_count = ProductCount.objects.get(id=product_count_id) 
+        except : 
+            return Response({'detail':'product count not found .'},status.HTTP_404_NOT_FOUND)
+        self.check_object_permissions(request,product_count.order)
+        if product_count.order.state != "pending" : 
+            return Response({'detail':"order cant edit ."},status.HTTP_400_BAD_REQUEST)
+        product_count.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     
 # ارسال فیش واریزی
 class SendPaySlipAPIView (APIView) : 

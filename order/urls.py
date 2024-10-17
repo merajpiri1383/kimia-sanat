@@ -2,6 +2,8 @@ from django.urls import path
 from order.api import views
 
 urlpatterns = [
+
+    path('product/count/',views.OrderProductCountAPIView.as_view(),name="order-product-count"),
     
     path('list/',views.OrderListAPIView.as_view(),name="order-list"),
 
@@ -14,6 +16,4 @@ urlpatterns = [
     path('<order_id>/pre-invoice/',views.PreInvoiceAPIView.as_view(),name="pre-invoice"),
 
     path('<order_id>/send-slip/',views.SendPaySlipAPIView.as_view(),name="send-slip"),
-
-    path('product/<product_count_id>/',views.OrderProductAPIView.as_view(),name="order-product"),
 ]

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from product.models import (Product,Category,ImageProduct,Comment,Count,Standard
+from product.models import (Product,Category,ImageProduct,Comment,Standard
             ,FeatureProduct,UsageProduct,ViolationComment)
 
 
@@ -67,20 +67,6 @@ class CommentSerializer (serializers.ModelSerializer) :
         context["like_count"] = instance.liked_by.count()
         context["dislike_count"] = instance.disliked_by.count()
         return context
-    
-# مدل مقدار محصول
-class CountSerializer (serializers.ModelSerializer) : 
-    class Meta : 
-        model = Count
-        exclude = ["product"]
-    
-    def to_representation(self, instance):
-        context = super().to_representation(instance)
-        context["product"] = {
-            'id' : instance.product.id,
-            'name' : instance.product.title
-        }
-        return context
 
 
 # مدل ساده محصول
@@ -115,8 +101,6 @@ class ProductSerializer (serializers.ModelSerializer) :
 
     features = FeatureProductSerializer(many=True)
 
-    counts = CountSerializer(many=True)
-
     images = ProductImageSerializer(many=True)
 
     comments = serializers.SerializerMethodField(method_name="get_comments")
@@ -134,7 +118,7 @@ class ProductSerializer (serializers.ModelSerializer) :
         context["liked_by_user"] = self.context["request"].user in instance.liked.all()
         context["like_count"] = instance.liked.count()
         context["related_products"] = ProductSimpleSerializer(
-            instance.category.products.all().order_by("-created")[:3],
+            instance.category.products.exclude(id=instance.id).order_by("-created")[:6],
             many=True, 
             context=self.context
         ).data

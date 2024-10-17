@@ -1,5 +1,5 @@
 from django.contrib import admin
-from product.models import (Product,Category,UsageProduct,FeatureProduct,Standard,Count
+from product.models import (Product,Category,UsageProduct,FeatureProduct,Standard
             ,ImageProduct,Comment,ViolationComment)
 from django.db import models 
 from django_summernote.admin import SummernoteWidget
@@ -23,16 +23,12 @@ class ImageProductInline (admin.TabularInline) :
     extra = 1
     exclude = ["id"]
 
-class CountInline (admin.TabularInline) : 
-    model = Count
-    extra = 1 
-    exclude = ["id","price"]
 
 # مدل محصول
 @admin.register(Product)
 class ProductAdmin (admin.ModelAdmin) :
     exclude = ["id","slug","views","liked","group","count"]
-    inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline,CountInline]
+    inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline]
     formfield_overrides = {
         models.TextField : { 'widget' : SummernoteWidget }
     }

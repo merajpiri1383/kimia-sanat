@@ -1,5 +1,5 @@
 from django.contrib import admin
-from order.models import Order,PaySlip,Rule,PreInvoice,PreInvoiceProduct
+from order.models import Order,PaySlip,Rule,PreInvoice,PreInvoiceProduct,ProductCount
 from nested_inline.admin import NestedStackedInline,NestedModelAdmin,NestedTabularInline
 
 
@@ -24,10 +24,15 @@ class PaySlipInline (NestedStackedInline) :
     extra = 0 
     exclude = ["id"]
 
+class ProductCountInline (NestedTabularInline) : 
+    model = ProductCount
+    exclude = ["id"]
+    extra = 0
+
 @admin.register(Order)
 class OrderAdmin (NestedModelAdmin) : 
     exclude = ["id"]
-    inlines = [PaySlipInline,PreInvoiceInline]
+    inlines = [PaySlipInline,PreInvoiceInline,ProductCountInline]
 
 @admin.register(Rule)
 class RuleAdmin (admin.ModelAdmin) : 

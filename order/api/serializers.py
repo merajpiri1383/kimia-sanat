@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from order.models import Order,PaySlip,PreInvoice,PreInvoiceProduct
-from product.api.serializers import CountSerializer
+from order.models import Order,PaySlip,PreInvoice,PreInvoiceProduct,ProductCount
 from rest_framework.exceptions import  ValidationError
 import re
+from product.api.serializers import ProductSimpleSerializer
 
 
 # مدل پیش فاکتور 
@@ -51,23 +51,47 @@ class PaySlipSerializer (serializers.ModelSerializer) :
         fields = "__all__"
 
 
+# مدل محصولات سفارش 
+
+class ProductCountSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = ProductCount
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        context = super().to_representation(instance)
+        context["product"] = ProductSimpleSerializer(instance.product,context=self.context).data
+        return context 
+
+
 # مدل سفارش 
 
 class OrderSerializer (serializers.ModelSerializer) : 
 
-    products_count = CountSerializer(many=True)
+    pay_slips = PaySlipSerializer(many=True,read_only=True)
 
-    pay_slips = PaySlipSerializer(many=True)
+    product_counts = ProductCountSerializer(many=True,read_only=True)
 
 
     class Meta :  
         model = Order
         fields = "__all__"
-        read_only_fields = ["tracking_code"]
+        read_only_fields = ["tracking_code","state","created","tracking_code","official_invoice","user","id"]
+    
+    def __init__(self,instance=None,**kwargs) :
+        if instance : 
+            kwargs["partial"] = True
+        return super().__init__(instance,**kwargs) 
+    
+    def update(self, instance, validated_data):
+        if instance.state != "pending" : 
+            raise ValidationError({"state": "order cant be edit."})
+        return super().update(instance, validated_data)
     
 # مدل ساده سفارش 
 class OrderSimpleSerializer (serializers.ModelSerializer) : 
 
     class Meta :  
         model = Order
-        exclude = ["products_count","user"] 
+        exclude = ["user"] 

@@ -115,26 +115,6 @@ class Product (models.Model) :
         self.slug = slugify(self.title,allow_unicode=True)
         return super().save(**kwargs)
 
-# مدل مقدار 
-class Count (models.Model) : 
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    product = models.ForeignKey(
-        to = Product,
-        on_delete = models.CASCADE,
-        related_name = "counts",
-    )
-
-    count = models.CharField(max_length=256,verbose_name="مقدار")
-
-    def __str__(self) : 
-        return f"{self.product.title} -- {self.count}"
-    
-    class Meta : 
-        verbose_name = "مقدار محصول"
-        verbose_name_plural = "مقادیر محصول"
-
 
 # مدل ویژگی محصول
 class FeatureProduct(Item):

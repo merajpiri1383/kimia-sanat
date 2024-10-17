@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from product.models import Count
 from django_jalali.db.models import jDateTimeField
 from uuid import uuid4
 from django_jalali.db.models import jDateTimeField
@@ -9,6 +8,7 @@ from random import randint
 from driver.models import Driver
 from system.models import ProductSystem
 from django.contrib.humanize.templatetags.humanize import intcomma
+from product.models import Product
 
 number_regex = re.compile("^[0-9]{8,}$")
 
@@ -30,6 +30,7 @@ state_types = [
     ("accept","تایید شده"),
     ("reject","عدم تایید"),
     ("paid","پرداخت شده"),
+    ("pending","در انتظار تایید")
 ]
 
 # سفارش
@@ -43,18 +44,11 @@ class Order (models.Model) :
         related_name = "orders"
     )
 
-    products_count = models.ManyToManyField(
-        to = Count,
-        blank=True,
-        verbose_name="محصولات"
-    )
-
     state = models.CharField(
         max_length=20,
         verbose_name="وضعیت سفارش",
         choices=state_types,
-        null=True,
-        blank=True
+        default="pending"
     )
 
     created  = jDateTimeField(auto_now_add=True)
@@ -104,7 +98,35 @@ class Order (models.Model) :
         if not self.tracking_code : 
             self.tracking_code = f"ksp_{randint(10000,99999)}"
         return super().save(**kwargs)
+    
 
+# مقداری که کاربر وارد میکنه از محصول 
+
+class ProductCount (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    order = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name="product_counts",
+        verbose_name="سفارش"
+    )
+
+    product = models.ForeignKey(
+        to=Product,
+        on_delete=models.CASCADE,
+        verbose_name="محصول"
+    )
+
+    value = models.PositiveIntegerField(default=1,verbose_name="مقدار محصول")
+
+    def __str__ (self) : 
+        return str(self.order)
+    
+    class Meta : 
+        verbose_name = 'مقدار محصول'
+        verbose_name_plural = 'مقادیر محصول'
 
 
 # مدل قوانین 
@@ -120,7 +142,6 @@ class Rule (models.Model) :
     class Meta : 
         verbose_name = "قوانین و مقررات خرید کاربر"
         verbose_name_plural = "قوانین و مقررات خرید کاربر"
-
 
 # مدل فیش واریزی
 
