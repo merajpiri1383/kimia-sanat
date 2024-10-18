@@ -196,6 +196,8 @@ class PreInvoice (models.Model) :
 
     is_final = models.BooleanField(default=False,verbose_name="نهایی شده")
 
+    description = models.TextField(verbose_name="توضیحات",null=True,blank=True)
+
     def calculate_total (self) : 
         total = 0
         for product in self.products.all() : 
@@ -211,7 +213,7 @@ class PreInvoice (models.Model) :
     
     def save(self,**kwargs) : 
         total = 0
-        for product in self.products.all() : 
+        for product in self.products.all() :
             total = total + product.get_total()
         self.total_price = total
         return super().save(**kwargs)
@@ -254,12 +256,10 @@ class PreInvoiceProduct (models.Model) :
     def totoal_price (self) : 
         return intcomma(self.get_total(),False)
     
-    def save(self,*args,**kwargs) :
-        self.pre_invoice.save()
-        return super().save(*args,**kwargs)
-    
     def clean(self) -> None:
-        self.save()
+        if self.pre_invoice.pk : 
+            self.save()
+            self.pre_invoice.save()
         return super().clean()
 
 

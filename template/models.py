@@ -364,9 +364,11 @@ class Footer (models.Model) :
 
     link_footer_title = models.CharField(max_length=256,verbose_name="عنوان ستون لینک ها",null=True,blank=True)
 
-    category_footer_title = models.CharField(max_length=128,null=True,blank=True,verbose_name="عنوان ستون دسته بندی ها")
+    category_footer_title = models.CharField(max_length=128,null=True,blank=True,verbose_name="عنوان ستون لینک ها ۲")
 
     copyright_text = models.TextField(verbose_name="متن کپی رایت",null=True,blank=True)
+
+    inamad_code = models.TextField(null=True,blank=True,verbose_name="کد اینماد")
 
     def __str__ (self) : 
         return "فوتر"
@@ -382,7 +384,6 @@ class PhoneFooter (models.Model) :
 
     footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="phones")
 
-    # icon = models.ImageField(max_length=256,null=True,blank=True,verbose_name="آیکون")
 
     phone = models.CharField(max_length=256,verbose_name="شماره")
 
@@ -448,7 +449,7 @@ class FooterLink (models.Model) :
     
     class Meta : 
         verbose_name = "لینک فوتر"
-        verbose_name_plural = "لینک های فوتر"
+        verbose_name_plural = "لینک های فوتر ستون ۱"
 
 class CategoryFooter (models.Model) : 
 
@@ -456,16 +457,16 @@ class CategoryFooter (models.Model) :
 
     footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="categories")
 
-    name = models.CharField(max_length=256,verbose_name="نام دسته بندی")
+    name = models.CharField(max_length=256,verbose_name="نام لینک")
 
-    url = models.URLField(verbose_name="آدرس دسته بندی")
+    url = models.URLField(verbose_name="آدرس")
 
     def __str__(self) : 
         return str (self.name)
     
     class Meta : 
-        verbose_name = "دسته بندی فوتر"
-        verbose_name_plural = "دسته بندی های فوتر "
+        verbose_name = "لینک فوتر"
+        verbose_name_plural = "لینک های فوتر ستون ۲"
 
 
 regex_phone = re.compile("^0[0-9]{10}$")

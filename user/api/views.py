@@ -31,7 +31,7 @@ class RealProfileAPIView (APIView) :
     )
     def get(self,request) : 
         try : 
-            serializer = RealProfileSerializer(request.user.real_profile)
+            serializer = RealProfileSerializer(request.user.real_profile,context={'request':request})
             return Response(serializer.data,status.HTTP_200_OK)
         except : 
             return Response({'detail': "user hasnt got real profile ."},status.HTTP_400_BAD_REQUEST)

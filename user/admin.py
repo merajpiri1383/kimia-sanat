@@ -41,7 +41,7 @@ class SocialMediaAdmin(admin.ModelAdmin):
 @admin.register(Marketer)
 class MarketerAdmin(admin.ModelAdmin):
     exclude = ["id"]
-    list_display = ["index","name","active_phone","type","show_image"]
+    list_display = ["index","show_image","name","active_phone","type"]
     readonly_fields = ["index"]
 
     def show_image(self, obj):
