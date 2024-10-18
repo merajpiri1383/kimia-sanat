@@ -1,6 +1,7 @@
 from django.db import models
 from uuid import uuid4
 from django.contrib.auth import get_user_model
+from random import randint
 from django_jalali.db.models import jDateTimeField
 
 # مدل تیکت
@@ -38,6 +39,8 @@ class Ticket (models.Model) :
 
     created = jDateTimeField(auto_now_add=True,verbose_name="تاریخ")
 
+    number = models.SlugField(null=True,blank=True,verbose_name="شماره تیکت")
+
     status = models.CharField(verbose_name="وضعیت",choices=ticket_status,default="closed")
 
     def __str__ (self) : 
@@ -46,6 +49,11 @@ class Ticket (models.Model) :
     class Meta : 
         verbose_name = "تیکت"
         verbose_name_plural = "تیکت ها"
+
+    def save(self,**kwargs) : 
+        if not self.number : 
+            self.number = f"ksp{randint(10000,99999)}"
+        return super().save(**kwargs)
 
 
 # فایل های تیکت
