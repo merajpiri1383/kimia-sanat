@@ -266,3 +266,25 @@ class PaySlipDetailAPIView (APIView) :
             return Response({'detail' : 'pay slip not found .'},status.HTTP_404_NOT_FOUND)
         serializer = PaySlipSerializer(pay_slip,context={'request' : request})
         return Response(serializer.data,status.HTTP_200_OK) 
+    
+
+
+#  اطاعات کلی سفارش ها 
+
+class OrderTotalInfo (APIView) : 
+
+    permission_classes = [IsActiveOrNot]
+
+    @swagger_auto_schema(
+        operation_summary="اطاعات کلی سفارش ها"
+    )
+    def get(self,request) : 
+        orders = request.user.orders
+        data = {
+            "all" : orders.count(),
+            "accept" : orders.filter(state="accept").count(),
+            "reject" : orders.filter(state="reject").count(),
+            "paid" : orders.filter(state="paid").count(),
+            "pending" : orders.filter(state="pending").count()
+        }
+        return Response(data,status.HTTP_200_OK)

@@ -67,7 +67,7 @@ class RealProfileAPIView (APIView) :
     def post(self,request) :
         data = request.data.copy()
         data["user"] = request.user.id
-        serializer = RealProfileSerializer(data=data)
+        serializer = RealProfileSerializer(data=data,context={'request':request})
         if serializer.is_valid () :
             serializer.save()
             request.user.is_real = True
@@ -86,7 +86,6 @@ class RealProfileAPIView (APIView) :
             type=openapi.TYPE_OBJECT,
             properties={
                 "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام"),
-                "social_phone" : openapi.Schema(type=openapi.TYPE_NUMBER,description="شماره تلفن دارای شبکه اجتماعی"),
                 "social_media" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع شبکه اجتماعی شماره"),
                 "national_id" : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی"),
                 "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
@@ -106,7 +105,7 @@ class RealProfileAPIView (APIView) :
             instance = request.user.real_profile
         except : 
             return Response({'detail' : 'user hasnt got real profile .'},status.HTTP_404_NOT_FOUND)
-        serializer = RealProfileSerializer(data=request.data,instance=instance)
+        serializer = RealProfileSerializer(data=request.data,instance=instance,context={'request':request})
         if serializer.is_valid () : 
             serializer.save()
             return Response(serializer.data,status.HTTP_200_OK)

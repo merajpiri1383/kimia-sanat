@@ -39,15 +39,17 @@ class RealProfileSerializer (serializers.ModelSerializer) :
         return super().__init__(instance,**kwargs)
     
     def validate(self,attrs) : 
-        if not self.instance and not phone_regex.findall(attrs["social_phone"]) : 
-            raise ValidationError({'social_phone' : 'invalid phone number .'})
         if not self.instance and not telephone_regex.findall(attrs["telephone"]) : 
             raise ValidationError({'telephone' : 'invalid phone number , must be more than 5 character .'})
-        if self.instance and "social_phone" in attrs :
-            raise ValidationError({'social_phone' : 'social_phone is not editable'})
         if self.instance and "telephone" in attrs and not telephone_regex.findall(attrs["telephone"]) : 
             raise ValidationError({'telephoe' : 'invalid phone number , must be more than 5 character .'})
         return super().validate(attrs)
+    
+    def to_representation(self, instance):
+        context = super().to_representation(instance)
+        if "request" in self.context : 
+            context["phone"] = self.context["request"].user.phone
+        return context
     
 
 # مدل پروفایل حقوقی

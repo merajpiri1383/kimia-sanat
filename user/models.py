@@ -144,8 +144,6 @@ class RealProfile ( models.Model ) :
 
     email = models.EmailField(verbose_name="ایمیل")
 
-    social_phone = models.SlugField(verbose_name="شماره موبایل شبکه اجتماعی")
-
     social_media = models.ManyToManyField(
         to = SocialMedia,
         verbose_name="شبکه اجتماعی",
@@ -179,8 +177,6 @@ class RealProfile ( models.Model ) :
         return str(self.name)
     
     def clean(self):
-        if not regex_phone.findall(self.social_phone) :
-            raise ValidationError("phone must be integer , start with 0 and 11 character .")
 
         if not regex_telephone.findall(self.telephone) :
             raise ValidationError("telephone must be integer .")

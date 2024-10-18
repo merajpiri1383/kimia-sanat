@@ -7,6 +7,8 @@ urlpatterns = [
     
     path('list/',views.OrderListAPIView.as_view(),name="order-list"),
 
+    path('info/',views.OrderTotalInfo.as_view(),name="order-total-info"),
+
     path('pay-slip/list/',views.PaySlipListAPIView.as_view(),name="pay-slip-list"),
 
     path('pay-slip/<pay_slip_id>/',views.PaySlipDetailAPIView.as_view(),name="pay-slip-detail"),
