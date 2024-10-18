@@ -27,7 +27,7 @@ class UserSerializer (serializers.ModelSerializer) :
 # مدل پروفایل حقیقی 
 class RealProfileSerializer (serializers.ModelSerializer) : 
 
-    social_media = SocialMediaSerializer(many=True)
+    social_media = SocialMediaSerializer(many=True,required=False)
 
     class Meta : 
         model = RealProfile

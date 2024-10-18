@@ -9,7 +9,9 @@ urlpatterns = [
 
     path('social-media/',views.SocialMediaAPIView.as_view(),name="social-media"),
 
-    path('saved/',views.SavedItems.as_view(),name="saved"), 
+    path('saved/',views.SavedItems.as_view(),name="saved") , 
 
     path('comment/<comment_id>/interaction/',views.CommentInteractionAPIView.as_view(),name="comment-interaction"),
+
+    path('dashboard/',views.DashboardAPIView.as_view(),name="dashboard"),
 ]

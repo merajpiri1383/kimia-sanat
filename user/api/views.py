@@ -13,6 +13,12 @@ from blog.api.serializers import BlogSimpleSerializer
 from product.models import Comment as ProductComment
 from project.models import Comment as ProjectComment
 from blog.models import Comment as BlogComment
+from utils.permissions import IsActiveOrNot
+from ticket.models import Ticket
+from ticket.api.serializers import TicketSerializer
+from driver.models import Driver
+from order.models import Order
+from order.api.serializers import OrderSimpleSerializer
 
 
 
@@ -59,13 +65,12 @@ class RealProfileAPIView (APIView) :
                 "address" : openapi.Schema(type=openapi.TYPE_STRING,description="آدرس"),
                 "postal_code" : openapi.Schema(type=openapi.TYPE_NUMBER,description="کد پستی"),
                 "type" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع کاربر حقیقی"),
-                "profile_image" : openapi.Schema(type=openapi.TYPE_FILE,description="تصویر پروفایل")
             },
-            required=["name","social_phone","national_id","email","address","postal_code","type","profile_image"]
+            required=["name","social_phone","national_id","email","address","postal_code","type"]
         )
     )
     def post(self,request) :
-        data = request.data.copy()
+        data = request.POST.copy()
         data["user"] = request.user.id
         serializer = RealProfileSerializer(data=data,context={'request':request})
         if serializer.is_valid () :
@@ -313,3 +318,55 @@ class CommentInteractionAPIView (APIView) :
         self.comment.liked_by.remove(request.user)
         self.comment.disliked_by.add(request.user)
         return Response({"message": "comment disliked successfully ."},status.HTTP_200_OK)
+    
+
+
+# داشبورد
+
+class DashboardAPIView (APIView) : 
+
+    permission_classes = [IsActiveOrNot]
+    @swagger_auto_schema(
+        operation_summary="داشبورد پنل کاربر",
+        operation_description="""
+        ?type=ticket => تیکت های من
+        ?type=last-order => سفارش های اخیر
+        ?type=delivery-report => گزارش های تحویل بار
+        """
+    )
+    def get(self,request) : 
+        type = request.GET.get("type","ticket")
+        if type == "ticket" : 
+            objects = request.user.tickets.filter(reply_to=None).order_by("-created")
+        elif type == "last-order" : 
+            objects = request.user.orders.all().order_by("-created")
+        elif type == "delivery-report" : 
+            objects = request.user.orders.exclude(delivery_type=None).order_by("-created")
+        paginator = Paginator(objects,8)
+        try : 
+            result = paginator.page(request.GET.get("type",1))
+        except EmptyPage : 
+            result = paginator.page(1)
+        except PageNotAnInteger : 
+            result = paginator.page(1)
+        if type == "ticket" : 
+            data = TicketSerializer(result,many=True).data
+        else : 
+            data = OrderSimpleSerializer(result,many=True,context={'request':request}).data
+        data = {
+            "counts" : {
+                "orders" : request.user.orders.count(),
+                "responsed_tickets" : request.user.tickets.filter(status="responsed").count(),
+                "pending_tickets" : request.user.tickets.filter(status="pending-admin").count(),
+                "drivers" : request.user.drivers.count()
+            },
+            "result" : data,
+            "count" : paginator.count,
+            "num_pages" : paginator.num_pages,
+            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?type={type}&page={result.next_page_number()}" 
+            if result.has_next() else None,
+            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?type={type}&page={result.previous_page_number()}" 
+            if result.has_previous() else None,
+        }
+        print(paginator.num_pages)
+        return Response(data,status.HTTP_200_OK)
