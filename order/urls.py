@@ -9,6 +9,8 @@ urlpatterns = [
 
     path('info/',views.OrderTotalInfo.as_view(),name="order-total-info"),
 
+    path('completed/',views.CompletedOrdersAPIView.as_view(),name="completed-orders"),
+
     path('pay-slip/list/',views.PaySlipListAPIView.as_view(),name="pay-slip-list"),
 
     path('pay-slip/<pay_slip_id>/',views.PaySlipDetailAPIView.as_view(),name="pay-slip-detail"),

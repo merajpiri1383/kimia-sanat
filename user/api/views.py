@@ -134,7 +134,7 @@ class LegalProfileAPIView (APIView) :
     def get(self,request) : 
         try : 
             profile = request.user.legal_profile 
-            serializer = LegaProfileSerializer(profile)
+            serializer = LegaProfileSerializer(profile,context={'request':request})
             return Response(serializer.data,status.HTTP_200_OK)
         except : 
             return Response({'detail' : 'user hasnt got legal profile .'},status.HTTP_404_NOT_FOUND)
@@ -154,7 +154,6 @@ class LegalProfileAPIView (APIView) :
                 "postal_code" : openapi.Schema(type=openapi.TYPE_NUMBER,description="کد پستی"),
                 "economic_code" : openapi.Schema(type=openapi.TYPE_STRING,description="کد اقتصادی"),
                 "telephone" : openapi.Schema(type=openapi.TYPE_STRING,description="تلفن"),
-                "profile_image" : openapi.Schema(type=openapi.TYPE_FILE,description="تصویر پروفایل")
             },
             required=["name","national_id","email","address","postal_code","economic_code"]
         ),
@@ -164,9 +163,9 @@ class LegalProfileAPIView (APIView) :
         }
     )
     def post(self,request) : 
-        data = request.data.copy()
+        data = request.POST.copy()
         data["user"] = request.user.id
-        serializer = LegaProfileSerializer(data=data)
+        serializer = LegaProfileSerializer(data=data,context={'request':request})
         if serializer.is_valid () : 
             serializer.save()
             request.user.is_legal = True
@@ -183,13 +182,13 @@ class LegalProfileAPIView (APIView) :
             type=openapi.TYPE_OBJECT,
             properties={
                 "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام"),
-                "social_phone" : openapi.Schema(type=openapi.TYPE_NUMBER,description="شماره تلفن دارای شبکه اجتماعی"),
                 "social_media" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع شبکه اجتماعی شماره"),
                 "national_id" : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی"),
                 "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
                 "address" : openapi.Schema(type=openapi.TYPE_STRING,description="آدرس"),
                 "postal_code" : openapi.Schema(type=openapi.TYPE_NUMBER,description="کد پستی"),
                 "economic_code" : openapi.Schema(type=openapi.TYPE_STRING,description="کد اقتصادی"),
+                "profile_image" : openapi.Schema(type=openapi.TYPE_FILE,description="تصویر پروفایل")
             },
         ),
         responses={
@@ -202,7 +201,11 @@ class LegalProfileAPIView (APIView) :
             instance = request.user.legal_profile
         except : 
             return Response({'detail' : 'user hasnt got legal profile .'},status.HTTP_404_NOT_FOUND)
-        serializer = LegaProfileSerializer(data=request.data,instance=instance)
+        serializer = LegaProfileSerializer(
+            data=request.data,
+            instance=instance,
+            context={'request':request}
+        )
         if serializer.is_valid () :
             serializer.save()
             return Response(serializer.data,status.HTTP_200_OK)

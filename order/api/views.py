@@ -301,3 +301,33 @@ class OrderTotalInfo (APIView) :
             "pending" : orders.filter(state="pending").count()
         }
         return Response(data,status.HTTP_200_OK)
+    
+
+# سفارش های تکمیل شده 
+
+class CompletedOrdersAPIView (APIView) : 
+
+    permission_classes = [IsActiveOrNot]
+
+    @swagger_auto_schema(
+        operation_summary="سوابق خرید",
+    )
+    def get(self,request) : 
+        orders = request.user.orders.filter(state="paid").order_by("-created")
+        paginator = Paginator(orders,5)
+        try : 
+            result = paginator.page(request.GET.get("page",1))
+        except EmptyPage : 
+            result = paginator.page(1)
+        except PageNotAnInteger : 
+            result = paginator.page(1)
+        data = {
+            "result" : OrderSimpleSerializer(result,many=True,context={'request':request}).data,
+            "count" : paginator.count,
+            "num_pages" : paginator.num_pages,
+            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={result.next_page_number()}" 
+            if result.has_next() else None,
+            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?page={result.previous_page_number()}" 
+            if result.has_previous() else None
+        }
+        return Response(data,status.HTTP_200_OK)
