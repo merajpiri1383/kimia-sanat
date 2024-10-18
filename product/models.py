@@ -114,6 +114,11 @@ class Product (models.Model) :
     def save(self,**kwargs):
         self.slug = slugify(self.title,allow_unicode=True)
         return super().save(**kwargs)
+    
+    def index (self) : 
+        return list(Product.objects.all()).index(self) + 1
+    
+    index.short_description = "ردیف"
 
 
 # مدل ویژگی محصول
