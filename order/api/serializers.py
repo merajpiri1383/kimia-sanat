@@ -92,6 +92,8 @@ class OrderSerializer (serializers.ModelSerializer) :
 # مدل ساده سفارش 
 class OrderSimpleSerializer (serializers.ModelSerializer) : 
 
+    product_counts = ProductCountSerializer(many=True,read_only=True)
+
     class Meta :  
         model = Order
         exclude = ["user"] 

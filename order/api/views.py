@@ -27,7 +27,11 @@ class OrderListAPIView (APIView) :
         operation_summary="لیست سفارش ها"
     )
     def get(self,request) : 
-        serializer = OrderSimpleSerializer(request.user.orders.all(),many=True)
+        serializer = OrderSimpleSerializer(
+            request.user.orders.all(),
+            many=True,
+            context={'request':request}
+        )
         return Response(serializer.data,status.HTTP_200_OK)
     
 
