@@ -64,6 +64,8 @@ class Blog (models.Model) :
 
     author = models.CharField(max_length=256,verbose_name="نویسنده")
 
+    code = models.SlugField(verbose_name="کد بلاگ",null=True,blank=True)
+
     slug = models.SlugField(unique=True,null=True,blank=True,allow_unicode=True)
 
     tag = models.ManyToManyField(Tag,blank=True,verbose_name="برچسب")

@@ -42,6 +42,8 @@ class Project(models.Model) :
         verbose_name = "دسته بندی پروژه"
     )
 
+    code = models.SlugField(verbose_name="کد پروژه",null=True,blank=True)
+
     video = models.FileField(upload_to="project/video/",verbose_name='ویدیو پروژه',null=True,blank=True)
 
     name = models.CharField(max_length=256,verbose_name="نام پروژه",unique=True)

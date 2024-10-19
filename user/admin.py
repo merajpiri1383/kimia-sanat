@@ -6,6 +6,8 @@ from order.models import Order
 
 admin.site.unregister(Group)
 
+admin.site.site_header = " کیمیا صنعت"
+admin.site.index_title = "مدیرت کیمیا صنعت"
 
 # مدل پروفایل حقیقی
 class RealProfileStackInline (admin.StackedInline) :

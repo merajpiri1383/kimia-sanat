@@ -85,3 +85,9 @@ class ContactUsAdmin (admin.ModelAdmin) :
 @admin.register(ContactConsult)
 class ContactConsultAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
+    list_display = ["index","name","department","phone","email","text"]
+    readonly_fields = ["index"]
+
+    def index (self,obj )  : 
+        return list(ContactConsult.objects.all()).index(obj) + 1
+    index.short_description = "ردیف"

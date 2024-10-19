@@ -56,7 +56,7 @@ class Notification (models.Model) :
         related_name="readers"
     )
 
-    created = jDateTimeField(auto_now_add=True)
+    created = jDateTimeField(auto_now_add=True,verbose_name="تاریخ ارسال")
 
     class Meta : 
         verbose_name = "اعلان"

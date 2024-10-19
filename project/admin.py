@@ -44,6 +44,20 @@ class CommentAdmin (NestedModelAdmin) :
     search_fields = ["project","email","name",'description']
     list_filter = ["project","is_valid","created","reply_to"]
     inlines = [ViolationCommentInline,CommentInline]
+    list_display = ["index","name","get_project","replys_count"]
+    readonly_fields = ["index","get_project","replys_count"]
+
+    def index (self,obj) : 
+        return list(Comment.objects.all()).index(obj) + 1
+    index.short_description = "ردیف"
+
+    def get_project (self,obj) : 
+        return obj.project.name
+    get_project.short_description = "پروژه"
+
+    def replys_count (self,obj) : 
+        return obj.replys.count()
+    replys_count.short_description = "تعداد پاسخ ها"
 
 
 # صفحه پروژه ها 

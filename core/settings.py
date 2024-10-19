@@ -46,6 +46,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -148,7 +149,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'fa'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'Asia/Tehran'
 
@@ -227,3 +228,13 @@ JALALI_DATE_DEFAULTS = {
 }
 
 
+# jazzmin theme
+
+# JAZZMIN_SETTINGS = {
+#     "site_title": "My Admin",
+#     "site_header": "My Django Admin",
+#     "welcome_sign": "Welcome to My Custom Admin Panel",
+#     "topmenu_links": [
+#         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+#     ],
+# }

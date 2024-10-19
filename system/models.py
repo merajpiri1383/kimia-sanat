@@ -51,4 +51,4 @@ class ProductSystem (models.Model) :
     
     class Meta : 
         verbose_name = "محصول"
-        verbose_name_plural = "محصولات"
+        verbose_name_plural = "محصولات سیستم"
