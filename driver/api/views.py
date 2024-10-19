@@ -8,6 +8,7 @@ from driver.models import Driver
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
+from django.contrib.postgres.search import SearchQuery,SearchRank,SearchVector
 
 
 
@@ -30,11 +31,13 @@ class DriverListCreateAPIView (APIView) :
             drivers = paginator.page(1)
         data = {
             'drivers' : DriverSerializer(drivers,many=True).data,
+            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={drivers.next_page_number()}" 
+            if drivers.has_next() else None ,
+            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?page={drivers.previous_page_number()}"
+            if drivers.has_previous() else None , 
+            "count" : paginator.count , 
+            "num_pages" : paginator.num_pages
         }
-        if drivers.has_next() : 
-            data["next_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={drivers.next_page_number()}"
-        if drivers.has_previous() : 
-            data["previous_page"] = f"{request.build_absolute_uri().split("?")[0]}?page={drivers.previous_page_number()}"
         return Response(data,status.HTTP_200_OK)
     
     @swagger_auto_schema(
@@ -127,3 +130,30 @@ class DriverDetailAPIView (APIView) :
         self.check_object_permissions(request,self.driver)
         self.driver.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+# سرچ راننده 
+
+class SearchDriverAPIView (APIView) : 
+
+    permission_classes = [IsActiveOrNot]
+
+    @swagger_auto_schema(
+        operation_summary="سرچ راننده",
+        operation_description="?query=search_key",
+        responses={
+            200 : DriverSerializer(many=True)
+        }
+    )
+    def get(self,request) : 
+        q = request.GET.get("query")
+        if q : 
+            result = request.user.drivers.all().annotate(rank=SearchRank(
+                vector=SearchVector("name","license_plate","car","phone","national_id"),
+                query=SearchQuery(q)
+            )).filter(rank__gt=0.001).order_by("-rank")
+        else : 
+            result = []
+        serializer = DriverSerializer(result,many=True)
+        return Response(serializer.data,status.HTTP_200_OK)

@@ -10,6 +10,7 @@ from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 from ticket.permissions import FeedbackPermission
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.contrib.postgres.search import SearchQuery,SearchRank,SearchVector
 
 
 
@@ -104,7 +105,6 @@ class TicketDetailAPIView (APIView) :
             type=openapi.TYPE_OBJECT,
             properties={
                 "title" : openapi.Schema(type=openapi.TYPE_STRING,description="عنوان"),
-                "department" : openapi.Schema(type=openapi.TYPE_STRING,description="دپارتمان"),
                 "text" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
                 "files" : openapi.Schema(type=openapi.TYPE_FILE,description="لیستی از فایل ها"),
             },
@@ -170,3 +170,32 @@ class SendFeedbackAPIView (APIView) :
             return Response(serializer.data,status.HTTP_201_CREATED)
         else : 
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        
+
+# سرچ تیکت ها 
+
+class SearchTicketAPIView (APIView) : 
+
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        operation_summary="سرچ تیکت",
+        operation_description="""
+            ?query=search_key
+        """,
+        responses={
+            200 : TicketSerializer(many=True)
+        }
+    )
+    def get(self,request) : 
+        q = request.GET.get("query")
+        if q : 
+            query = SearchQuery(q)
+            result = request.user.tickets.all().annotate(rank=SearchRank(
+                query=query,
+                vector=SearchVector("title","text")
+            )).filter(rank__gt=0.001).order_by("-rank")
+        else : 
+            result = []
+        serializer = TicketSerializer(result,many=True)
+        return Response(serializer.data,status.HTTP_200_OK)
