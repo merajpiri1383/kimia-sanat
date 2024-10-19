@@ -97,3 +97,12 @@ class OrderSimpleSerializer (serializers.ModelSerializer) :
     class Meta :  
         model = Order
         exclude = ["user"] 
+
+
+# افزودن چندین محصول
+
+class MultipleProductOrderSerializer (serializers.Serializer) : 
+
+    products_count = serializers.ListField(
+        child = ProductCountSerializer()
+    )

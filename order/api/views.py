@@ -13,6 +13,7 @@ from order.api.serializers import (
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+import json
 
 
 
@@ -107,26 +108,49 @@ class OrderProductCountAPIView (APIView) :
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "product" : openapi.Schema(type=openapi.TYPE_STRING,description="id محصول"),
-                "value" : openapi.Schema(type=openapi.TYPE_NUMBER,description="مقدار محصول"),
+                "products_count" : openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        "product" : openapi.Schema(type=openapi.TYPE_OBJECT,description="ایدی محصول"),
+                        "value" : openapi.Schema(type=openapi.TYPE_STRING,description="مقدار محصول"),
+                    },
+                    required=["product","value"]
+                ),
             },
-            required=["product"],
+            required=["products_count"]
         ),
         responses={
-            201 : "add prodcut to order ",
+            201 : OrderSerializer(),
             400 : "bad requred"
         }
     )
     def post(self,request) : 
         order = self.get_order(request)
         data = request.data.copy()
-        data["order"] = order.id
-        serializer = ProductCountSerializer(data=data)
-        if serializer.is_valid() :
-            serializer.save()
-            return Response({'message': 'product add to order '},status.HTTP_201_CREATED)
-        else :
-            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        products_count = data.get("products_count")
+        if not products_count : 
+            return Response({"products_count":"this field is required ."})
+        try : 
+            products_count = json.loads(products_count)
+        except : 
+            return Response(
+                {"products_count" : "invalid format its must be a json format"},
+                status.HTTP_400_BAD_REQUEST
+            )
+        if not isinstance(products_count,list) : 
+            return Response(
+                {'detail' : 'products_count must be a list'},
+                status.HTTP_400_BAD_REQUEST
+            )
+        for item in products_count : 
+            item["order"] = order.id
+            serializer = ProductCountSerializer(data=item)
+            if serializer.is_valid() : 
+                serializer.save()
+            else : 
+                return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
+        serializer = OrderSerializer(order,context={'request':request})
+        return Response(serializer.data,status.HTTP_200_OK)
     
 
     @swagger_auto_schema(
