@@ -31,13 +31,10 @@ class ProductAdmin (admin.ModelAdmin) :
     exclude = ["id","slug","views","liked","group","count"]
     inlines = [UsageProductStackInline,FeatureProductStackInline,ImageProductInline]
     list_display = ["index","title","category","code","type"]
-    readonly_fields = ["index","category"]
+    readonly_fields = ["index"]
     formfield_overrides = {
         models.TextField : { 'widget' : SummernoteWidget }
-    } 
-
-    def category (self,obj) : 
-        return obj.category.name
+    }
 
 # مدل استاندارد
 @admin.register(Standard)

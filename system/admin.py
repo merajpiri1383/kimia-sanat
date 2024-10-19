@@ -35,7 +35,7 @@ def export_excel_action (model,request,queryset) :
 class ProductSystemAdmin (admin.ModelAdmin) :   
     exclude = ["id"]
     actions = [export_excel_action]
-    list_display = ["index","get_group","name","product_code"]
+    list_display = ["index","get_group","name","product_code","colleague_price_format","buy_price_format"]
     readonly_fields = ["index","get_group"]
 
     def index (self,obj) : 
@@ -47,13 +47,13 @@ class ProductSystemAdmin (admin.ModelAdmin) :
             return obj.group.name
     get_group.short_description = "گروه"
 
-    # def colleague_price_format(self,obj) :
-    #     return intcomma(obj.colleague_price,False)
+    def colleague_price_format(self,obj) :
+        return intcomma(obj.colleague_price,False)
     
-    # def buy_price_format(self,obj) : 
-    #     return intcomma(obj.buy_price,False)
+    def buy_price_format(self,obj) : 
+        return intcomma(obj.buy_price,False)
     
-    # colleague_price_format.short_description = "قیمت هر کیلو گرم برای همکار(ریال)"
-    # buy_price_format.short_description = "قیمت هر کیلو گرم برای فروش (ریال)"
+    colleague_price_format.short_description = "قیمت هر کیلو گرم برای همکار(ریال)"
+    buy_price_format.short_description = "قیمت هر کیلو گرم برای فروش (ریال)"
 
     export_excel_action.short_description = "خروجی excel"

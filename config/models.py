@@ -304,4 +304,4 @@ class ContactConsult (models.Model) :
     
     class Meta : 
         verbose_name = "درخواست مشاوره "
-        verbose_name_plural = "درخواست های مشاوره صفحه ارتباط با ما"
+        verbose_name_plural = "درخواست های تماس با ما"
