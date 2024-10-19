@@ -74,14 +74,10 @@ class ProductSimpleSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Product
-        fields = ["id","slug","title","type","code","description"]
+        fields = ["id","slug","title","image","type","code","description"]
 
     def to_representation(self, instance,**kwargs):
         context = super().to_representation(instance,**kwargs)
-        context["image"] = ProductImageSerializer(
-            instance.images.first(),
-            context=self.context
-        ).data
         context["views"] = instance.views.count()
         context["category"] = CategorySerializer(instance.category).data
         context["liked_by_user"] = self.context["request"].user in instance.liked.all()

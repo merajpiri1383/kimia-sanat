@@ -68,7 +68,19 @@ class Product (models.Model) :
         verbose_name = "دسته بندی"
     )
 
-    video = models.FileField(upload_to="product/video/",verbose_name="ویدیو")
+    video = models.FileField(
+        upload_to="product/video/",
+        verbose_name="ویدیو",
+        null=True,
+        blank=True,
+    )
+
+    image = models.ImageField(
+        upload_to="product/images/",
+        verbose_name="تصویر شاخص",
+        null=True,
+        blank=True
+    )
 
     code = models.SlugField(verbose_name="کد محصول",max_length=20)
 

@@ -35,6 +35,8 @@ class Project(models.Model) :
 
     id = models.UUIDField(default=uuid4, primary_key=True, unique=True)
 
+    card_title = models.CharField(max_length=256,verbose_name="عنوان کادر",null=True,blank=True)
+
     category = models.ForeignKey(
         to = Category,
         on_delete = models.CASCADE,
@@ -45,6 +47,13 @@ class Project(models.Model) :
     code = models.SlugField(verbose_name="کد پروژه",null=True,blank=True)
 
     video = models.FileField(upload_to="project/video/",verbose_name='ویدیو پروژه',null=True,blank=True)
+
+    main_image = models.ImageField(
+        upload_to="project/images/",
+        verbose_name="تصویر شاخص پروژه",
+        null=True,
+        blank=True
+        )
 
     name = models.CharField(max_length=256,verbose_name="نام پروژه",unique=True)
 

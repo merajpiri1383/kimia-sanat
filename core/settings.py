@@ -45,8 +45,11 @@ CSRF_TRUSTED_ORIGINS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+STATIC_ROOT = BASE_DIR / "static"
+
 INSTALLED_APPS = [
-    'jazzmin',
+    'admin_interface',
+    'colorfield',  
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -149,7 +152,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'fa'
 
 TIME_ZONE = 'Asia/Tehran'
 
@@ -227,14 +230,16 @@ JALALI_DATE_DEFAULTS = {
     },
 }
 
+# theme 
 
-# jazzmin theme
-
-# JAZZMIN_SETTINGS = {
-#     "site_title": "My Admin",
-#     "site_header": "My Django Admin",
-#     "welcome_sign": "Welcome to My Custom Admin Panel",
-#     "topmenu_links": [
-#         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
-#     ],
-# }
+# Configure the color scheme (optional)
+ADMIN_INTERFACE_COLOR_SCHEME = {
+    'primary': '#007bff',
+    'secondary': '#6c757d',
+    'success': '#28a745',
+    'danger': '#dc3545',
+    'warning': '#ffc107',
+    'info': '#17a2b8',
+    'light': '#f8f9fa',
+    'dark': '#343a40',
+}
