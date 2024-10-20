@@ -387,6 +387,10 @@ class PhoneFooter (models.Model) :
 
     phone = models.CharField(max_length=256,verbose_name="شماره")
 
+    is_constant = models.BooleanField(default=False,verbose_name="شماره ثابت است")
+
+    is_fax = models.BooleanField(default=False,verbose_name="شماره فکس است")
+
     def __str__ (self) : 
         return str(self.phone)
     
