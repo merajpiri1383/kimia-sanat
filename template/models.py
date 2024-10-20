@@ -384,7 +384,6 @@ class PhoneFooter (models.Model) :
 
     footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="phones")
 
-
     phone = models.CharField(max_length=256,verbose_name="شماره")
 
     is_constant = models.BooleanField(default=False,verbose_name="شماره ثابت است")

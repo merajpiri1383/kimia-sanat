@@ -27,6 +27,8 @@ class Ticket (models.Model) :
 
     title = models.CharField(max_length=256,verbose_name="عنوان")
 
+    is_from_admin = models.BooleanField(default=False,verbose_name="از طرف ادمین است ")
+
     reply_to = models.ForeignKey(
         to = "Ticket",
         on_delete = models.CASCADE , 
