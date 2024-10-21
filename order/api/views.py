@@ -104,6 +104,18 @@ class OrderProductCountAPIView (APIView) :
                                 id محصول رو میگیره
                                 درصورتی که سفارشی داشته باشه که در وضعیت pending باشه به اون سفارش اضافه میکنه
                                 در غیر این صورت یک سفارش جدید درست میکنه
+
+                                delivery_type : 
+                                    factory => ارسال از درب کارخانه توسط شرکت
+                                    customer => تحویل کالا درب کارخانه توسط مشتری
+                                    driver =>  معرفی راننده باربر توسط مشتری
+
+                                delivery_times :
+                                    12 => 12 ساعت
+                                    24 => 24 ساعت
+                                    48 => 48 ساعت
+                                    72 => 72 ساعت
+                                
         """,
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
@@ -116,6 +128,9 @@ class OrderProductCountAPIView (APIView) :
                     },
                     required=["product","value"]
                 ),
+                "delivery_type" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع تحویل"),
+                "delivery_time" : openapi.Schema(type=openapi.TYPE_STRING,description="زمان تحویل"),
+                "driver" : openapi.Schema(type=openapi.TYPE_STRING,description="آیدی راننده"),
             },
             required=["products_count"]
         ),
@@ -142,8 +157,12 @@ class OrderProductCountAPIView (APIView) :
                 serializer.save()
             else : 
                 return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
-        serializer = OrderSerializer(order,context={'request':request})
-        return Response(serializer.data,status.HTTP_200_OK)
+        serializer = OrderSerializer(instance=order,data=request.data,context={'request':request})
+        if serializer.is_valid() : 
+            serializer.save()
+            return Response(serializer.data,status.HTTP_200_OK)
+        else : 
+            return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
     
 
     @swagger_auto_schema(
