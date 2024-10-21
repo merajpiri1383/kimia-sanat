@@ -24,7 +24,6 @@ delivery_type = (
     ("factory","ارسال از درب کارخانه توسط شرکت"),
     ("customer","تحویل کالا درب کارخانه توسط مشتری"),
     ("driver","معرفی راننده باربر توسط مشتری"),
-    ("pending","ارسال نشده در حال پردازش")
 )
 
 state_types = [
@@ -68,7 +67,7 @@ class Order (models.Model) :
         max_length=2,
         verbose_name="زمان تحویل کالا",
         choices=delivery_times,
-        default="24"
+        default="24",
         )
     
     delivery_type = models.CharField(
@@ -76,7 +75,8 @@ class Order (models.Model) :
         choices=delivery_type,
         verbose_name="نوع تحویل",
         null=True,
-        blank=True
+        blank=True,
+        default="factory"
     )
 
     official_invoice = models.FileField(
