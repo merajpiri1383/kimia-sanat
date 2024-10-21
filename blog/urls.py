@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('category/<category_slug>/',views.CategoryAPIView.as_view(),name="category-page"),
 
-    path('<slug:blog_slug>/comment/send/',views.SendCommentBlogAPIView.as_view(),name="comment-send-blog"),
+    path('<blog_id>/comment/send/',views.SendCommentBlogAPIView.as_view(),name="comment-send-blog"),
 
     path('comment/send-violation/',views.SendViolationCommentAPIView.as_view(),name="send-violation"),
 

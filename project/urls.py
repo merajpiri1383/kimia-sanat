@@ -10,7 +10,7 @@ urlpatterns = [
     path('<project_slug>/' , views.ProjectPageAPIView.as_view(),name="project-page"),
 
     # comment
-    path('<project_slug>/comment/send/',views.SendCommentProjectAPIView.as_view(),name="send-comment-project"),
+    path('<project_id>/comment/send/',views.SendCommentProjectAPIView.as_view(),name="send-comment-project"),
 
     path('comment/send-violation/',views.SendViolationCommentAPIView.as_view(),name="send-violation"),
 

@@ -34,6 +34,8 @@ class CommentBase (models.Model) :
 
     email = models.EmailField(verbose_name="ایمیل",null=True,blank=True)
 
+    is_from_admin = models.BooleanField(default=False,verbose_name="از طرف ادمین")
+
     reply_to = models.ForeignKey(
         to = "Comment",
         on_delete = models.CASCADE,

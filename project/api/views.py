@@ -108,9 +108,9 @@ class SendCommentProjectAPIView(APIView) :
             400 : "bad data"
         }
     )
-    def post(self,request,project_slug):
+    def post(self,request,project_id):
         try :
-            project = Project.objects.get(slug=project_slug)
+            project = Project.objects.get(id=project_id)
         except :
             return Response({'detail' : 'project not found .'},status.HTTP_404_NOT_FOUND)
         data = request.data.copy()

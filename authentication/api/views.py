@@ -13,6 +13,7 @@ from user.api.serializers import UserSerializer
 from authentication.throttling import ResendOtpCodeThrottle
 from django.conf import settings
 from rest_framework_simplejwt.views import TokenRefreshView
+from authentication.sms import send_sms
 
 
 

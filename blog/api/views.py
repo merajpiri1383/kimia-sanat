@@ -99,11 +99,9 @@ class SendCommentBlogAPIView(APIView) :
             required=["name","email","description"]
         )
     )
-    def post(self,request,blog_slug):
-
-        print(blog_slug)
+    def post(self,request,blog_id):
         try :
-            blog = Blog.objects.get(slug=blog_slug)
+            blog = Blog.objects.get(id=blog_id)
         except :
             return Response({'detail' : 'blog not found .'},status.HTTP_404_NOT_FOUND)
 
@@ -171,7 +169,6 @@ class CategoryAPIView (APIView) :
         except PageNotAnInteger : 
             blogs = paginator.page(1)
         data = {
-            'page_titles' : BlogsPageSerializer(BlogsPage.objects.first(),context={'request':request}).data,
             'categories' : CategorySerializer(Category.objects.all()[:6],many=True).data,
             'blogs' : BlogSimpleSerializer(
                 blogs,

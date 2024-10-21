@@ -83,6 +83,7 @@ class CommentSerializer (serializers.ModelSerializer) :
     class Meta :
         model = Comment
         exclude = ["reply_to","liked_by","disliked_by"]
+        read_only_fields = ["liked_by","disliked_by","is_from_admin"]
 
     def to_representation(self, instance):
         context = super().to_representation(instance)

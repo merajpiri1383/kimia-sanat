@@ -8,7 +8,7 @@ from authentication.sms import send_sms
 @shared_task
 def send_otp (phone) : 
     user = get_user_model().objects.get(phone=phone)
-    send_sms(phone,user.otp_code)
+    send_sms(user.phone,user.otp_code)
     sleep(120)
     user.save()
 
@@ -16,7 +16,7 @@ def send_otp (phone) :
 @shared_task
 def check_user_is_active_for_register(phone) : 
     user = get_user_model().objects.get(phone=phone)
-    send_sms(phone,user.otp_code)
+    send_sms(user.phone,user.otp_code)
     sleep(120)
     user = get_user_model().objects.get(phone=phone)
     if not user.is_active : 
