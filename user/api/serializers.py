@@ -74,6 +74,8 @@ class LegaProfileSerializer (serializers.ModelSerializer) :
             raise ValidationError({'telephoe' : 'invalid phone number , must be more than 5 character .'})
         return super().validate(attrs)
     
+class ImageSerializer (serializers.Serializer) : 
+    profile_image = serializers.ImageField(read_only=True)
 
 # دیتا کاربر برای navbar 
 
@@ -91,3 +93,18 @@ class UserInfoSerializer (serializers.ModelSerializer) :
     class Meta : 
         model = get_user_model()
         fields = ["id","phone","name","is_active","is_legal","is_real","is_panel_active"]
+
+    def to_representation(self,instance,**kwargs) : 
+        context = super().to_representation(instance,**kwargs)
+        if hasattr(instance,"real_profile") : 
+            context["url"] = ImageSerializer(
+                instance.real_profile,
+                context=self.context).data
+        elif hasattr(instance,'legal_profile') : 
+            context["url"] = ImageSerializer(
+                instance.legal_profile,
+                context=self.context
+            ).data
+        else :
+            context["url"] = None
+        return context

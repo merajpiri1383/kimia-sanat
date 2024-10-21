@@ -350,7 +350,7 @@ class DashboardAPIView (APIView) :
         except PageNotAnInteger : 
             result = paginator.page(1)
         if type == "ticket" : 
-            data = TicketSerializer(result,many=True).data
+            data = TicketSerializer(result,many=True,context={'request':request}).data
         else : 
             data = OrderSimpleSerializer(result,many=True,context={'request':request}).data
         data = {
@@ -368,7 +368,7 @@ class DashboardAPIView (APIView) :
             if result.has_next() else None,
             "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?type={type}&page={result.previous_page_number()}" 
             if result.has_previous() else None,
-            "user" : UserInfoSerializer(request.user).data
+            "user" : UserInfoSerializer(request.user,context={'request':request}).data
         }
         print(paginator.num_pages)
         return Response(data,status.HTTP_200_OK)
