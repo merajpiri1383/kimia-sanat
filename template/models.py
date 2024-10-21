@@ -37,7 +37,7 @@ class Menu (models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="نام منو")
 
-    internal_url = models.URLField(null=True,blank=True,verbose_name="لینک داخلی")
+    internal_url = models.CharField(max_length=256,null=True,blank=True,verbose_name="لینک داخلی")
 
     external_url = models.URLField(null=True,blank=True,verbose_name="لینک خارجی")
 
@@ -62,7 +62,7 @@ class SubMenu (models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="زیر منو")
 
-    interal_url = models.URLField(null=True,blank=True,verbose_name="لینک داخلی ")
+    interal_url = models.CharField(max_length=256,null=True,blank=True,verbose_name="لینک داخلی ")
 
     external_url = models.URLField(null=True,blank=True,verbose_name="لینک خارجی")
 

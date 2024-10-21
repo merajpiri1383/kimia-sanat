@@ -7,9 +7,14 @@ from rest_framework.exceptions import ValidationError
 # کلاس دسته بندی
 class CategorySerializer(serializers.ModelSerializer) :
 
+    project_count = serializers.SerializerMethodField("get_project_count")
+
+    def get_project_count (self,obj) : 
+        return obj.projects.count()
+
     class Meta :
         model = Category
-        fields = ["id","name","slug","cover"] 
+        fields = ["id","name","slug","cover","project_count"] 
 
 
 # کلاس تصاویر پروژه

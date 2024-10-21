@@ -42,7 +42,7 @@ class SliderAdmin (admin.ModelAdmin) :
 
 # مدل هدر 
 
-class SubMenuTabular (NestedTabularInline) : 
+class SubMenuTabular (NestedStackedInline) : 
     model = SubMenu
     extra = 0
     exclude = ["id"]
