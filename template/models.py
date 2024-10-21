@@ -370,6 +370,16 @@ class Footer (models.Model) :
 
     inamad_code = models.TextField(null=True,blank=True,verbose_name="کد اینماد")
 
+    instagram_link = models.URLField(verbose_name="آدرس اینستاگرام",null=True,blank=True)
+
+    linkedin_link = models.URLField(verbose_name="آدرس لینکدین",null=True,blank=True)
+
+    telegram_link = models.URLField(verbose_name="آدرس تلگرام",null=True,blank=True)
+
+    eitaa_link = models.URLField(verbose_name="آدرس ایتا",null=True,blank=True)
+
+    soroush_link = models.URLField(verbose_name="آدرس سروش",null=True,blank=True)
+
     def __str__ (self) : 
         return "فوتر"
     
@@ -417,23 +427,6 @@ class ElectroLicense (models.Model) :
 
     def __str__(self) : 
         return "مجوز "
-
-class SocialFooter (models.Model) : 
-
-    id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
-
-    footer = models.ForeignKey(Footer,on_delete=models.CASCADE,related_name="socials")
-
-    name = models.CharField(max_length=256,verbose_name="نام شبکه اجتماعی",null=True,blank=True)
-
-    url = models.URLField(verbose_name="آدرس")
-
-    def __str__ (self) : 
-        return "شبکه اجتماعی فوتر"
-    
-    class Meta : 
-        verbose_name = "شبکه اجتماعی فوتر"
-        verbose_name_plural = "شبکه های اجتماعی فوتر"
     
 class FooterLink (models.Model) : 
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from template.models import (Footer,FooterLink,PhoneFooter,SocialFooter,Header,
+from template.models import (Footer,FooterLink,PhoneFooter,Header,
                     Menu,SubMenu,CategoryFooter,CommingSoon,BlogTitle,ProjectTitle,Comment,
                     AchievementCardItem,AchievementCard,AnswerQuestionTitle,ProductTitle,
                     FirstPageContent,Consult,ElectroLicense,Slider,PhoneAnswerQuestion,Achievement,AchievementTitle,
@@ -15,11 +15,6 @@ from rest_framework.exceptions import ValidationError
 class CategoryFooterSerializer (serializers.ModelSerializer) : 
     class Meta : 
         model = CategoryFooter
-        exclude = ["id","footer"]
-
-class SocialFooterSerializer (serializers.ModelSerializer) : 
-    class Meta : 
-        model =SocialFooter
         exclude = ["id","footer"]
 
 class FooterPhoneSerializer (serializers.ModelSerializer) : 
@@ -56,8 +51,6 @@ class FooterSerializer (serializers.ModelSerializer) :
         return FooterPhoneSerializer(obj.phones.filter(is_constant=True),many=True).data
 
     links = FooterLinkSerializer(many=True)
-
-    socials = SocialFooterSerializer(many=True)
 
     categories = CategoryFooterSerializer(many=True)
 

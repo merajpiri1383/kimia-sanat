@@ -1,7 +1,7 @@
 from django.contrib import admin
 from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
-                            Header,FirstPageContent,Footer,FooterLink,PhoneFooter,SocialFooter
+                            Header,FirstPageContent,Footer,FooterLink,PhoneFooter
                             ,AchievementCardItem,Consult,ElectroLicense,CustomerClub,Slider,
                             PhoneAnswerQuestion,AchievementTitle,Achievement,FooterFeq,
                             CompanyCard,CompanyCardsPage)
@@ -102,10 +102,6 @@ class FooterLinkInline (admin.TabularInline) :
     extra = 0 
     exclude = ["id"]
 
-class SocialFooterInline (admin.TabularInline) : 
-    model = SocialFooter
-    extra = 0
-    exclude = ["id"]
 
 class PhoneFooterInline (admin.TabularInline) : 
     model = PhoneFooter
@@ -132,7 +128,6 @@ class FooterAdmin (admin.ModelAdmin) :
     exclude = ["id"]
     inlines= [
         FooterLinkInline,
-        SocialFooterInline,
         PhoneFooterInline,
         CategoryFooterInline,
         ElectroLicenseInline,

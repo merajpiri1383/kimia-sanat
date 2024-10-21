@@ -10,7 +10,7 @@ ticket_status = [
     ("closed","بسته شده"),
     ("responsed","پاسخ داده شد"),
     ("pending-admin","در انتظار پاسخ ادمین"),
-    ("checking","در انتظار بررسی"),
+    ("pending","در انتظار بررسی"),
     ("pending-user","در انتظار پاسخ کاربر")
 ]
 
@@ -43,7 +43,7 @@ class Ticket (models.Model) :
 
     number = models.SlugField(null=True,blank=True,verbose_name="شماره تیکت")
 
-    status = models.CharField(verbose_name="وضعیت",choices=ticket_status,default="closed")
+    status = models.CharField(verbose_name="وضعیت",choices=ticket_status,default="pending")
 
     def __str__ (self) : 
         return str(self.user)

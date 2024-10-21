@@ -29,7 +29,7 @@ class TicketListCreateAPIView (APIView) :
     )
     def get(self,request) : 
 
-        paginator = Paginator(request.user.tickets.all(),per_page=5)
+        paginator = Paginator(request.user.tickets.all().order_by("-created"),per_page=5)
         try :
             tickets = paginator.page(request.GET.get("page",1))
         except EmptyPage : 
@@ -40,8 +40,10 @@ class TicketListCreateAPIView (APIView) :
             "tickets" : TicketSerializer(tickets,many=True,context={'request':request}).data,
             "count" : paginator.count ,
             "pages" : paginator.num_pages,
-            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={tickets.next_page_number()}" if tickets.has_next() else None,
-            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?page={tickets.previous_page_number()}" if tickets.has_previous() else None
+            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={tickets.next_page_number()}" 
+            if tickets.has_next() else None,
+            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?page={tickets.previous_page_number()}" 
+            if tickets.has_previous() else None
         }
         return Response(data,status.HTTP_200_OK)
     
@@ -116,7 +118,7 @@ class TicketDetailAPIView (APIView) :
     )
     def put(self,request,ticket_id) : 
         if self.get_ticket(request,ticket_id) : return self.get_ticket(request,ticket_id)
-        if not self.ticket.status == "checking" : 
+        if not self.ticket.status == "pending" : 
             return Response({'detail':"ticket cant edit ."},status.HTTP_400_BAD_REQUEST)
         serializer = TicketSerializer(instance=self.ticket,data=request.data,context={'request':request})
         if serializer.is_valid() : 
