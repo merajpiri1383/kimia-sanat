@@ -18,6 +18,7 @@ from blog.api.serializers import BlogSimpleSerializer
 from product.api.serializers import ProductSimpleSerializer
 from project.api.serializers import ProjectSimpleSerializer
 from django.contrib.postgres.search import SearchQuery,SearchVector,SearchRank
+from user.api.serializers import UserInfoSerializer
 
 
 
@@ -27,7 +28,8 @@ class TemplateAPIView (APIView) :
     def get(self,request) :  
         data = {
             'header' : HeaderSerializer(Header.objects.first(),context={"request":request}).data,
-            'footer' : FooterSerializer(Footer.objects.first(),context={'request' : request}).data
+            'footer' : FooterSerializer(Footer.objects.first(),context={'request' : request}).data,
+            'user' : UserInfoSerializer(request.user).data if request.user.is_authenticated else None
         }
         comming_soon = CommingSoon.objects.first()
         if  comming_soon : 

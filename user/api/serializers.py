@@ -73,3 +73,21 @@ class LegaProfileSerializer (serializers.ModelSerializer) :
         if self.instance and "telephone" in attrs and not telephone_regex.findall(attrs["telephone"]) : 
             raise ValidationError({'telephoe' : 'invalid phone number , must be more than 5 character .'})
         return super().validate(attrs)
+    
+
+# دیتا کاربر برای navbar 
+
+class UserInfoSerializer (serializers.ModelSerializer) : 
+
+    name = serializers.SerializerMethodField("get_name")
+
+    def get_name (self,obj) : 
+        if hasattr(obj,"real_profile") : 
+            return obj.real_profile.name
+        elif hasattr(obj,'legal_profile') : 
+            return obj.legal_profile.name
+        return None
+
+    class Meta : 
+        model = get_user_model()
+        fields = ["id","phone","name","is_active","is_legal","is_real","is_panel_active"]

@@ -130,18 +130,11 @@ class OrderProductCountAPIView (APIView) :
         products_count = data.get("products_count")
         if not products_count : 
             return Response({"products_count":"this field is required ."})
-        try : 
-            products_count = json.loads(products_count)
-        except : 
-            return Response(
-                {"products_count" : "invalid format its must be a json format"},
-                status.HTTP_400_BAD_REQUEST
-            )
         if not isinstance(products_count,list) : 
-            return Response(
-                {'detail' : 'products_count must be a list'},
-                status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "products_count must be a list"},status.HTTP_400_BAD_REQUEST)
+        for item in products_count : 
+            if not isinstance(item,dict) : 
+                return Response({'invalid data'},status.HTTP_400_BAD_REQUEST)
         for item in products_count : 
             item["order"] = order.id
             serializer = ProductCountSerializer(data=item)

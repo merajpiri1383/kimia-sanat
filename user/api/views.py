@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status 
-from user.api.serializers import LegaProfileSerializer,RealProfileSerializer,SocialMediaSerializer
+from user.api.serializers import LegaProfileSerializer,RealProfileSerializer,SocialMediaSerializer,UserInfoSerializer
 from rest_framework.permissions import IsAuthenticated
 from user.models import SocialMedia
 from drf_yasg import openapi
@@ -14,10 +14,7 @@ from product.models import Comment as ProductComment
 from project.models import Comment as ProjectComment
 from blog.models import Comment as BlogComment
 from utils.permissions import IsActiveOrNot
-from ticket.models import Ticket
 from ticket.api.serializers import TicketSerializer
-from driver.models import Driver
-from order.models import Order
 from order.api.serializers import OrderSimpleSerializer
 
 
@@ -361,7 +358,8 @@ class DashboardAPIView (APIView) :
                 "orders" : request.user.orders.count(),
                 "responsed_tickets" : request.user.tickets.filter(status="responsed").count(),
                 "pending_tickets" : request.user.tickets.filter(status="pending-admin").count(),
-                "drivers" : request.user.drivers.count()
+                "drivers" : request.user.drivers.count(),
+                "notifications" : request.user.notifications.filter(read_users=None).count()
             },
             "result" : data,
             "count" : paginator.count,
@@ -370,6 +368,7 @@ class DashboardAPIView (APIView) :
             if result.has_next() else None,
             "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?type={type}&page={result.previous_page_number()}" 
             if result.has_previous() else None,
+            "user" : UserInfoSerializer(request.user).data
         }
         print(paginator.num_pages)
         return Response(data,status.HTTP_200_OK)
