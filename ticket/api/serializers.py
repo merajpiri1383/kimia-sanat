@@ -1,6 +1,8 @@
 from ticket.models import Ticket,TicketFile,Feedback
 from rest_framework import serializers
 from user.models import RealProfile,LegalProfile
+from user.api.serializers import UserInfoSerializer
+
 
 
 class SimpleRealProfileSerializer (serializers.ModelSerializer) : 
@@ -55,16 +57,7 @@ class TicketSerializer (serializers.ModelSerializer) :
 
     feedback = FeedbackSerializer(read_only=True,required=False)
 
-    user = serializers.SerializerMethodField("get_user")
-
-    def get_user(self,obj) : 
-        if hasattr(obj.user,"real_profile") : 
-            return SimpleRealProfileSerializer(obj.user.real_profile,context=self.context).data
-        elif hasattr(obj.user,"legal_profile") : 
-            return SimpleLegalProfileSerializer(
-                obj.user.legal_profile,
-                context=self.context
-            ).data
+    user = UserInfoSerializer()
 
     class Meta : 
         model = Ticket

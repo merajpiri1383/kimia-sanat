@@ -3,6 +3,7 @@ from order.models import Order,PaySlip,PreInvoice,PreInvoiceProduct,ProductCount
 from rest_framework.exceptions import  ValidationError
 import re
 from product.api.serializers import ProductSimpleSerializer
+from user.api.serializers import UserInfoSerializer
 
 
 # مدل پیش فاکتور 
@@ -73,6 +74,8 @@ class OrderSerializer (serializers.ModelSerializer) :
 
     product_counts = ProductCountSerializer(many=True,read_only=True)
 
+    user = UserInfoSerializer()
+
 
     class Meta :  
         model = Order
@@ -94,9 +97,11 @@ class OrderSimpleSerializer (serializers.ModelSerializer) :
 
     product_counts = ProductCountSerializer(many=True,read_only=True)
 
+    user = UserInfoSerializer()
+
     class Meta :  
         model = Order
-        exclude = ["user"] 
+        fields = "__all__"
 
 
 # افزودن چندین محصول
