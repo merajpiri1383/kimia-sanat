@@ -59,7 +59,7 @@ class TicketSerializer (serializers.ModelSerializer) :
 
     class Meta : 
         model = Ticket
-        exclude = ["reply_to"]
+        fields = "__all__"
         read_only_fields = ["id","is_from_admin","created","number","status"]
     
     def __init__(self,instance=None,**kwargs) :

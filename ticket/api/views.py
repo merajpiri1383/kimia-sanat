@@ -56,6 +56,7 @@ class TicketListCreateAPIView (APIView) :
                 "title" : openapi.Schema(type=openapi.TYPE_STRING,description="عنوان"),
                 "text" : openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
                 "files" : openapi.Schema(type=openapi.TYPE_FILE,description="لیستی از فایل ها"),
+                "reply_to" : openapi.Schema(type=openapi.TYPE_STRING,description="ایدی کامنت که ریپلاری میزنی")
             },
             required=["title","department","text"],
         ),
