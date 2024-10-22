@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from product.models import (Product,Category,ImageProduct,Comment,Standard
             ,FeatureProduct,UsageProduct,ViolationComment)
+from rest_framework.exceptions import ValidationError
 
 
 # مدل تصویر
@@ -55,11 +56,17 @@ class CommentReplySerializer (serializers.ModelSerializer) :
         }
 # مدل کامنت
 
+import re
+phone_regex = re.compile("^0[0-9]{10}$") 
+
 class CommentSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
         exclude = ["reply_to","liked_by","disliked_by"]
+        extra_kwargs = {
+            "phone" : {"required" : True}
+        }
 
     def to_representation(self, instance):
         context = super().to_representation(instance)
@@ -67,6 +74,11 @@ class CommentSerializer (serializers.ModelSerializer) :
         context["like_count"] = instance.liked_by.count()
         context["dislike_count"] = instance.disliked_by.count()
         return context
+    
+    def validate(self, attrs):
+        if not phone_regex.findall(attrs["phone"]) : 
+            raise ValidationError({'phone':'invalid phone'})
+        return super().validate(attrs)
 
 
 # مدل ساده محصول
