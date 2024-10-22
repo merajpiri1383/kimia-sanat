@@ -29,7 +29,7 @@ class TicketListCreateAPIView (APIView) :
     )
     def get(self,request) : 
 
-        paginator = Paginator(request.user.tickets.all().order_by("-created"),per_page=5)
+        paginator = Paginator(request.user.tickets.filter(reply_to=None).order_by("-created"),per_page=5)
         try :
             tickets = paginator.page(request.GET.get("page",1))
         except EmptyPage : 
