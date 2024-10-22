@@ -57,8 +57,6 @@ class TicketSerializer (serializers.ModelSerializer) :
 
     feedback = FeedbackSerializer(read_only=True,required=False)
 
-    user = UserInfoSerializer()
-
     class Meta : 
         model = Ticket
         exclude = ["reply_to"]
@@ -92,3 +90,12 @@ class TicketSerializer (serializers.ModelSerializer) :
                     file = file 
                 )
         return super().update(instance, validated_data)
+    
+    def to_representation(self,instance,**kwargs) : 
+        context = super().to_representation(instance,**kwargs)
+        if hasattr(instance,"user") : 
+            context["user"] = UserInfoSerializer(
+                instance.user,
+                context=self.context
+            ).data
+        return context

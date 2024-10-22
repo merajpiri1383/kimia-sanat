@@ -97,11 +97,18 @@ class OrderSimpleSerializer (serializers.ModelSerializer) :
 
     product_counts = ProductCountSerializer(many=True,read_only=True)
 
-    user = UserInfoSerializer()
-
     class Meta :  
         model = Order
         fields = "__all__"
+
+    def to_representation(self,instance,**kwargs) : 
+        context = super().to_representation(instance,**kwargs)
+        if hasattr(instance,"user") : 
+            context["user"] = UserInfoSerializer(
+                instance.user,
+                context=self.context
+            ).data
+        return context
 
 
 # افزودن چندین محصول

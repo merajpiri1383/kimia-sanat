@@ -67,7 +67,7 @@ class RealProfileAPIView (APIView) :
         )
     )
     def post(self,request) :
-        data = request.POST.copy()
+        data = request.data.copy()
         data["user"] = request.user.id
         serializer = RealProfileSerializer(data=data,context={'request':request})
         if serializer.is_valid () :
@@ -160,7 +160,7 @@ class LegalProfileAPIView (APIView) :
         }
     )
     def post(self,request) : 
-        data = request.POST.copy()
+        data = request.data.copy()
         data["user"] = request.user.id
         serializer = LegaProfileSerializer(data=data,context={'request':request})
         if serializer.is_valid () : 
