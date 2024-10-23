@@ -10,10 +10,11 @@ from order.api.serializers import (
     PaySlipSerializer,
     ProductCountSerializer
 )
+from product.models import Product
+from product.api.serializers import ProductSimpleSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-import json
 
 
 
@@ -367,3 +368,24 @@ class CompletedOrdersAPIView (APIView) :
             if result.has_previous() else None
         }
         return Response(data,status.HTTP_200_OK)
+    
+
+
+# لیست محصولات
+
+class ProductListAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="لیست محصولات صفحه سفارش",
+        responses={
+            200 : ProductSimpleSerializer(many=True),
+        }
+    )
+    def get(self,request) : 
+        products = Product.objects.all().order_by("-created")
+        serializer = ProductSimpleSerializer(
+            products,
+            many=True,
+            context={'request':request}
+        )
+        return Response(serializer.data,status.HTTP_200_OK)

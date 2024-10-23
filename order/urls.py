@@ -4,6 +4,8 @@ from order.api import views
 urlpatterns = [
 
     path('product/count/',views.OrderProductCountAPIView.as_view(),name="order-product-count"),
+
+    path('products/',views.ProductListAPIView.as_view()),
     
     path('list/',views.OrderListAPIView.as_view(),name="order-list"),
 
