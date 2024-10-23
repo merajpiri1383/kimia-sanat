@@ -14,4 +14,6 @@ urlpatterns = [
     path('comment/<comment_id>/interaction/',views.CommentInteractionAPIView.as_view(),name="comment-interaction"),
 
     path('dashboard/',views.DashboardAPIView.as_view(),name="dashboard"),
+
+    path('me/',views.UserAPIView.as_view(),name="user-info")
 ]

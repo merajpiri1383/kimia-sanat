@@ -372,3 +372,14 @@ class DashboardAPIView (APIView) :
         }
         print(paginator.num_pages)
         return Response(data,status.HTTP_200_OK)
+    
+
+# اطاعات کابر 
+
+class UserAPIView (APIView)  :
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request) : 
+        serializer = UserInfoSerializer(request.user,context={"request":request})
+        return Response(serializer.data,status.HTTP_200_OK)
