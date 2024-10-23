@@ -381,5 +381,9 @@ class UserAPIView (APIView)  :
     permission_classes = [IsAuthenticated]
 
     def get(self,request) : 
-        serializer = UserInfoSerializer(request.user,context={"request":request})
-        return Response(serializer.data,status.HTTP_200_OK)
+        unread_nots = request.user.notifications.filter(read_users=None)
+        data = {
+            "user" : UserInfoSerializer(request.user,context={"request":request}).data,
+            "notifications" : unread_nots.count()
+        }
+        return Response(data,status.HTTP_200_OK)

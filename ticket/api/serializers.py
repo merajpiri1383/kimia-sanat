@@ -48,6 +48,15 @@ class ReplyTicketSerializer (serializers.ModelSerializer) :
         model = Ticket
         exclude = ["reply_to"]
 
+    def to_representation(self,instance,**kwargs) : 
+        context = super().to_representation(instance,**kwargs)
+        if hasattr(instance,"user") : 
+            context["user"] = UserInfoSerializer(
+                instance.user,
+                context=self.context
+            ).data
+        return context
+
 # تیکت
 class TicketSerializer (serializers.ModelSerializer) : 
 
