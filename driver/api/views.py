@@ -18,11 +18,15 @@ class DriverListCreateAPIView (APIView) :
     permission_classes = [IsActiveOrNot]
 
     @swagger_auto_schema(
-        operation_description="لیست راننده های کاربر ",
-        operation_summary="لیست راننده ها"
+        operation_summary="لیست راننده ها",
+        operation_description="""
+        ?per_pge => تعداد راننده هر صفحه دیفالت ۱۰ تا هست
+        ?page => شماره صفحه
+        """,
     )
     def get(self,request) : 
-        paginator = Paginator(request.user.drivers.all().order_by("-created"),per_page=10)
+        per_page = request.GET.get("per_page",10)
+        paginator = Paginator(request.user.drivers.all().order_by("-created"),per_page=per_page)
         try :
             drivers = paginator.page(request.GET.get("page",1))
         except EmptyPage : 
@@ -31,9 +35,9 @@ class DriverListCreateAPIView (APIView) :
             drivers = paginator.page(1)
         data = {
             'drivers' : DriverSerializer(drivers,many=True).data,
-            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={drivers.next_page_number()}" 
+            "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={drivers.next_page_number()}&per_page={per_page}" 
             if drivers.has_next() else None ,
-            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?page={drivers.previous_page_number()}"
+            "previous_page" : f"{request.build_absolute_uri().split("?")[0]}?page={drivers.previous_page_number()}&per_page={per_page}"
             if drivers.has_previous() else None , 
             "count" : paginator.count , 
             "num_pages" : paginator.num_pages

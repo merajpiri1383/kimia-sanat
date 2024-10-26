@@ -29,7 +29,7 @@ class CustomTokenRefreshView (TokenRefreshView) :
                 "access" : origin.data["access"],
                 "refresh" : origin.data["refresh"],
                 'access_token_life_time' : settings.ACCESS_TOKEN_LIFETIME ,
-                'refresh_token_life_time' : settings.SLIDING_TOKEN_REFRESH_LIFETIME
+                'refresh_token_life_time' : settings.REFRESH_TOKEN_LIFETIME
             }
             return Response(data,status.HTTP_200_OK)
         return origin
@@ -109,7 +109,7 @@ class VerifyAPIView (APIView) :
                 'access' : str(refresh_token.access_token),
                 'refresh' : str(refresh_token),
                 'access_token_life_time' : settings.ACCESS_TOKEN_LIFETIME ,
-                'refresh_token_life_time' : settings.SLIDING_TOKEN_REFRESH_LIFETIME
+                'refresh_token_life_time' : settings.REFRESH_TOKEN_LIFETIME
             }
             return Response(data,status.HTTP_200_OK)
         else :
