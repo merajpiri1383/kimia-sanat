@@ -1,4 +1,4 @@
-from ticket.models import Ticket,TicketFile,Feedback
+from ticket.models import Ticket,TicketFile,Feedback,TicketPage
 from rest_framework import serializers
 from user.models import RealProfile,LegalProfile
 from user.api.serializers import UserInfoSerializer
@@ -78,6 +78,13 @@ class TicketSerializer (serializers.ModelSerializer) :
     
     def create(self,validated_data) : 
         ticket = Ticket.objects.create(**validated_data)
+        if "reply_to" in validated_data : 
+            ticket = Ticket.objects.create(
+                **validated_data,
+                status="responsed-user"
+            )
+        else : 
+            ticket = Ticket.objects.create(**validated_data)
         try : 
             files = self.context["request"].FILES.getlist("files")
             for file in files : 
@@ -108,3 +115,11 @@ class TicketSerializer (serializers.ModelSerializer) :
                 context=self.context
             ).data
         return context
+    
+# صفحه تیکت ها 
+
+class TicketPageSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = TicketPage
+        exclude = ["id"]

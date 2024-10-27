@@ -3,11 +3,12 @@ from template.models import ( AchievementCard,Comment,BlogTitle,CommingSoon
                             ,ProductTitle,ProjectTitle,Menu,SubMenu,AnswerQuestionTitle,CategoryFooter,
                             Header,FirstPageContent,Footer,FooterLink,PhoneFooter
                             ,AchievementCardItem,Consult,ElectroLicense,CustomerClub,Slider,
-                            PhoneAnswerQuestion,AchievementTitle,Achievement,FooterFeq,
-                            CompanyCard,CompanyCardsPage)
+                            PhoneAnswerQuestion,AchievementTitle,Achievement,FooterFeq,)
 
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin,NestedTabularInline
 from jalali_date.admin import ModelAdminJalaliMixin
+
+from template.panel.admin import *
 
 # عنوان پروژه 
 
@@ -160,14 +161,3 @@ class AchievementTitleAdmin (admin.ModelAdmin) :
     inlines = [AchievementInline]
 
 
-# صفحه شماره کارت ها
-
-class CardNumberInline (admin.StackedInline) : 
-    model = CompanyCard
-    extra = 0
-    exclude = ["id"]
-
-@admin.register(CompanyCardsPage)
-class CompanyCardsPageAdmin (admin.ModelAdmin) : 
-    exclude = ["id"]
-    inlines = [CardNumberInline]

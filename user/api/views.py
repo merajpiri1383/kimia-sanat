@@ -16,6 +16,8 @@ from blog.models import Comment as BlogComment
 from utils.permissions import IsActiveOrNot
 from ticket.api.serializers import TicketSerializer
 from order.api.serializers import OrderSimpleSerializer
+from template.panel.models import SavedPage
+from template.panel.serializers import SavedPageSerializer
 
 
 
@@ -43,10 +45,6 @@ class RealProfileAPIView (APIView) :
         operation_summary="ارسال اطلاعات پروفایل حقیقی",
         operation_description="""
             درصورتی که کاربر پروفایل حقیقی داشته باشه ارور میده
-            social_media :‌ باید اول لیست شبکه های اجتماعی رو از ادرس
-            /user/social-media/ 
-             آیدی اون شبکه اجتماعی رو بذاریselect بگیری بعد توی تگ
-
             type : 
                 1 => customer 
                 2 => seller
@@ -56,7 +54,6 @@ class RealProfileAPIView (APIView) :
             properties={
                 "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام"),
                 "social_phone" : openapi.Schema(type=openapi.TYPE_NUMBER,description="شماره تلفن دارای شبکه اجتماعی"),
-                "social_media" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع شبکه اجتماعی شماره"),
                 "national_id" : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی"),
                 "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
                 "address" : openapi.Schema(type=openapi.TYPE_STRING,description="آدرس"),
@@ -81,14 +78,11 @@ class RealProfileAPIView (APIView) :
     @swagger_auto_schema(
         operation_summary="تغییر پروفایل حقیقی",
         operation_description="""درصورتی که کاربر اطلاعات حقیقی رو ارسال نکرده باشه ارور میده
-            social_media :‌ باید اول لیست شبکه های اجتماعی رو از ادرس
-            /user/social-media/ 
-             آیدی اون شبکه اجتماعی رو بذاریselect بگیری بعد توی تگ""",
+      """,
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
                 "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام"),
-                "social_media" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع شبکه اجتماعی شماره"),
                 "national_id" : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی"),
                 "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
                 "address" : openapi.Schema(type=openapi.TYPE_STRING,description="آدرس"),
@@ -179,7 +173,6 @@ class LegalProfileAPIView (APIView) :
             type=openapi.TYPE_OBJECT,
             properties={
                 "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام"),
-                "social_media" : openapi.Schema(type=openapi.TYPE_STRING,description="نوع شبکه اجتماعی شماره"),
                 "national_id" : openapi.Schema(type=openapi.TYPE_STRING,description="کد ملی"),
                 "email" : openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
                 "address" : openapi.Schema(type=openapi.TYPE_STRING,description="آدرس"),
@@ -268,6 +261,7 @@ class SavedItems (APIView) :
             results = BlogSimpleSerializer(result,many=True,context={'request':request}).data
         print(result.count)
         data = {
+            "page" : SavedPageSerializer(SavedPage.objects.first()).data,
             "results" : results,
             "count" : paginator.count,
             "page_nums" : paginator.num_pages,

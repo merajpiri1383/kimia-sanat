@@ -40,7 +40,25 @@ class ProductCountInline (NestedTabularInline) :
 @admin.register(Order)
 class OrderAdmin (NestedModelAdmin) : 
     exclude = ["id"]
+    list_display = ["index","get_user_name","get_phone","tracking_code","state"]
     inlines = [PaySlipInline,PreInvoiceInline,ProductCountInline]
+
+    def index (self,obj) : 
+        return list(Order.objects.all().order_by("-created")).index(obj) + 1 
+    index.short_description = "ردیف"
+    
+    def get_user_name (self,obj) : 
+        if hasattr(obj.user,"real_profile") : 
+            return obj.user.real_profile.name
+        elif hasattr(obj.user,"legal_profile") : 
+            return obj.user.legal_profile.name 
+    get_user_name.short_description = "نام کاربر"
+
+    def get_phone(self,obj) : 
+        return obj.user.phone
+    get_phone.short_description = "شماره موبایل"
+
+
 
 @admin.register(Rule)
 class RuleAdmin (admin.ModelAdmin) : 

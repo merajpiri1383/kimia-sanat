@@ -27,8 +27,6 @@ class UserSerializer (serializers.ModelSerializer) :
 # مدل پروفایل حقیقی 
 class RealProfileSerializer (serializers.ModelSerializer) : 
 
-    social_media = SocialMediaSerializer(many=True,required=False)
-
     class Meta : 
         model = RealProfile
         fields = "__all__"
@@ -54,8 +52,6 @@ class RealProfileSerializer (serializers.ModelSerializer) :
 
 # مدل پروفایل حقوقی
 class LegaProfileSerializer (serializers.ModelSerializer) : 
-
-    social_media = SocialMediaSerializer(many=True,required=False)
 
     class Meta : 
         model = LegalProfile

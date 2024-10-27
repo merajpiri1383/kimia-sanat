@@ -11,7 +11,7 @@ ticket_status = [
     ("responsed","پاسخ داده شد"),
     ("pending-admin","در انتظار پاسخ ادمین"),
     ("pending","در انتظار بررسی"),
-    ("pending-user","در انتظار پاسخ کاربر")
+    ("responsed-user","پاسخ توسط مشتری")
 ]
 
 class Ticket (models.Model) : 
@@ -25,7 +25,7 @@ class Ticket (models.Model) :
         related_name="tickets"
     )
 
-    title = models.CharField(max_length=256,verbose_name="عنوان")
+    title = models.CharField(max_length=256,verbose_name="عنوان",null=True,blank=True)
 
     is_from_admin = models.BooleanField(default=False,verbose_name="از طرف ادمین است ")
 
@@ -119,3 +119,21 @@ class Feedback ( models.Model ) :
     class Meta : 
         verbose_name = 'بازخورد'
         verbose_name_plural = 'بازخورد تیکت'
+
+
+# صفحه تیکت ها 
+
+class TicketPage (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    title = models.CharField(max_length=256,verbose_name="عنوان کادر",null=True,blank=True)
+
+    text = models.TextField(verbose_name="متن کادر",null=True,blank=True)
+
+    def __str__ (self) : 
+        return "صفحه تیکت ها"
+    
+    class Meta : 
+        verbose_name = "صفحه تیکت ها"
+        verbose_name_plural = "صفحه تیکت ها"

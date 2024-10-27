@@ -89,6 +89,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -195,8 +196,8 @@ REST_FRAMEWORK = {
 
 # SIMPLE JWT 
 
-ACCESS_TOKEN_LIFETIME = timedelta(hours=5)
-REFRESH_TOKEN_LIFETIME = timedelta(days=7)
+ACCESS_TOKEN_LIFETIME = timedelta(days=5)
+REFRESH_TOKEN_LIFETIME = timedelta(days=15)
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': ACCESS_TOKEN_LIFETIME,

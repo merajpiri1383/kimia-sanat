@@ -144,12 +144,6 @@ class RealProfile ( models.Model ) :
 
     email = models.EmailField(verbose_name="ایمیل")
 
-    social_media = models.ManyToManyField(
-        to = SocialMedia,
-        verbose_name="شبکه اجتماعی",
-        blank=True
-    )
-
     telephone = models.SlugField(verbose_name="تلفن ثابت")
 
     postal_code = models.PositiveBigIntegerField(verbose_name="کد پستی")

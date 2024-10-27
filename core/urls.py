@@ -3,6 +3,7 @@ from django.urls import path,include,re_path
 from django.conf import settings
 from django.views.static import serve
 from drf_yasg.views import get_schema_view
+from django.conf.urls import i18n
 from drf_yasg import openapi
 
 schema = get_schema_view(
@@ -39,6 +40,8 @@ urlpatterns = [
     path('notification/',include('notification.urls')),
 
     path('auth/',include("authentication.urls")),
+
+    path('i18n/',include("django.conf.urls.i18n")),
 
     path('',schema.with_ui('swagger',cache_timeout=0),name="swagger"),
 

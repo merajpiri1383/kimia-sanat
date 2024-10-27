@@ -50,6 +50,14 @@ class TicketListCreateAPIView (APIView) :
 
     @swagger_auto_schema(
         operation_summary="ارسال تیکت",
+        operation_description="""
+        وضعیت های تیکت :
+                closed => بسته شده
+                responsed => پاسخ داده شد
+                pending-admin => در انتظار پاسخ ادمین
+                pending => در انتظار بررسی
+                responsed-user => پاسخ توسط مشتری
+        """,
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
