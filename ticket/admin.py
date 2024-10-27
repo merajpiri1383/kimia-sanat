@@ -24,6 +24,7 @@ class TicketAdmin (admin.ModelAdmin) :
     exclude = ["id"]
     inlines = [TicketInline,TicketFile,FeedbackInline]
     list_display = ["index","number","get_name","title","status"]
+    ordering = ["created"]
 
     def index (self,obj) : 
         return list(Ticket.objects.all().order_by("-created")).index(obj) + 1

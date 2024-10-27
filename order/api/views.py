@@ -10,6 +10,11 @@ from order.api.serializers import (
     PaySlipSerializer,
     ProductCountSerializer
 )
+from order.panel.serializers import (
+    ListShopPageSerializer,
+    OrderPageSerializer
+)
+from order.panel.models import ListShopPage,OrderPage
 from product.models import Product
 from product.api.serializers import ProductSimpleSerializer
 from drf_yasg.utils import swagger_auto_schema
@@ -335,7 +340,10 @@ class OrderTotalInfo (APIView) :
             "accept" : orders.filter(state="accept").count(),
             "reject" : orders.filter(state="reject").count(),
             "paid" : orders.filter(state="paid").count(),
-            "pending" : orders.filter(state="pending").count()
+            "pending" : orders.filter(state="pending").count(),
+            "page" : ListShopPageSerializer(
+                ListShopPage.objects.first(),
+            ).data
         }
         return Response(data,status.HTTP_200_OK)
     
@@ -383,9 +391,12 @@ class ProductListAPIView (APIView) :
     )
     def get(self,request) : 
         products = Product.objects.all().order_by("-created")
-        serializer = ProductSimpleSerializer(
-            products,
-            many=True,
-            context={'request':request}
-        )
-        return Response(serializer.data,status.HTTP_200_OK)
+        data = {
+            "page" : OrderPageSerializer(OrderPage.objects.first()).data,
+            "products" : ProductSimpleSerializer(
+                    products,
+                    many=True,
+                    context={'request':request}
+                ).data
+        }
+        return Response(data,status.HTTP_200_OK)

@@ -9,6 +9,7 @@ from driver.models import Driver
 from system.models import ProductSystem
 from django.contrib.humanize.templatetags.humanize import intcomma
 from product.models import Product
+from order.panel.models import *
 
 number_regex = re.compile("^[0-9]{8,}$")
 

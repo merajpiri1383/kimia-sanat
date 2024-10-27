@@ -1,5 +1,5 @@
 from rest_framework import serializers 
-from driver.models import Driver
+from driver.models import Driver,DriverListPage
 from rest_framework.validators import ValidationError
 import re
 
@@ -24,3 +24,12 @@ class DriverSerializer (serializers.ModelSerializer) :
         if "phone" in attrs and not phone_regex.findall(attrs["phone"]) : 
             raise ValidationError({'phone' : "please enter correct phone number ."})
         return super().validate(attrs)
+    
+
+# صفحه لیست راننده ها 
+
+class  DriverListPageSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = DriverListPage
+        exclude = ["id"]

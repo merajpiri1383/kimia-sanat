@@ -2,9 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status 
 from utils.permissions import IsActiveOrNot
-from driver.api.serializers import DriverSerializer
+from driver.api.serializers import DriverSerializer,DriverListPageSerializer
 from driver.permissions import IsOwnDriverOrNot
-from driver.models import Driver
+from driver.models import Driver,DriverListPage
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
@@ -34,6 +34,9 @@ class DriverListCreateAPIView (APIView) :
         except PageNotAnInteger : 
             drivers = paginator.page(1)
         data = {
+            'page' : DriverListPageSerializer(
+                DriverListPage.objects.first(),
+            ).data,
             'drivers' : DriverSerializer(drivers,many=True).data,
             "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={drivers.next_page_number()}&per_page={per_page}" 
             if drivers.has_next() else None ,

@@ -34,3 +34,34 @@ class Driver (models.Model) :
     def clean(self) : 
         if not phone_regex.findall(self.phone) : 
             raise ValidationError("please enter correct phone number .")
+        
+
+# صفحه لیست راننده ها 
+
+class DriverListPage (models.Model) : 
+
+    id = models.UUIDField(
+        default=uuid4,
+        unique=True,
+        primary_key=True,
+    )
+
+    title = models.CharField(
+        max_length=256,
+        null=True,
+        blank=True,
+        verbose_name="عنوان کادر"
+    )
+
+    text = models.TextField(
+        verbose_name="متن",
+        null=True,
+        blank=True
+    )
+
+    def __str__ (self) : 
+        return "صفحه لیست راننده ها"
+    
+    class Meta : 
+        verbose_name = "صفحه لیست راننده ها"
+        verbose_name_plural = "صفحه لیست راننده ها"

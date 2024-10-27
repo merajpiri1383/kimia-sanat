@@ -3,6 +3,7 @@ from order.models import Order,PaySlip,Rule,PreInvoice,PreInvoiceProduct,Product
 from nested_inline.admin import NestedStackedInline,NestedModelAdmin,NestedTabularInline
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.utils.html import format_html
+from order.panel.admin import *
 
 
 class PreInvoiceProductInline (NestedTabularInline) : 
