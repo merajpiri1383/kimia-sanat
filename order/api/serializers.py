@@ -109,7 +109,7 @@ class OrderSerializer (serializers.ModelSerializer) :
 # مدل ساده سفارش 
 class OrderSimpleSerializer (serializers.ModelSerializer) : 
 
-    product_counts = ProductCountSerializer(many=True,read_only=True)
+    product_counts = ProductCountSerializer(many=True,read_only=True) 
 
     class Meta :  
         model = Order
@@ -122,6 +122,7 @@ class OrderSimpleSerializer (serializers.ModelSerializer) :
                 instance.user,
                 context=self.context
             ).data
+        context["pre_invoice"] = PreInvoiceSerializer(instance.pre_invoice).data
         return context
 
 
@@ -133,15 +134,25 @@ class MultipleProductOrderSerializer (serializers.Serializer) :
         child = ProductCountSerializer()
     )
 
-# مدل سفارش برای پیش فاکتور 
+# # مدل سفارش برای پیش فاکتور 
 
-class OrderPaySlipSerializer (serializers.ModelSerializer) : 
+# class OrderPaySlipSerializer (serializers.ModelSerializer) : 
 
-    pre_invoice = serializers.SerializerMethodField("get_pay_slip")
+#     pre_invoice = serializers.SerializerMethodField("get_pay_slip")
 
-    def get_pay_slip (self,obj) :
-        return PreInvoiceSerializer(obj.pre_invoice).data
+#     products_count = ProductCountSerializer(many=True)
 
-    class Meta : 
-        model = Order
-        exclude = ["user"]
+#     def get_pay_slip (self,obj) :
+#         return 
+
+#     class Meta : 
+#         model = Order
+#         fields = "__all__"
+
+#     def to_representation(self, instance):
+#         context = super().to_representation(instance)
+#         context["user"] = UserInfoSerializer(
+#             instance.user,
+#             context=self.context
+#         ).data
+#         return context

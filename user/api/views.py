@@ -15,7 +15,7 @@ from project.models import Comment as ProjectComment
 from blog.models import Comment as BlogComment
 from utils.permissions import IsActiveOrNot
 from ticket.api.serializers import TicketSerializer
-from order.api.serializers import OrderPaySlipSerializer
+from order.api.serializers import OrderSimpleSerializer
 from template.panel.models import SavedPage
 from template.panel.serializers import SavedPageSerializer
 
@@ -346,7 +346,7 @@ class DashboardAPIView (APIView) :
         if type == "ticket" : 
             data = TicketSerializer(result,many=True,context={'request':request}).data
         else : 
-            data = OrderPaySlipSerializer(result,many=True,context={'request':request}).data
+            data = OrderSimpleSerializer(result,many=True,context={'request':request}).data
         data = {
             "counts" : {
                 "orders" : request.user.orders.count(),
