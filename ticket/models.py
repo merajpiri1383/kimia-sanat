@@ -55,6 +55,8 @@ class Ticket (models.Model) :
     def save(self,**kwargs) : 
         if not self.number : 
             self.number = f"ksp{randint(10000,99999)}"
+        if self.is_from_admin : 
+            self.status = "closed"
         return super().save(**kwargs)
 
 

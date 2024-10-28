@@ -4,6 +4,7 @@ from rest_framework.exceptions import  ValidationError
 import re
 from product.api.serializers import ProductSimpleSerializer
 from user.api.serializers import UserInfoSerializer
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 
 # مدل پیش فاکتور 
@@ -12,8 +13,21 @@ class PreInvoiceProductSerializer (serializers.ModelSerializer) :
 
     title = serializers.SerializerMethodField("get_title")
 
+    price = serializers.SerializerMethodField("get_price")
+
+    sum_price = serializers.SerializerMethodField("get_total_price")
+
     def get_title(self,obj) : 
         return obj.title.name
+    
+    def get_price (self,obj) : 
+        if obj.pre_invoice.is_for_collegue : 
+            return obj.colleague_price() 
+        elif obj.pre_invoice.is_for_customer : 
+            return obj.buy_price()
+
+    def get_total_price (self,obj) : 
+        return intcomma(obj.get_total(),False)
 
     class Meta : 
         model = PreInvoiceProduct
@@ -26,7 +40,7 @@ class PreInvoiceSerializer (serializers.ModelSerializer) :
 
     class Meta : 
         model = PreInvoice
-        exclude = ["id","is_for_collegue","is_for_customer"]
+        exclude = ["id","is_for_collegue","is_for_customer","order"]
 
 number_regex = re.compile("^[0-9]{8,}$")
 
@@ -118,3 +132,16 @@ class MultipleProductOrderSerializer (serializers.Serializer) :
     products_count = serializers.ListField(
         child = ProductCountSerializer()
     )
+
+# مدل سفارش برای پیش فاکتور 
+
+class OrderPaySlipSerializer (serializers.ModelSerializer) : 
+
+    pre_invoice = serializers.SerializerMethodField("get_pay_slip")
+
+    def get_pay_slip (self,obj) :
+        return PreInvoiceSerializer(obj.pre_invoice).data
+
+    class Meta : 
+        model = Order
+        exclude = ["user"]

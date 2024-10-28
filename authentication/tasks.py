@@ -1,8 +1,16 @@
 from celery import shared_task
 from django.contrib.auth import get_user_model
 from time import sleep
-from authentication.sms import send_sms
+from utils.sms import sms
 
+
+body_id = "260311"
+def send_sms (phone,otp) : 
+    sms.send_by_base_number(
+        otp,
+        phone,
+        body_id
+    )
 
 
 @shared_task

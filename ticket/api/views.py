@@ -13,6 +13,8 @@ from drf_yasg import openapi
 from django.contrib.postgres.search import SearchQuery,SearchRank,SearchVector
 
 
+def send_sms() : 
+    pass 
 
 # لیست تیکت ها
 

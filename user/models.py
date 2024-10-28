@@ -6,9 +6,6 @@ from uuid import uuid4
 from random import randint
 import re
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator,MaxValueValidator
-from django_jalali.db.models import jDateField
-from django.utils.html import format_html
 
 
 # مدل شبکه اجتماعی بازار یاب
@@ -56,6 +53,8 @@ class User (AbstractBaseUser,PermissionsMixin) :
     is_panel_active = models.BooleanField(default=False,verbose_name="پنل فعال است")
 
     otp_code = models.SlugField(max_length=5,verbose_name="کد تایید",null=True,blank=True)
+
+    send_sms = models.BooleanField(default=False,verbose_name="ارسال sms")
 
     drivers = models.ManyToManyField(
         to = Driver , 

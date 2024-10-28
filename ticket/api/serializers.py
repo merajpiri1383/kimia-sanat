@@ -77,7 +77,6 @@ class TicketSerializer (serializers.ModelSerializer) :
         return super().__init__(instance,**kwargs) 
     
     def create(self,validated_data) : 
-        ticket = Ticket.objects.create(**validated_data)
         if "reply_to" in validated_data : 
             ticket = Ticket.objects.create(
                 **validated_data,
