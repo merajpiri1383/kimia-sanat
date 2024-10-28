@@ -78,7 +78,13 @@ class Blog (models.Model) :
 
     is_published = models.BooleanField(default=False,verbose_name="ایا انتشار شده است")
 
-    def __str__(self):
+    user_waiting = models.ManyToManyField(
+        to=get_user_model(),
+        blank=True,
+        verbose_name="کاربران در انتظار"
+    )
+
+    def __str__(self) :
         return f"{self.category.name} - {self.title}"
 
     class Meta :

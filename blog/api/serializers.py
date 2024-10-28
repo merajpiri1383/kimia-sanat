@@ -23,7 +23,7 @@ class BlogSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Blog
-        fields = "__all__"
+        exclude = ["user_waiting"]
     
     def to_representation(self,instance,**kwargs) : 
         context = super().to_representation(instance,**kwargs)
@@ -41,7 +41,7 @@ class BlogSimpleSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Blog
-        fields = "__all__"
+        exclude = ["user_waiting"]
 
     def to_representation(self, instance,**kwargs):
         context = super().to_representation(instance,**kwargs)

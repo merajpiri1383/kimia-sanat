@@ -17,6 +17,7 @@ urlpatterns = [
 
     path('comment/<comment_id>/reply/',views.ReplyCommentAPIView.as_view(),name="comment-reply-blog"), 
 
-    path('search/',views.BlogSearchAPIView.as_view(),name="blog-search"), 
+    path('search/',views.BlogSearchAPIView.as_view(),name="blog-search"),
 
+    path('<blog_id>/waiting-user/',views.AddUserWaitingUserBlog.as_view(),name="waiting-user"),
 ]

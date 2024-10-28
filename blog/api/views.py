@@ -259,3 +259,32 @@ class SaveBlogAPIView (APIView) :
         if not self.blog : return Response({'detail':'blog not found .'},status.HTTP_404_NOT_FOUND)
         request.user.saved_blogs.remove(self.blog)
         return Response({'message':'blog unsaved successfully .'},status.HTTP_200_OK)
+    
+
+# افزودن کاربر به لیست در انتظار مقاله 
+
+class AddUserWaitingUserBlog (APIView) : 
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request,blog_id) : 
+        try : 
+            blog = Blog.objects.get(id=blog_id)
+        except : 
+            return Response({"detail":"blog not found"})
+        blog.user_waiting.add(request.user)
+        return Response(
+            {"message" : "user added to waiting user of blog ."},
+            status.HTTP_200_OK
+        )
+    
+    def delete(self,request,blog_id) : 
+        try : 
+            blog = Blog.objects.get(id=blog_id)
+        except : 
+            return Response({"detail":"blog not found"})
+        blog.user_waiting.remove(request.user)
+        return Response(
+            {"message" : "user removed to waiting user of blog ."},
+            status.HTTP_200_OK
+        )
