@@ -1,7 +1,16 @@
 from django.dispatch import receiver
 from django.db.models import signals
-from template.models import (AchievementCard,AnswerQuestionTitle,BlogTitle,CommingSoon,Header,
-                            FirstPageContent,ProductTitle,ProjectTitle,AchievementTitle)
+from template.main.models import (
+    BlogTitle,
+    AchievementTitle,
+    FirstPageContent,
+    AchievementCard,
+    AnswerQuestionTitle,
+    ProjectTitle,
+    ProductTitle,
+)
+from template.models import CommingSoon,LoginPage
+from template.header.models import Header
 
 
 @receiver(signal=signals.post_migrate)
@@ -48,3 +57,6 @@ def create_instances (sender,**kwargs) :
 
     if not AchievementTitle.objects.first() :
         AchievementTitle.objects.first()
+
+    if not LoginPage.objects.first() : 
+        LoginPage.objects.create()

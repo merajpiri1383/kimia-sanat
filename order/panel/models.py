@@ -60,3 +60,32 @@ class OrderPage (models.Model) :
     class Meta : 
         verbose_name = "صفحه سفارش"
         verbose_name_plural = "صفحه سفارش"
+
+
+class MyOrderPage (models.Model) : 
+
+    id = models.UUIDField(
+        default=uuid4,
+        unique=True,
+        primary_key=True,
+    )
+
+    title = models.CharField(
+        max_length=256,
+        null=True,
+        blank=True,
+        verbose_name="عنوان",
+    )
+
+    text = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="متن",
+    )
+
+    def __str__ (self) : 
+        return "صفحه سوابق خرید"
+    
+    class Meta : 
+        verbose_name = "سوابق خرید"
+        verbose_name_plural = "صفحه سوابق خرید"

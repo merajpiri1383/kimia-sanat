@@ -1,13 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework import status 
 from rest_framework.response import Response 
-from template.api.serializers import (HeaderSerializer,FooterSerializer,CommingSoonSerializer,BlogTtileSerializer,
-        ProjectTitleSerializer,AchievementCardSerializer,AnswerQuestionTitleSerializer,ProductTitleSerializer,
-        FirstPageSerilizer,ConsultSerializer,SliderSerializer,AchievementTitleSerializer,AchievementSerializer,
-        CardNumbersPageSerializer)
-from template.models import (Header,Footer,CommingSoon,BlogTitle,ProjectTitle,AchievementCard,
-        AnswerQuestionTitle,ProductTitle,FirstPageContent,Slider,AchievementTitle,Achievement,
-        CompanyCardsPage)
+from template.api.serializers import *
+from template.models import *
 from drf_yasg.utils import swagger_auto_schema
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from drf_yasg import openapi
@@ -29,7 +24,11 @@ class TemplateAPIView (APIView) :
         data = {
             'header' : HeaderSerializer(Header.objects.first(),context={"request":request}).data,
             'footer' : FooterSerializer(Footer.objects.first(),context={'request' : request}).data,
-            'user' : UserInfoSerializer(request.user).data if request.user.is_authenticated else None
+            'user' : UserInfoSerializer(request.user).data if request.user.is_authenticated else None,
+            "login_page" : LoginPageSerializer(
+                LoginPage.objects.first(),
+                context={'request':request}
+            ).data
         }
         comming_soon = CommingSoon.objects.first()
         if  comming_soon : 

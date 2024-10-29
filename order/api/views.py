@@ -9,13 +9,14 @@ from order.api.serializers import (
     PreInvoiceSerializer,
     PaySlipSerializer,
     ProductCountSerializer,
-    RuleSerializer
+    RuleSerializer,
 )
 from order.panel.serializers import (
     ListShopPageSerializer,
     OrderPageSerializer,
+    MyOrderPageSerializer
 )
-from order.panel.models import ListShopPage,OrderPage
+from order.panel.models import ListShopPage,OrderPage,MyOrderPage
 from product.models import Product
 from product.api.serializers import ProductSimpleSerializer
 from drf_yasg.utils import swagger_auto_schema
@@ -367,6 +368,7 @@ class CompletedOrdersAPIView (APIView) :
             result = paginator.page(1)
         data = {
             "result" : OrderSimpleSerializer(result,many=True,context={'request':request}).data,
+            "page" : MyOrderPageSerializer(MyOrderPage.objects.first()).data ,
             "count" : paginator.count,
             "num_pages" : paginator.num_pages,
             "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={result.next_page_number()}" 
