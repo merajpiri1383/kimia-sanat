@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from order.models import Order,PaySlip,PreInvoice,PreInvoiceProduct,ProductCount
+from order.models import (
+    Order,
+    PaySlip,
+    PreInvoice,
+    PreInvoiceProduct,
+    ProductCount,
+    Rule
+)
 from rest_framework.exceptions import  ValidationError
 import re
 from product.api.serializers import ProductSimpleSerializer
@@ -125,34 +132,11 @@ class OrderSimpleSerializer (serializers.ModelSerializer) :
         context["pre_invoice"] = PreInvoiceSerializer(instance.pre_invoice).data
         return context
 
+# مدل قوانین سفارش 
 
-# افزودن چندین محصول
 
-class MultipleProductOrderSerializer (serializers.Serializer) : 
+class RuleSerializer (serializers.ModelSerializer) : 
 
-    products_count = serializers.ListField(
-        child = ProductCountSerializer()
-    )
-
-# # مدل سفارش برای پیش فاکتور 
-
-# class OrderPaySlipSerializer (serializers.ModelSerializer) : 
-
-#     pre_invoice = serializers.SerializerMethodField("get_pay_slip")
-
-#     products_count = ProductCountSerializer(many=True)
-
-#     def get_pay_slip (self,obj) :
-#         return 
-
-#     class Meta : 
-#         model = Order
-#         fields = "__all__"
-
-#     def to_representation(self, instance):
-#         context = super().to_representation(instance)
-#         context["user"] = UserInfoSerializer(
-#             instance.user,
-#             context=self.context
-#         ).data
-#         return context
+    class Meta : 
+        model = Rule
+        exclude = ["id"]

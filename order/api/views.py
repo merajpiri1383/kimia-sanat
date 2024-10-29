@@ -2,17 +2,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from utils.permissions import IsOwnOrNot,IsActiveOrNot
-from order.models import Order,PaySlip,ProductCount
+from order.models import Order,PaySlip,ProductCount,Rule
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from order.api.serializers import (
     OrderSerializer,OrderSimpleSerializer,
     PreInvoiceSerializer,
     PaySlipSerializer,
-    ProductCountSerializer
+    ProductCountSerializer,
+    RuleSerializer
 )
 from order.panel.serializers import (
     ListShopPageSerializer,
-    OrderPageSerializer
+    OrderPageSerializer,
 )
 from order.panel.models import ListShopPage,OrderPage
 from product.models import Product
@@ -20,8 +21,6 @@ from product.api.serializers import ProductSimpleSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-
-
 
 
 
@@ -400,3 +399,21 @@ class ProductListAPIView (APIView) :
                 ).data
         }
         return Response(data,status.HTTP_200_OK)
+    
+
+# قوانین سفارش 
+
+class OrderRuleSAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="قوانین سفارش",
+        responses={
+            200 : RuleSerializer(many=True)
+        }
+    )
+    def get(self,request) : 
+        serializer = RuleSerializer(
+            Rule.objects.all(),
+            many=True
+        )
+        return Response(serializer.data,status.HTTP_200_OK)
