@@ -90,7 +90,7 @@ class User (AbstractBaseUser,PermissionsMixin) :
         verbose_name_plural = "کاربران"
 
     def __str__(self):
-        return str(self.phone)
+        return f"{self.username()} - {self.phone}"
 
     def save(self,*args,**kwargs):
         self.clean()

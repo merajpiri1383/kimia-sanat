@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ticket.models import Ticket,TicketFile,Feedback
+from ticket.models import Ticket,TicketFile,Feedback,TicketPage
 
 
 # مدل تیکت
@@ -39,3 +39,8 @@ class TicketAdmin (admin.ModelAdmin) :
             elif hasattr(obj.user,"legal_profile") : 
                 return obj.user.legal_profile.name 
     get_name.short_description = "نام کاربر"
+
+
+@admin.register(TicketPage)
+class TicketPageAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]

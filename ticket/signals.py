@@ -1,12 +1,19 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save,post_migrate
 from django.contrib.auth import get_user_model
-from ticket.models import Ticket
+from ticket.models import Ticket,TicketPage
 from ticket.tasks import (
     send_user_ticket_responsed,
     send_user_ticket_is_sent,
     send_admin_user_send_ticket
 )
+
+
+@receiver(post_migrate)
+def create_first_instance (sender,**kwargs) : 
+    
+    if not TicketPage.objects.first() : 
+        TicketPage.objects.create()
 
 
 @receiver(post_save,sender=Ticket)

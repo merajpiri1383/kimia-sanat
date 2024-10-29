@@ -1,8 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status 
-from ticket.models import Ticket
-from ticket.api.serializers import TicketSerializer,FeedbackSerializer
+from ticket.models import (
+    Ticket,
+    TicketPage
+)
+from ticket.api.serializers import (
+    TicketSerializer,
+    FeedbackSerializer,
+    TicketPageSerializer
+)
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
@@ -41,6 +48,7 @@ class TicketListCreateAPIView (APIView) :
         data = {
             "tickets" : TicketSerializer(tickets,many=True,context={'request':request}).data,
             "count" : paginator.count ,
+            "page" : TicketPageSerializer(TicketPage.objects.first()).data, 
             "pages" : paginator.num_pages,
             "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={tickets.next_page_number()}" 
             if tickets.has_next() else None,
