@@ -14,7 +14,7 @@ class Driver (models.Model) :
 
     name = models.CharField(max_length=256,verbose_name="نام راننده",unique=True)
 
-    license_plate = models.SlugField(max_length=8,verbose_name="پلاک راننده",unique=True)
+    license_plate = models.CharField(max_length=12,verbose_name="پلاک راننده",unique=True)
 
     car = models.CharField(max_length=256,verbose_name="ماشین راننده")
 
