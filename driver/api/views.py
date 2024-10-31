@@ -10,7 +10,19 @@ from drf_yasg.utils import swagger_auto_schema
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 from django.contrib.postgres.search import SearchQuery,SearchRank,SearchVector
 
+# صفحه راننده ها 
 
+class DriverPageAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="صفحه راننده",
+        responses={
+            200 : DriverListPageSerializer()
+        }
+    )
+    def get(self,request) : 
+        serializer = DriverListPageSerializer(DriverListPage.objects.first())
+        return Response(serializer.data,status.HTTP_200_OK)
 
 # لیست راننده ها
 class DriverListCreateAPIView (APIView) : 
@@ -34,9 +46,6 @@ class DriverListCreateAPIView (APIView) :
         except PageNotAnInteger : 
             drivers = paginator.page(1)
         data = {
-            'page' : DriverListPageSerializer(
-                DriverListPage.objects.first(),
-            ).data,
             'drivers' : DriverSerializer(drivers,many=True).data,
             "next_page" : f"{request.build_absolute_uri().split("?")[0]}?page={drivers.next_page_number()}&per_page={per_page}" 
             if drivers.has_next() else None ,
