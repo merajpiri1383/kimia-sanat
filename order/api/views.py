@@ -32,11 +32,22 @@ class OrderListAPIView (APIView) :
     permission_classes = [IsActiveOrNot]
 
     @swagger_auto_schema(
-        operation_summary="لیست سفارش ها"
+        operation_summary="لیست سفارش ها",
+        operation_description="""
+
+        ?state=
+            accept => تایید شده
+            reject => عدم تایید
+            paid => پرداخت شده
+            pending => در انتظار تایید
+            """
     )
     def get(self,request) : 
 
+        state = request.GET.get("state")
         orders = request.user.orders.all().order_by("-created")
+        if state : 
+            orders = orders.filter(state=state).order_by("-created")
         paginator = Paginator(orders,5)
         try :
             result = paginator.page(request.GET.get("page",1))
