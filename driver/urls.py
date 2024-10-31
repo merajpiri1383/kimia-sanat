@@ -12,4 +12,6 @@ urlpatterns = [
 
     path('<driver_id>/',views.DriverDetailAPIView.as_view(),name="driver-detail"),
 
+    path("page/add-driver/",views.AddDriverPageAPIView.as_view(),name="driver-add-page"),
+
 ]

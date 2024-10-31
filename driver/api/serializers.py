@@ -1,5 +1,5 @@
 from rest_framework import serializers 
-from driver.models import Driver,DriverListPage
+from driver.models import Driver,DriverListPage,DriverAddPage
 from rest_framework.validators import ValidationError
 import re
 
@@ -32,4 +32,13 @@ class  DriverListPageSerializer (serializers.ModelSerializer) :
 
     class Meta : 
         model = DriverListPage
+        exclude = ["id"]
+
+
+# صفحه افزودن راننده جدید
+
+class DriverAddPageSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = DriverAddPage
         exclude = ["id"]

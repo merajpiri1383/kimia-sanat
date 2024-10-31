@@ -65,3 +65,19 @@ class DriverListPage (models.Model) :
     class Meta : 
         verbose_name = "صفحه لیست راننده ها"
         verbose_name_plural = "صفحه لیست راننده ها"
+
+
+class DriverAddPage (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    title = models.CharField(max_length=256,verbose_name="عنوان ",null=True,blank=True)
+
+    text = models.TextField(null=True,blank=True,verbose_name="متن")
+
+    def __str__ (self) : 
+        return "صفحه افزودن راننده"
+    
+    class Meta : 
+        verbose_name = "صفحه افزودن راننده"
+        verbose_name_plural = "صفحه افزودن راننده"

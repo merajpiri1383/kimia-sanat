@@ -3,6 +3,8 @@ from order.api import views
 
 urlpatterns = [
 
+    path('search/',views.SearchOrderAPIView.as_view(),name="search"),
+
     path('product/count/',views.OrderProductCountAPIView.as_view(),name="order-product-count"),
 
     path('products/',views.ProductListAPIView.as_view()),

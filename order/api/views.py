@@ -2,7 +2,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from utils.permissions import IsOwnOrNot,IsActiveOrNot
-from order.models import Order,PaySlip,ProductCount,Rule
+from order.models import Order,PaySlip,Rule
+from django.contrib.postgres.search import SearchQuery,SearchRank,SearchVector
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from order.api.serializers import (
     OrderSerializer,OrderSimpleSerializer,
@@ -376,4 +377,29 @@ class OrderRuleSAPIView (APIView) :
             Rule.objects.all(),
             many=True
         )
+        return Response(serializer.data,status.HTTP_200_OK)
+    
+
+# سرچ سفارش 
+
+class SearchOrderAPIView (APIView) : 
+
+    permission_classes = [IsActiveOrNot]
+
+    @swagger_auto_schema(
+        operation_summary="سرچ سفارش",
+        operation_description="""?query=""",
+        responses={
+            200 : OrderSimpleSerializer(many=True)
+        }
+    )
+    def get(self,request) : 
+        result = []
+        query = request.GET.get("query")
+        if query : 
+            result = request.user.orders.annotate(rank=SearchRank(
+                query=SearchQuery(query),
+                vector=SearchVector("tracking_code","created","state","delivery_time","delivery_type")
+            )).filter(rank__gt=0.001).order_by("-rank")
+        serializer = OrderSimpleSerializer(result,many=True,context={'request':request})
         return Response(serializer.data,status.HTTP_200_OK)

@@ -19,7 +19,7 @@ def send_sms_to_admin_for_creating_order (order_id) :
     
     try : 
         order = Order.objects.get(id=order_id)
-        # PreInvoice.objects.create(order=order)
+        PreInvoice.objects.create(order=order)
         for user in get_user_model().objects.filter(send_sms=True,is_staff=True) : 
                 send_admin_new_order.apply_async(args=[
                     order.user.username(),

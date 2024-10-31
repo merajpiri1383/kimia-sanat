@@ -2,13 +2,29 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status 
 from utils.permissions import IsActiveOrNot
-from driver.api.serializers import DriverSerializer,DriverListPageSerializer
+from driver.api.serializers import (
+    DriverSerializer,
+    DriverListPageSerializer,
+    DriverAddPageSerializer
+)
 from driver.permissions import IsOwnDriverOrNot
-from driver.models import Driver,DriverListPage
+from driver.models import (
+    Driver,
+    DriverListPage,
+    DriverAddPage
+)
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
-from django.contrib.postgres.search import SearchQuery,SearchRank,SearchVector
+from django.core.paginator import (
+    Paginator,
+    PageNotAnInteger,
+    EmptyPage
+)
+from django.contrib.postgres.search import (
+    SearchQuery,
+    SearchRank,
+    SearchVector
+)
 
 # صفحه راننده ها 
 
@@ -172,4 +188,19 @@ class SearchDriverAPIView (APIView) :
         else : 
             result = []
         serializer = DriverSerializer(result,many=True)
+        return Response(serializer.data,status.HTTP_200_OK)
+    
+
+# صفحه افزودن راننده جدید
+
+class AddDriverPageAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="صفحه افزودن راننده جدید",
+        responses={
+            200 : DriverAddPageSerializer()
+        }
+    )
+    def get(self,request) : 
+        serializer = DriverAddPageSerializer(DriverAddPage.objects.first())
         return Response(serializer.data,status.HTTP_200_OK)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from driver.models import Driver,DriverListPage
+from driver.models import Driver,DriverListPage,DriverAddPage
 
 @admin.register(Driver)
 class DriverAdmin (admin.ModelAdmin) : 
@@ -14,4 +14,8 @@ class DriverAdmin (admin.ModelAdmin) :
 
 @admin.register(DriverListPage)
 class DriverListPageAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
+
+@admin.register(DriverAddPage)
+class DriverAddPageAdmin (admin.ModelAdmin) : 
     exclude = ["id"]
