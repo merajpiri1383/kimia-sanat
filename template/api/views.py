@@ -4,7 +4,11 @@ from rest_framework.response import Response
 from template.api.serializers import *
 from template.models import *
 from drf_yasg.utils import swagger_auto_schema
-from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from django.core.paginator import (
+    Paginator,
+    EmptyPage,
+    PageNotAnInteger,
+)
 from drf_yasg import openapi
 from project.models import Project
 from product.models import Product
@@ -196,3 +200,28 @@ class CardNumberPageAPIView (APIView) :
         page = CompanyCardsPage.objects.first()
         serializer = CardNumbersPageSerializer(page,context={'request':request})
         return Response(serializer.data,status.HTTP_200_OK)
+    
+
+class AddCustomerClubAPIView (APIView) : 
+
+    @swagger_auto_schema(
+        operation_summary="افزودن به باشگاه مشتریان",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "phone" : openapi.Schema(type=openapi.TYPE_STRING,description="شماره"),
+            },
+            required=["phone"]
+        ),
+        responses={
+            201 : "ok",
+            400 : "bad request"
+        }
+    )
+    def post(self,request) : 
+        serializer = CustomerClubSerializer(data=request.data)
+        if serializer.is_valid() : 
+            serializer.save()
+            return Response(serializer.data)
+        else : 
+            return Response(serializer.errors)

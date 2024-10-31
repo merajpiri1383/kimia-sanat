@@ -32,7 +32,7 @@ class CategoryAdminModel(admin.ModelAdmin) :
 
 # مدل پروژه
 @admin.register(Project)
-class ProjectAdminModel(ModelAdminJalaliMixin,admin.ModelAdmin) :
+class ProjectAdminModel(ModelAdminJalaliMixin,NestedModelAdmin) :
     exclude = ["id","slug"]
     inlines = [ProjectImageInline,VideoProjectInline]
     list_display = ["index","name","get_category","contractor","start_date","launch_date"]

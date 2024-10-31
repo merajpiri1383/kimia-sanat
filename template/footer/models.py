@@ -123,7 +123,7 @@ class CustomerClub (models.Model) :
 
     id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
 
-    phone = models.SlugField(verbose_name="شماره")
+    phone = models.SlugField(verbose_name="شماره",unique=True)
 
     def __str__ (self) : 
         return str(self.phone)

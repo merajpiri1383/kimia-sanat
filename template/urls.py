@@ -13,5 +13,7 @@ urlpatterns = [
 
     path('search/',views.SearchAPIView.as_view(),name="search"), 
 
-    path("card-number-page/",views.CardNumberPageAPIView.as_view(),name="card-number-page")
+    path("card-number-page/",views.CardNumberPageAPIView.as_view(),name="card-number-page"),
+
+    path("add-customer-club/",views.AddCustomerClubAPIView.as_view(),name="customer-club"),
 ] 

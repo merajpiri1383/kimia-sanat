@@ -97,12 +97,6 @@ class OrderAPIView (APIView) :
 class OrderProductCountAPIView (APIView) : 
 
     permission_classes = [IsActiveOrNot,IsOwnOrNot]
-
-    def get_order(self,request) : 
-        try : 
-            return request.user.orders.get(state="pending")
-        except : 
-            return Order.objects.create(user=request.user)
         
     @swagger_auto_schema(
         operation_summary="افزودن محصول به سفارش",
@@ -146,7 +140,6 @@ class OrderProductCountAPIView (APIView) :
         }
     )
     def post(self,request) : 
-        order = self.get_order(request)
         data = request.data.copy()
         products_count = data.get("products_count")
         if not products_count : 
@@ -156,6 +149,7 @@ class OrderProductCountAPIView (APIView) :
         for item in products_count : 
             if not isinstance(item,dict) : 
                 return Response({'invalid data'},status.HTTP_400_BAD_REQUEST)
+        order = Order.objects.create(user=request.user)
         for item in products_count : 
             item["order"] = order.id
             serializer = ProductCountSerializer(data=item)
@@ -169,42 +163,6 @@ class OrderProductCountAPIView (APIView) :
             return Response(serializer.data,status.HTTP_200_OK)
         else : 
             return Response(serializer.errors,status.HTTP_400_BAD_REQUEST)
-    
-
-    @swagger_auto_schema(
-        operation_summary="حذف محصول از سفارش",
-        operation_description="""
-                    وقتی محصول به سفارش اضافه میکنی یک 
-                    object 
-                    از محصول و مقدار سفارش درست میشه حالا ایدی اون 
-                    object
-                    رو میگیره
-        """,
-        request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "product_count_id" : openapi.Schema(type=openapi.TYPE_STRING,description="ایدی مقدار محصول")
-            },
-            required=["product_count_id"],
-        ),
-        responses={
-            204 : "deleted",
-            404 : "not found "
-        }
-    )
-    def delete(self,request) : 
-        product_count_id = request.data.get("product_count_id")
-        if not product_count_id : 
-            return Response({'product_count_id' : 'required .'},status.HTTP_400_BAD_REQUEST)
-        try : 
-            product_count = ProductCount.objects.get(id=product_count_id) 
-        except : 
-            return Response({'detail':'product count not found .'},status.HTTP_404_NOT_FOUND)
-        self.check_object_permissions(request,product_count.order)
-        if product_count.order.state != "pending" : 
-            return Response({'detail':"order cant edit ."},status.HTTP_400_BAD_REQUEST)
-        product_count.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
     
 # ارسال فیش واریزی

@@ -8,6 +8,10 @@ from template.footer.models import (
     FooterLink,
     PhoneFooter
 )
+from rest_framework.exceptions import ValidationError
+import re
+
+phone_regex = re.compile("0[0-9]{10}")
 
 
 
@@ -62,3 +66,17 @@ class FooterSerializer (serializers.ModelSerializer) :
     class Meta : 
         model = Footer
         exclude = ["id"]
+
+
+# عضو باشگاه مشتریان
+
+class CustomerClubSerializer (serializers.ModelSerializer) :
+
+    def validate(self, attrs):
+        if "phone" in attrs and not phone_regex.findall(attrs["phone"]) : 
+            raise ValidationError({"phone": "invalid phone ."})
+        return super().validate(attrs) 
+
+    class Meta : 
+        model = CustomerClub
+        fields = "__all__"
