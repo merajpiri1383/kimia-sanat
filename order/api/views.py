@@ -45,9 +45,9 @@ class OrderListAPIView (APIView) :
     def get(self,request) : 
 
         state = request.GET.get("state")
-        orders = request.user.orders.all().order_by("-created")
+        orders = request.user.orders.all().order_by("created")
         if state : 
-            orders = orders.filter(state=state).order_by("-created")
+            orders = orders.filter(state=state).order_by("created")
         paginator = Paginator(orders,5)
         try :
             result = paginator.page(request.GET.get("page",1))
@@ -328,7 +328,7 @@ class CompletedOrdersAPIView (APIView) :
         operation_summary="سوابق خرید",
     )
     def get(self,request) : 
-        orders = request.user.orders.filter(state="paid").order_by("-created")
+        orders = request.user.orders.filter(state="paid").order_by("created")
         paginator = Paginator(orders,5)
         try : 
             result = paginator.page(request.GET.get("page",1))

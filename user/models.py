@@ -8,6 +8,8 @@ import re
 from django.core.exceptions import ValidationError
 
 
+
+
 # مدل شبکه اجتماعی بازار یاب
 class SocialMedia (models.Model) :
 
@@ -96,6 +98,10 @@ class User (AbstractBaseUser,PermissionsMixin) :
         self.clean()
         self.otp_code = randint(10000,99999)
         return super().save(*args,**kwargs)
+    
+    @property
+    def unread_notifications (self) :
+        return self.notifications.filter(read_users=None).count()
 
     def clean(self) :
         if not regex_phone.findall(self.phone) :

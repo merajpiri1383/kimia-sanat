@@ -57,11 +57,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # internal apps 
+    'user.apps.UserConfig',
     'config.apps.ConfigConfig',
     'project.apps.ProjectConfig',
     'blog.apps.BlogConfig',
     'product.apps.ProductConfig',
-    'user.apps.UserConfig',
     'template.apps.TemplateConfig',
     'driver.apps.DriverConfig',
     'order.apps.OrderConfig',

@@ -18,6 +18,7 @@ from ticket.api.serializers import TicketSerializer
 from order.api.serializers import OrderSimpleSerializer
 from template.panel.models import SavedPage
 from template.panel.serializers import SavedPageSerializer
+from notification.models import Notification
 
 
 
@@ -353,7 +354,9 @@ class DashboardAPIView (APIView) :
                 "responsed_tickets" : request.user.tickets.filter(status="responsed").count(),
                 "pending_tickets" : request.user.tickets.filter(status="pending-admin").count(),
                 "drivers" : request.user.drivers.count(),
-                "notifications" : request.user.notifications.filter(read_users=None).count()
+                "notifications" : request.user.unread_notifications + Notification.objects.filter(
+                    send_to_all=True,
+                    ).exclude(read_users=request.user).count()
             },
             "result" : data,
             "count" : paginator.count,
@@ -364,7 +367,6 @@ class DashboardAPIView (APIView) :
             if result.has_previous() else None,
             "user" : UserInfoSerializer(request.user,context={'request':request}).data
         }
-        print(paginator.num_pages)
         return Response(data,status.HTTP_200_OK)
     
 
@@ -375,9 +377,10 @@ class UserAPIView (APIView)  :
     permission_classes = [IsAuthenticated]
 
     def get(self,request) : 
-        unread_nots = request.user.notifications.filter(read_users=None)
         data = {
             "user" : UserInfoSerializer(request.user,context={"request":request}).data,
-            "notifications" : unread_nots.count()
+            "notifications" : request.user.unread_notifications + Notification.objects.filter(
+                    send_to_all=True,
+                    ).exclude(read_users=request.user).count()
         }
         return Response(data,status.HTTP_200_OK)

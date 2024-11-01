@@ -65,3 +65,6 @@ class Notification (models.Model) :
     def __str__ (self) : 
         return str(self.title)
     
+    @property
+    def unread_notifications(self) : 
+        return 5
