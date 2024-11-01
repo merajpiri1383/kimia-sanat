@@ -105,12 +105,6 @@ class CommentSerializer (serializers.ModelSerializer) :
         context["dislike_count"] = instance.disliked_by.count()
         context["reply_to"] = instance.reply_to.name if hasattr(instance.reply_to,"name") else None
         return context
-    
-    def validate(self, attrs):
-        if not phone_regex.findall(attrs["phone"]) : 
-            raise ValidationError({'phone':'invalid phone'})
-        return super().validate(attrs)
-    
 
 # مدل گزارش تخلف کامنت
 

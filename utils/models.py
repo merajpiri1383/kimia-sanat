@@ -30,9 +30,7 @@ class CommentBase (models.Model) :
 
     name = models.CharField(max_length=256,verbose_name='نام و نام خانوادگی')
 
-    phone = models.SlugField(verbose_name="شماره تلفن",null=True,blank=True)
-
-    email = models.EmailField(verbose_name="ایمیل",null=True,blank=True)
+    email = models.EmailField(verbose_name="ایمیل")
 
     is_from_admin = models.BooleanField(default=False,verbose_name="از طرف ادمین")
 

@@ -209,6 +209,8 @@ class Comment (CommentBase) :
         verbose_name = "محصول"
     )
 
+    email = models.EmailField(verbose_name="ایمیل",null=True,blank=True)
+
     liked_by = models.ManyToManyField(
         to=get_user_model(),
         blank=True,

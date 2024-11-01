@@ -49,10 +49,6 @@ class ReplyCommentSerializer(serializers.ModelSerializer) :
         context["replys"] = ReplyCommentSerializer(instance.replys.all(),many=True).data
         return context
     
-    def validate(self, attrs):
-        if not phone_regex.findall(attrs["phone"]) : 
-            raise ValidationError({'phone' : 'invalid phone number .'})
-        return super().validate(attrs)
 
 # کلاس کامنت
 
@@ -78,11 +74,7 @@ class CommentSendSerializer(serializers.ModelSerializer) :
         context["dislike_count"] = instance.disliked_by.count()
         context["reply_to"] = instance.reply_to.name if hasattr(instance.reply_to,"name") else None
         return context
-    
-    def validate(self, attrs):
-        if not phone_regex.findall(attrs["phone"]) : 
-            raise ValidationError({'phone' : 'invalid phone number .'})
-        return super().validate(attrs)
+
 
 
 # کلاس پروژه
