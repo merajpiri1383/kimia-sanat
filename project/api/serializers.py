@@ -45,6 +45,8 @@ class ReplyCommentSerializer(serializers.ModelSerializer) :
         context = super().to_representation(instance)
         context["like_count"] = instance.liked_by.count()
         context["dislike_count"] = instance.disliked_by.count()
+        context["reply_to"] = instance.reply_to.name if hasattr(instance.reply_to,"name") else None
+        context["replys"] = ReplyCommentSerializer(instance.replys.all(),many=True).data
         return context
     
     def validate(self, attrs):
@@ -60,7 +62,7 @@ class CommentSendSerializer(serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        exclude = ["reply_to","liked_by","disliked_by"]
+        exclude = ["liked_by","disliked_by"]
         extra_kwargs = {
             "phone" : {'required' : True},
             "email" : {"required" : True}
@@ -74,6 +76,7 @@ class CommentSendSerializer(serializers.ModelSerializer) :
         ).data
         context["like_count"] = instance.liked_by.count()
         context["dislike_count"] = instance.disliked_by.count()
+        context["reply_to"] = instance.reply_to.name if hasattr(instance.reply_to,"name") else None
         return context
     
     def validate(self, attrs):

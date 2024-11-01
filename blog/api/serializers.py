@@ -77,6 +77,12 @@ class CommentReplySerializer (serializers.ModelSerializer) :
             "reply_to" : {"required" : True}
         }
 
+    def to_representation(self,instance,**kwargs) : 
+        context = super().to_representation(instance,**kwargs)
+        context["replys"] = CommentReplySerializer(instance.replys.all(),many=True).data
+        context["reply_to"] = instance.reply_to.name if hasattr(instance.reply_to,"name") else None
+        return context
+
 # مدل کامنت
 
 import re
@@ -86,7 +92,7 @@ class CommentSerializer (serializers.ModelSerializer) :
 
     class Meta :
         model = Comment
-        exclude = ["reply_to","liked_by","disliked_by"]
+        exclude = ["liked_by","disliked_by"]
         read_only_fields = ["liked_by","disliked_by","is_from_admin"]
         extra_kwargs = {
             "phone" : {"required" : True}
@@ -97,6 +103,7 @@ class CommentSerializer (serializers.ModelSerializer) :
         context["replys"] = CommentReplySerializer(instance.replys.all(),many=True).data
         context["like_count"] = instance.liked_by.count()
         context["dislike_count"] = instance.disliked_by.count()
+        context["reply_to"] = instance.reply_to.name if hasattr(instance.reply_to,"name") else None
         return context
     
     def validate(self, attrs):
