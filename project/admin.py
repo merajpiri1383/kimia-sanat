@@ -1,17 +1,17 @@
 from django.contrib import admin
 from project.models import Category,Project,ProjectImage,Comment,ProjectsPage,VideoProject,ViolationComment
 from jalali_date.admin import ModelAdminJalaliMixin
-from nested_inline.admin import NestedModelAdmin,NestedStackedInline
+from nested_inline.admin import NestedModelAdmin,NestedStackedInline,NestedTabularInline
 from django.utils.html import format_html
 
 # تصاویر پروژه
-class ProjectImageInline(admin.TabularInline) :
+class ProjectImageInline(NestedTabularInline) :
     model = ProjectImage
     exclude = ["id"]
     extra = 0
 
 # ویدیو های پروژه 
-class VideoProjectInline (admin.TabularInline) : 
+class VideoProjectInline (NestedTabularInline) : 
     model = VideoProject
     exclude = ["id"]
     extra = 0
