@@ -45,8 +45,6 @@ class ReplyCommentSerializer(serializers.ModelSerializer) :
         context = super().to_representation(instance)
         context["like_count"] = instance.liked_by.count()
         context["dislike_count"] = instance.disliked_by.count()
-        context["reply_to"] = instance.reply_to.name if hasattr(instance.reply_to,"name") else None
-        context["replys"] = ReplyCommentSerializer(instance.replys.all(),many=True).data
         return context
     
 

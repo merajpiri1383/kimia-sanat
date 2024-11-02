@@ -53,14 +53,7 @@ class CommentReplySerializer (serializers.ModelSerializer) :
         exclude = ["liked_by","disliked_by"]
         extra_kwargs = {
             "reply_to" : {"required" : True},
-            "email" : {"required" : True}
         }
-    
-    def to_representation(self,instance,**kwargs) : 
-        context = super().to_representation(instance,**kwargs)
-        context["replys"] = CommentReplySerializer(instance.replys.all(),many=True).data
-        context["reply_to"] = instance.reply_to.name if hasattr(instance.reply_to,'name') else None
-        return context
 # مدل کامنت
 
 import re

@@ -37,6 +37,13 @@ class CommentBase (models.Model) :
         blank=True
     )
 
+    reply_name = models.CharField(
+        max_length=256,
+        verbose_name="رپلای به چه کسی",
+        null=True,
+        blank=True
+    )
+
     description = models.TextField(verbose_name="پیام کاربر")
 
     is_valid = models.BooleanField(default=False,verbose_name="تایید شده توسط ادمین")
