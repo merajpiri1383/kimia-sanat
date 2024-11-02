@@ -5,13 +5,13 @@ from nested_inline.admin import NestedModelAdmin,NestedStackedInline,NestedTabul
 from django.utils.html import format_html
 
 # تصاویر پروژه
-class ProjectImageInline(NestedTabularInline) :
+class ProjectImageInline(admin.TabularInline) :
     model = ProjectImage
     exclude = ["id"]
     extra = 0
 
 # ویدیو های پروژه 
-class VideoProjectInline (NestedTabularInline) : 
+class VideoProjectInline (admin.TabularInline) : 
     model = VideoProject
     exclude = ["id"]
     extra = 0
@@ -32,7 +32,7 @@ class CategoryAdminModel(admin.ModelAdmin) :
 
 # مدل پروژه
 @admin.register(Project)
-class ProjectAdminModel(ModelAdminJalaliMixin,NestedModelAdmin) :
+class ProjectAdminModel(ModelAdminJalaliMixin,admin.ModelAdmin) :
     exclude = ["id","slug"]
     inlines = [ProjectImageInline,VideoProjectInline]
     list_display = ["index","name","get_category","contractor","start_date","launch_date"]
