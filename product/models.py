@@ -5,6 +5,7 @@ from utils.models import Item,CommentBase
 from user.models import Ip
 from django_jalali.db.models import jDateField
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 
 # مدل استاندارد
@@ -114,6 +115,8 @@ class Product (models.Model) :
 
     catalog_url = models.URLField(verbose_name='آدرس کاتالوگ',null=True,blank=True)
 
+    catalog_file = models.FileField(verbose_name="فایل کاتالوگ",null=True,blank=True)
+
     created = jDateField(auto_now_add=True)
 
     class Meta :
@@ -125,7 +128,10 @@ class Product (models.Model) :
 
     def save(self,**kwargs):
         self.slug = slugify(self.title,allow_unicode=True)
-        return super().save(**kwargs)
+
+        if not self.catalog_url and self.catalog_file : 
+            self.catalog_url = f"{settings.MEDIA_URL}{self.catalog_file}"
+        return super().save(**kwargs,update_fields=["slug","catalog_url"])
     
     def index (self) : 
         return list(Product.objects.all()).index(self) + 1
