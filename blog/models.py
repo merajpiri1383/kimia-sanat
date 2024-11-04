@@ -151,6 +151,7 @@ class Comment (CommentBase) :
     class Meta : 
         verbose_name = "کامنت "
         verbose_name_plural = "کامنت های بلاگ"
+        ordering = ["-created"]
 
 
 # مدل گزارش تخلف

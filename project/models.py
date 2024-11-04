@@ -134,6 +134,7 @@ class Comment (CommentBase) :
     class Meta :
         verbose_name = "کامنت"
         verbose_name_plural = "کامنت های پروژه"
+        ordering = ["-created"]
 
 class ProjectsPage (models.Model) : 
 

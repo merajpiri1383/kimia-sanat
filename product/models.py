@@ -113,7 +113,7 @@ class Product (models.Model) :
 
     packing_description = models.TextField(verbose_name="بسته بندی محصول",null=True,blank=True)
 
-    catalog_url = models.URLField(verbose_name='آدرس کاتالوگ',null=True,blank=True)
+    catalog_url = models.CharField(max_length=256,verbose_name='آدرس کاتالوگ',null=True,blank=True)
 
     catalog_file = models.FileField(verbose_name="فایل کاتالوگ",null=True,blank=True)
 
@@ -122,6 +122,7 @@ class Product (models.Model) :
     class Meta :
         verbose_name = "محصول"
         verbose_name_plural = "محصولات"
+        ordering = ["-created"]
 
     def __str__(self):
         return f"{self.category} - {self.title}"
@@ -131,7 +132,7 @@ class Product (models.Model) :
 
         if not self.catalog_url and self.catalog_file : 
             self.catalog_url = f"{settings.MEDIA_URL}{self.catalog_file}"
-        return super().save(**kwargs,update_fields=["slug","catalog_url"])
+        return super().save(**kwargs)
     
     def index (self) : 
         return list(Product.objects.all()).index(self) + 1
@@ -234,6 +235,7 @@ class Comment (CommentBase) :
     class Meta :
         verbose_name = "کامنت"
         verbose_name_plural = "کامنت های محصولات"
+        ordering = ["-created"]
 
 
 # مدل گزارش تخلف

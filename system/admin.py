@@ -41,7 +41,7 @@ class ProductSystemAdmin (admin.ModelAdmin) :
     def index (self,obj) : 
         return list(ProductSystem.objects.all()).index(obj) + 1
     index.short_description = "ردیف"
-
+    
     def get_group(self,obj) : 
         if obj.group : 
             return obj.group.name

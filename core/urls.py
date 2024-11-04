@@ -3,7 +3,7 @@ from django.urls import path,include,re_path
 from django.conf import settings
 from django.views.static import serve
 from drf_yasg.views import get_schema_view
-from django.conf.urls import i18n
+from rest_framework.permissions import IsAdminUser
 from drf_yasg import openapi
 
 schema = get_schema_view(
@@ -12,7 +12,8 @@ schema = get_schema_view(
         description="backend of kimiyasaneat built with django and django rest frame work",
         default_version="v1"
     ),
-    public=True
+    public=True,
+    permission_classes=[IsAdminUser]
 )
 
 urlpatterns = [

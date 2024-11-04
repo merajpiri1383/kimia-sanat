@@ -112,6 +112,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
@@ -155,6 +156,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'fa'
 
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('fa', _('Persion')),
+    # Add any other languages you want to support
+]
+
 TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
@@ -187,6 +196,7 @@ CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND","redis://localhost:637
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES" : [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication"
     ],
     "DEFAULT_THROTTLE_RATES" : {
         "otp" : "1/min"
