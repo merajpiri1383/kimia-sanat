@@ -87,14 +87,13 @@ class Order (models.Model) :
         blank = True
     )
 
-    # ident_code = models.SlugField(max_length=5,verbose_name="کد معرف",null=True,blank=True)
-
     def __str__ (self) : 
         return f"cart - {self.user.phone}"
     
     class Meta : 
         verbose_name = 'سفارش'
         verbose_name_plural = 'سفارش ها'
+        ordering = ["-created"]
     
     def save(self,**kwargs) : 
         if not self.tracking_code : 

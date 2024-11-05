@@ -128,14 +128,12 @@ class SendCommentProductAPIView(APIView) :
         operation_summary="send comment",
         operation_description="send comment for product . (product page)",
         request_body=openapi.Schema(
-            type=openapi.TYPE_OBJECT,
+            type = openapi.TYPE_OBJECT,
             properties={
-                'name' : openapi.Schema(type=openapi.TYPE_STRING,description="نام و نام خانوادگی"),
-                'email': openapi.Schema(type=openapi.TYPE_STRING, description="ایمیل"),
-                'description': openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+                "text": openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
             },
-            required=["name","email","description"]
-        )
+            required=["text"],
+        ),
     )
     def post(self,request,product_id):
         data = request.data.copy()
@@ -165,11 +163,12 @@ class ReplyCommentAPIView(APIView) :
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'name': openapi.Schema(type=openapi.TYPE_STRING, description="نام و نام خانوادگی"),
-                'description': openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+                "reply_name": openapi.Schema(type=openapi.TYPE_STRING, description="نام رپلای"),
+                "text": openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+                "reply_to": openapi.Schema(type=openapi.TYPE_STRING, description="ریپلای به"),
             },
-            required=["name", "description"]
-        )
+            required=["text","reply_to"],
+        ),
     )
     def post(self,request,comment_id):
 

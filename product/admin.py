@@ -58,6 +58,11 @@ class StandardAdmin (admin.ModelAdmin) :
 @admin.register(Category)
 class CategoryAdmin ( admin.ModelAdmin ) :
     exclude = ["id","slug"]
+    list_display = ["name","description","count_of_products"]
+
+    def count_of_products (self,obj) : 
+        return obj.products.count()
+    count_of_products.short_description = 'تعداد محصولات'
 
 class ViolationCommentInline (NestedStackedInline) : 
     model = ViolationComment

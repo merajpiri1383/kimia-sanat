@@ -45,8 +45,6 @@ class ProductSystem (models.Model) :
         verbose_name="قیمت هر کیلو گرم برای فروش (ریال)"
     )
 
-    created = models.DateTimeField(auto_now_add=True,null=True,blank=True)
-    
 
     def __str__(self) : 
         return str(self.name)
@@ -54,4 +52,4 @@ class ProductSystem (models.Model) :
     class Meta : 
         verbose_name = "محصول"
         verbose_name_plural = "محصولات سیستم"
-        ordering = ["created"]
+        ordering = ["id"]

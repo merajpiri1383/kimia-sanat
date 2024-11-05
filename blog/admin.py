@@ -20,6 +20,15 @@ class ModuleStackInline (StackedInlineJalaliMixin,admin.StackedInline) :
 @admin.register(Category)
 class CategoryAdmin(ModelAdminJalaliMixin,admin.ModelAdmin) :
     exclude = ["id","slug"]
+    list_display = ["index","name","count_of_blogs"]
+
+    def index (self,obj) : 
+        return list(Category.objects.all()).index(obj) + 1 
+    index.short_description = "ردیف"
+
+    def count_of_blogs (self,obj) : 
+        return obj.blogs.count()
+    count_of_blogs.short_description = 'تعداد بلاگ ها'
 
 
 # مدل بلاگ

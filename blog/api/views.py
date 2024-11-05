@@ -125,10 +125,13 @@ class ReplyCommentAPIView(APIView) :
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'name': openapi.Schema(type=openapi.TYPE_STRING, description="نام و نام خانوادگی"),
-                'description': openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+                'name' : openapi.Schema(type=openapi.TYPE_STRING, description="نام و نام خانوادگی"),
+                'description' : openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+                'reply_to' : openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+                'reply_name' : openapi.Schema(type=openapi.TYPE_STRING, description="نام ریپلای"),
+                'email' : openapi.Schema(type=openapi.TYPE_STRING, description="ایمیل"),
             },
-            required=["name", "description"]
+            required=["name", "description","reply_to","email"]
         )
     )
     def post(self,request,comment_id):

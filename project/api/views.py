@@ -96,11 +96,10 @@ class SendCommentProjectAPIView(APIView) :
             type = openapi.TYPE_OBJECT,
             properties={
                 "name" : openapi.Schema(type=openapi.TYPE_STRING,description="نام و نام خانوادگی"),
-                "phone": openapi.Schema(type=openapi.TYPE_NUMBER, description="تلفن"),
-                "email": openapi.Schema(type=openapi.TYPE_STRING, description="ایمیل"),
-                "text": openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+                "email": openapi.Schema(type=openapi.TYPE_STRING,description="ایمیل"),
+                "text": openapi.Schema(type=openapi.TYPE_STRING,description="توضیحات"),
             },
-            required=["name","phone","email","text"],
+            required=["name","email","text"],
         ),
         responses={
             201 : "created",
@@ -134,9 +133,12 @@ class ReplyCommentAPIView(APIView ) :
             type=openapi.TYPE_OBJECT,
             properties={
                 "name": openapi.Schema(type=openapi.TYPE_STRING, description="نام و نام خانوادگی"),
+                "reply_name": openapi.Schema(type=openapi.TYPE_STRING, description="نام رپلای"),
+                "email": openapi.Schema(type=openapi.TYPE_STRING, description="ایمیل"),
                 "text": openapi.Schema(type=openapi.TYPE_STRING, description="توضیحات"),
+                "reply_to": openapi.Schema(type=openapi.TYPE_STRING, description="رپلای به"),
             },
-            required=["name", "text"],
+            required=["name","text","reply_name","email","reply_to"],
         ),
         responses={
             201: "created",

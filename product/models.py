@@ -17,7 +17,7 @@ class Standard (models.Model) :
 
     image = models.ImageField(upload_to="product/standard/image/",verbose_name="تصویر استاندارد")
 
-    text = models.TextField(verbose_name="توضیحات استاندارد")
+    text = models.TextField(verbose_name="توضیحات استاندارد",null=True,blank=True)
 
     def __str__(self):
         return str(self.name)
@@ -25,6 +25,7 @@ class Standard (models.Model) :
     class Meta :
         verbose_name = "استاندارد"
         verbose_name_plural = "استاندارد ها"
+        ordering =["id"]
 
 
 # مدل دسته بندی محصول
