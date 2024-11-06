@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 from uuid import uuid4
 from django.contrib.auth import get_user_model
@@ -15,6 +16,13 @@ ticket_status = [
 ]
 
 class Ticket (models.Model) : 
+
+    number_id = 100000
+
+    @classmethod
+    def increment_number_id (self) : 
+        self.number_id = self.number_id + 10 
+        return self.number_id
 
     id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
 
@@ -54,7 +62,7 @@ class Ticket (models.Model) :
 
     def save(self,**kwargs) : 
         if not self.number : 
-            self.number = f"ksp{randint(10000,99999)}"
+            self.number = f"ksp{self.increment_number_id()}"
         if self.is_from_admin : 
             self.status = "closed"
         return super().save(**kwargs)
