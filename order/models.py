@@ -197,6 +197,7 @@ class PreInvoice (models.Model) :
 
     is_final = models.BooleanField(default=False,verbose_name="نهایی شده")
 
+
     description = models.TextField(verbose_name="توضیحات",null=True,blank=True)
 
     def calculate_total (self) : 
@@ -238,7 +239,7 @@ class PreInvoiceProduct (models.Model) :
 
     count = models.PositiveBigIntegerField(default=1,verbose_name="مقدار")
 
-    unit = models.CharField(max_length=256,verbose_name="واحد",default="کیلو گرم")
+    unit = models.CharField(max_length=128,verbose_name="واحد",default="کیلو گرم")
 
     def colleague_price (self ) : 
         return intcomma(self.title.colleague_price,False)
