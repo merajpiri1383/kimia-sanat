@@ -141,9 +141,27 @@ class TicketPage (models.Model) :
 
     text = models.TextField(verbose_name="متن کادر",null=True,blank=True)
 
+    feedback_popup_text = models.TextField(verbose_name="متن پاپ اپ بازخورد تیکت",null=True,blank=True)
+
     def __str__ (self) : 
         return "صفحه تیکت ها"
     
     class Meta : 
         verbose_name = "صفحه تیکت ها"
         verbose_name_plural = "صفحه تیکت ها"
+
+
+# صفحه جزییات تیکت
+
+class TicketDetailPage (models.Model) : 
+
+    id = models.UUIDField(default=uuid4,unique=True,primary_key=True)
+
+    info_ticket = models.TextField(verbose_name="توضیحات صفحه تیکت")
+
+    def __str__ (self) :
+        return str(self.info_ticket)
+    
+    class Meta : 
+        verbose_name = "صفحه جزییات تیکت"
+        verbose_name_plural = "مدیرت صفحه جزییات تیکت"

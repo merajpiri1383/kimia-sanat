@@ -3,12 +3,14 @@ from rest_framework.response import Response
 from rest_framework import status 
 from ticket.models import (
     Ticket,
-    TicketPage
+    TicketPage,
+    TicketDetailPage
 )
 from ticket.api.serializers import (
     TicketSerializer,
     FeedbackSerializer,
-    TicketPageSerializer
+    TicketPageSerializer,
+    TicketDetailPageSerializer
 )
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -19,9 +21,6 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.contrib.postgres.search import SearchQuery,SearchRank,SearchVector
 
-
-def send_sms() : 
-    pass 
 
 # لیست تیکت ها
 
@@ -116,8 +115,11 @@ class TicketDetailAPIView (APIView) :
     )
     def get(self,request,ticket_id) : 
         if self.get_ticket(request,ticket_id) : return self.get_ticket(request,ticket_id)
-        serializer = TicketSerializer(self.ticket,context={"request":request})
-        return Response(serializer.data,status.HTTP_200_OK)
+        data = {
+            "ticket" : TicketSerializer(self.ticket,context={"request":request}).data,
+            "page" : TicketDetailPageSerializer(TicketDetailPage.objects.first()).data
+        }
+        return Response(data,status.HTTP_200_OK)
     
     @swagger_auto_schema(
         operation_summary="تغییر تیکت",
@@ -131,7 +133,7 @@ class TicketDetailAPIView (APIView) :
             },
         ),
         responses={
-            200 : TicketSerializer(),
+            200 : "ok",
             400 : "bad request"
         }
     )

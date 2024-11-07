@@ -1,6 +1,18 @@
 from django.contrib import admin
-from ticket.models import Ticket,TicketFile,Feedback,TicketPage
+from ticket.models import (
+    Ticket,
+    TicketFile,
+    Feedback,
+    TicketPage,
+    TicketDetailPage
+)
 
+
+# صفحه جزییات تیکت
+
+@admin.register(TicketDetailPage)
+class TicketDetailPageAdmin (admin.ModelAdmin) : 
+    exclude = ["id"]
 
 # مدل تیکت
 

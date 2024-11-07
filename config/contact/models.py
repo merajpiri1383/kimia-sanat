@@ -90,7 +90,7 @@ class Location (models.Model) :
     location_latitude = models.DecimalField(null=True,
                                             blank=True,
                                             max_digits=12,
-                                            decimal_places=4,
+                                            decimal_places=8,
                                             verbose_name="عرض جغرافیایی")
 
     location_longitude = models.DecimalField(
@@ -98,7 +98,7 @@ class Location (models.Model) :
                                             blank=True, 
                                             verbose_name="طول جغرافیایی",
                                             max_digits=12,
-                                            decimal_places=4
+                                            decimal_places=8
                                             )
 
     def __str__ (self) : 

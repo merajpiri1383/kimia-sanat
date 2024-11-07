@@ -1,4 +1,10 @@
-from ticket.models import Ticket,TicketFile,Feedback,TicketPage
+from ticket.models import (
+    Ticket,
+    TicketFile,
+    Feedback,
+    TicketPage,
+    TicketDetailPage,
+)
 from rest_framework import serializers
 from user.models import RealProfile,LegalProfile
 from user.api.serializers import UserInfoSerializer
@@ -121,4 +127,12 @@ class TicketPageSerializer (serializers.ModelSerializer) :
 
     class Meta : 
         model = TicketPage
+        exclude = ["id"]
+
+# صفحه جزيیات تیکت 
+
+class TicketDetailPageSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = TicketDetailPage
         exclude = ["id"]
