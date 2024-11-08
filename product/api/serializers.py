@@ -81,8 +81,8 @@ class CommentSerializer (serializers.ModelSerializer) :
 class ProductSimpleSerializer (serializers.ModelSerializer) :
 
     class Meta :
-        model = Product
-        fields = ["id","slug","title","image","type","code","description"]
+        model = Product 
+        fields = ["id","slug","title","image","type","code","short_description"]
 
     def to_representation(self, instance,**kwargs):
         context = super().to_representation(instance,**kwargs)
