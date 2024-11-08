@@ -90,6 +90,8 @@ class Product (models.Model) :
 
     slug = models.SlugField(null=True,blank=True,allow_unicode=True)
 
+    short_description = models.CharField(max_length=500,verbose_name="توضیحات کوتاه",null=True,blank=True)
+
     type = models.CharField(max_length=10,choices=types_of_product,default="fluid",verbose_name="نوع محصول")
 
     liked = models.ManyToManyField(

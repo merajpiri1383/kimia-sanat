@@ -12,6 +12,7 @@ import re
 from product.api.serializers import ProductSimpleSerializer
 from user.api.serializers import UserInfoSerializer
 from django.contrib.humanize.templatetags.humanize import intcomma
+from driver.api.serializers import DriverSerializer
 
 
 # مدل پیش فاکتور 
@@ -130,6 +131,7 @@ class OrderSimpleSerializer (serializers.ModelSerializer) :
                 context=self.context
             ).data
         context["pre_invoice"] = PreInvoiceSerializer(instance.pre_invoice).data
+        context["driver"] = DriverSerializer(instance.driver,context=self.context).data
         return context
 
 # مدل قوانین سفارش 
