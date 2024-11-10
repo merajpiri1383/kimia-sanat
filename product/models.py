@@ -157,10 +157,12 @@ class FeatureProduct(Item):
 
     value = models.CharField(max_length=256,verbose_name="مقدار")
 
+    created = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+
     class Meta :
         verbose_name = "مشخصات فیزیکی و شیمیای محصول"
         verbose_name_plural = "مشخصات فیزیکی و شیمیای محصول"
-
+        ordering = ["created"]
 
 
 # مدل کاربرد محصول
@@ -178,12 +180,15 @@ class UsageProduct (models.Model) :
 
     value = models.CharField(verbose_name="کاربرد",max_length=256)
 
+    created = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+
     def __str__(self):
         return str(self.value)
 
     class Meta :
         verbose_name = "کاربرد محصول"
         verbose_name_plural = "کاربرد های محصول"
+        ordering = ["created"]
 
 
 # مدل تصویر محصول

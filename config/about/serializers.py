@@ -44,7 +44,7 @@ class OrderGuideTitleSerializer (serializers.ModelSerializer) :
 class OrderingGuideSerializer (serializers.ModelSerializer) : 
     class Meta : 
         model = OrderingGuide
-        exclude = ["id","about"]
+        exclude = ["id","about","created"]
 
 class FeqTitleSerializer (serializers.ModelSerializer) : 
     class Meta : 
@@ -54,7 +54,7 @@ class FeqTitleSerializer (serializers.ModelSerializer) :
 class FeqSerializer (serializers.ModelSerializer) : 
     class Meta : 
         model = Feq
-        exclude = ["id","about"]
+        exclude = ["id","about","created"]
 
 
 class AboutUsSerializer (serializers.ModelSerializer) : 

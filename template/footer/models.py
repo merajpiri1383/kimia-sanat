@@ -12,6 +12,8 @@ class Footer (models.Model) :
 
     logo = models.ImageField(upload_to="template/footer/logo/",verbose_name="لوگو ",null=True,blank=True)
 
+    logo_title = models.CharField(max_length=256,verbose_name="عنوان لوگو",null=True,blank=True)
+
     text = models.TextField(null=True,blank=True,verbose_name="متن فوتر")
 
     link_footer_title = models.CharField(max_length=256,verbose_name="عنوان ستون لینک ها",null=True,blank=True)
@@ -154,9 +156,12 @@ class FooterFeq (models.Model) :
 
     answer = models.TextField(verbose_name="پاسخ")
 
+    created = models.DateTimeField(null=True,blank=True,auto_now_add=True)
+
     def __str__ (self) : 
         return str (self.question)
     
     class Meta : 
         verbose_name = "سوال فوتر"
         verbose_name_plural = "سوالات متداول فوتر"
+        ordering = ["created"]

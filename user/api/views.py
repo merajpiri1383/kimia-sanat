@@ -337,7 +337,7 @@ class DashboardAPIView (APIView) :
             objects = request.user.orders.all().order_by("-created")
         elif type == "delivery-report" : 
             objects = request.user.orders.exclude(delivery_type=None).order_by("-created")
-        paginator = Paginator(objects,8)
+        paginator = Paginator(objects,5)
         try : 
             result = paginator.page(request.GET.get("type",1))
         except EmptyPage : 

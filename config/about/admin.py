@@ -37,7 +37,7 @@ class OrderGuideTitleInline (admin.StackedInline) :
     exclude = ["id"]
     extra = 0
 
-class OrderingGuideInline (admin.TabularInline) : 
+class OrderingGuideInline (admin.StackedInline) : 
     model = OrderingGuide
     exclude = ["id"]
     extra = 0
@@ -47,7 +47,7 @@ class FeqTitleInline (admin.StackedInline) :
     exclude = ["id"]
     extra = 0
 
-class FeqInline (admin.TabularInline) : 
+class FeqInline (admin.StackedInline) : 
     model = Feq
     exclude = ["id"]
     extra = 0

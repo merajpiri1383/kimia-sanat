@@ -1,7 +1,17 @@
 from django.contrib import admin
-from project.models import Category,Project,ProjectImage,Comment,ProjectsPage,VideoProject,ViolationComment
+from django.db import models
+from django_summernote.widgets import SummernoteWidget
+from project.models import (
+    Category,
+    Project,
+    ProjectImage,
+    Comment,
+    ProjectsPage,
+    VideoProject,
+    ViolationComment
+)
 from jalali_date.admin import ModelAdminJalaliMixin
-from nested_inline.admin import NestedModelAdmin,NestedStackedInline,NestedTabularInline
+from nested_inline.admin import NestedModelAdmin,NestedStackedInline
 from django.utils.html import format_html
 
 # تصاویر پروژه
@@ -46,6 +56,10 @@ class ProjectAdminModel(ModelAdminJalaliMixin,admin.ModelAdmin) :
         if obj.category : 
             return obj.category.name
     get_category.short_description = "دسته بندی"
+
+    formfield_overrides = {
+        models.TextField : {"widget" : SummernoteWidget}
+    }
 
 class ViolationCommentInline (NestedStackedInline) : 
     model = ViolationComment

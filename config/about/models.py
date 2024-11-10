@@ -112,15 +112,25 @@ class OrderGuideTitle (models.Model) :
 
 
 # نحوه ثبت سفارش
-class OrderingGuide(Item) : 
+class OrderingGuide(models.Model) : 
 
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
     about = models.ForeignKey(AboutUs,on_delete=models.CASCADE,related_name="ordering_items")
 
+    key = models.CharField(max_length=256,verbose_name="کلید")
+
+    value = models.TextField(verbose_name="مقدار")
+
+    created = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+
+    def __str__ (self) : 
+        return f"{self.key} : {self.value}"
+
     class Meta : 
         verbose_name = "نحوه ثبت سفارش"
         verbose_name_plural = "راهنمای سفارش"
+        ordering = ["created"]
 
 # عنوان سوالات متداول
 class FeqTitle (models.Model) : 
@@ -149,12 +159,15 @@ class Feq(models.Model) :
 
     answer = models.TextField(verbose_name="جواب", null=True)
 
+    created = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+
     def __str__(self) -> str:
         return "سوال"
 
     class Meta : 
         verbose_name = "سوال "
         verbose_name_plural = "سوالات متداول"
+        ordering = ["created"]
 
 # فرم ارتباط با ما در صفحه ارتباط با ما 
 

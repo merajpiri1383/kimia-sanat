@@ -12,15 +12,15 @@ class Driver (models.Model) :
     
     id = models.UUIDField(default=uuid4,primary_key=True,unique=True)
 
-    name = models.CharField(max_length=256,verbose_name="نام راننده",unique=True)
+    name = models.CharField(max_length=256,verbose_name="نام راننده")
 
-    license_plate = models.CharField(max_length=12,verbose_name="پلاک راننده",unique=True)
+    license_plate = models.CharField(max_length=12,verbose_name="پلاک راننده")
 
     car = models.CharField(max_length=256,verbose_name="ماشین راننده")
 
-    phone = models.SlugField(max_length=11,verbose_name="شماره راننده",unique=True)
+    phone = models.SlugField(max_length=11,verbose_name="شماره راننده")
 
-    national_id = models.PositiveBigIntegerField(verbose_name="شناسه راننده",unique=True)
+    national_id = models.PositiveBigIntegerField(verbose_name="شناسه راننده")
 
     created = jDateTimeField(auto_now_add=True)
 

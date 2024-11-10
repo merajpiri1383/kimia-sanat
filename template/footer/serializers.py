@@ -41,7 +41,7 @@ class ElectroLicenseSerializer (serializers.ModelSerializer) :
 class FooterFeqSerializer ( serializers.ModelSerializer ) : 
     class Meta : 
         model = FooterFeq
-        exclude = ["id","footer"] 
+        exclude = ["id","footer","created"] 
 
 class FooterSerializer (serializers.ModelSerializer) : 
 
