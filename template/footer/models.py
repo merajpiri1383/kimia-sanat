@@ -14,6 +14,8 @@ class Footer (models.Model) :
 
     logo_title = models.CharField(max_length=256,verbose_name="عنوان لوگو",null=True,blank=True)
 
+    logo_sub_title = models.CharField(max_length=256,verbose_name="زیر عنوان لوگو",null=True,blank=True)
+
     text = models.TextField(null=True,blank=True,verbose_name="متن فوتر")
 
     link_footer_title = models.CharField(max_length=256,verbose_name="عنوان ستون لینک ها",null=True,blank=True)
