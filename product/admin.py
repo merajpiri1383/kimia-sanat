@@ -11,6 +11,9 @@ class UsageProductStackInline (admin.TabularInline) :
     model = UsageProduct
     extra = 1
     exclude = ["id"]
+    formfield_overrides = {
+        models.TextField : {"widget" : SummernoteWidget}
+    }
 
 # مدل مشخصات محصول
 class FeatureProductStackInline (admin.TabularInline) :

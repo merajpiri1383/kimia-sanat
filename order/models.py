@@ -122,6 +122,8 @@ class ProductCount (models.Model) :
 
     value = models.PositiveIntegerField(default=1,verbose_name="مقدار محصول")
 
+    created = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+
     def __str__ (self) : 
         return str(self.order)
     

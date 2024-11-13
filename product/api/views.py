@@ -39,31 +39,27 @@ class ProductListAPIView(APIView) :
     def get(self,request):
         products = Product.objects.all().order_by("-created")
         try :
-            if request.GET.get("most-viewed",True):
+            if request.GET.get("most-viewed"):
                 products = products.order_by("views")
         except :
-            products = [] 
-
+            products = []
         try :
-            if request.GET.get("most-viewed",True):
+            if request.GET.get("most-fan"):
                 products = products.annotate(fans=Count("liked")).order_by("-fans")
         except :
             products = [] 
-
         try :
             if request.GET.get("category"):
                 category = Category.objects.get(slug=request.GET.get("category"))
                 products = products.filter(category=category)
         except : 
             products = []
-
         try : 
             if request.GET.get("type"):
                 products = products.filter(type=request.GET.get("type"))
         except :
             products = [] 
-
-
+        
         paginator = Paginator(products, 10)
         try :
             products = paginator.page(request.GET.get("page",1))

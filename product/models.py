@@ -178,7 +178,7 @@ class UsageProduct (models.Model) :
         verbose_name="محصول"
     )
 
-    value = models.CharField(verbose_name="کاربرد",max_length=256)
+    value = models.TextField(verbose_name="کاربرد")
 
     created = models.DateTimeField(auto_now_add=True,null=True,blank=True)
 

@@ -80,7 +80,7 @@ class ProductCountSerializer (serializers.ModelSerializer) :
 
     class Meta : 
         model = ProductCount
-        fields = "__all__"
+        exclude = ["created"]
 
     def to_representation(self, instance):
         context = super().to_representation(instance)
@@ -94,8 +94,6 @@ class OrderSerializer (serializers.ModelSerializer) :
 
     pay_slips = PaySlipSerializer(many=True,read_only=True)
 
-    product_counts = ProductCountSerializer(many=True,read_only=True)
-
     user = UserInfoSerializer()
 
 
@@ -103,6 +101,14 @@ class OrderSerializer (serializers.ModelSerializer) :
         model = Order
         fields = "__all__"
         read_only_fields = ["tracking_code","state","created","tracking_code","official_invoice","user","id"]
+    
+    def to_representation(self,instance,**kwargs) : 
+        context = super().to_representation(instance,**kwargs)
+        context["product_counts"] =  ProductCountSerializer(
+            instance.product_counts.all().order_by("-created"),
+            many=True,
+            context=self.context).data
+        return context
     
     def __init__(self,instance=None,**kwargs) :
         if instance : 
