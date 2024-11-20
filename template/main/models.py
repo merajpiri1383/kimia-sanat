@@ -67,6 +67,8 @@ class PhoneAnswerQuestion (models.Model) :
 
     card = models.ForeignKey(AnswerQuestionTitle,on_delete=models.CASCADE,related_name="phones")
 
+    title = models.CharField(max_length=256,verbose_name="عنوان",null=True,blank=True)
+
     phone = models.CharField(max_length=11,verbose_name="شماره تلفن")
 
     def __str__ (self) : 

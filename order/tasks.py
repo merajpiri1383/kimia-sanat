@@ -42,3 +42,39 @@ def send_pay_slip_by_user_sms (pre_pay_slip_number,username) :
                 to=user.phone
             )
     except : pass 
+
+
+
+# send sms to user for order has been paid 
+
+
+body_id_send_user_for_paid_order = "265544"
+@shared_task
+def send_sms_to_user_for_paid_order_state (user_phone,order_tracking_ocde,order_number) : 
+    try : 
+        user = get_user_model().objects.get(phone=user_phone)
+        sms.send_by_base_number(
+            text=f"{user.username()};{order_tracking_ocde};{order_number}",
+            bodyId=body_id_send_user_for_paid_order,
+            to=user_phone,
+        )
+    except : 
+        pass 
+
+
+# reject order of user 
+
+body_id_send_reject_order = "265541"
+
+@shared_task
+def send_sms_for_reject_order (user_phone,order_tracking_code) : 
+    
+    try :
+        user = get_user_model().objects.get(user=user_phone)
+        sms.send_by_base_number(
+            text=f"{user.username};{order_tracking_code}",
+            bodyId=body_id_send_reject_order,
+            to=user_phone
+        )
+    except : 
+        pass 
